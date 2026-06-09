@@ -1,11 +1,10 @@
-import Swal from "sweetalert2";
 import useClientApi from "../useClientApi";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import useAuth from "../useAuth";
 
 // get user training site data version: 2
-export const useGetUserTrainingSiteData = (token) => {
+export const useGetUserTrainingSiteData = token => {
   return useClientApi({
     method: "get",
     key: ["user-training-site-data"],
@@ -20,7 +19,7 @@ export const useChangePassword = () => {
     method: "post",
     endpoint: "/api/users/login/setnew-password",
     isPrivate: true,
-    onError: (error) => {
+    onError: error => {
       toast.error(error?.response?.data?.message || "Something went wrong!");
     },
   });
@@ -44,7 +43,7 @@ export const getallTrainingsite = (token, page = 1, perPage = 10) => {
   });
 };
 
-export const getSingleTrainingsite = (id) => {
+export const getSingleTrainingsite = id => {
   return useClientApi({
     method: "get",
     key: ["get-single-training-site"],
@@ -53,15 +52,15 @@ export const getSingleTrainingsite = (id) => {
   });
 };
 
-export const updateTrainingSite = (id) => {
+export const updateTrainingSite = id => {
   return useClientApi({
     method: "post",
     isPrivate: true,
     endpoint: `/api/training-site/update/${id}`,
-    onSuccess: (data) => {
+    onSuccess: data => {
       toast.success(data?.message || "Training Site Updated Successfully");
     },
-    onError: (error) => {
+    onError: error => {
       toast.error(error?.response?.data?.message || "Something went wrong!");
     },
   });
@@ -84,7 +83,7 @@ export const storeClient = () => {
   });
 };
 
-export const getSingleClient = (id) => {
+export const getSingleClient = id => {
   return useClientApi({
     method: "get",
     key: ["get-single-client"],
@@ -93,7 +92,7 @@ export const getSingleClient = (id) => {
   });
 };
 
-export const updateSingleClient = (id) => {
+export const updateSingleClient = id => {
   return useClientApi({
     method: "post",
     isPrivate: true,
@@ -110,15 +109,7 @@ export const getAllClient = (page = 1, perPage = 10) => {
   });
 };
 
-export const storeLocation = () => {
-  return useClientApi({
-    method: "post",
-    isPrivate: true,
-    endpoint: "/api/locations/store",
-  });
-};
-
-export const updateLocation = (id) => {
+export const updateLocation = id => {
   return useClientApi({
     method: "post",
     isPrivate: true,
@@ -126,7 +117,7 @@ export const updateLocation = (id) => {
   });
 };
 
-export const getSingleLocation = (id) => {
+export const getSingleLocation = id => {
   return useClientApi({
     method: "get",
     isPrivate: true,
@@ -152,7 +143,7 @@ export const getAllTcProducts = (page = 1, perPage = 10) => {
   });
 };
 
-export const getSingleTcProduct = (id) => {
+export const getSingleTcProduct = id => {
   return useClientApi({
     method: "get",
     key: ["get-single-tcproduct"],
@@ -166,16 +157,16 @@ export const createInstructor = () => {
     method: "post",
     isPrivate: true,
     endpoint: "/api/instructors/store",
-    onSuccess: (data) => {
+    onSuccess: data => {
       toast.success(data?.message || "Instructor Created Successfully");
     },
-    onError: (error) => {
+    onError: error => {
       toast.error(error?.response?.data?.message || "Something went wrong!");
     },
   });
 };
 
-export const updateInstructor = (id) => {
+export const updateInstructor = id => {
   return useClientApi({
     method: "post",
     isPrivate: true,
@@ -199,7 +190,7 @@ export const getAllInstructor = (
   });
 };
 
-export const getSingleInstructor = (id) => {
+export const getSingleInstructor = id => {
   return useClientApi({
     method: "get",
     key: ["get-single-instructor", id],
@@ -242,7 +233,7 @@ export const getAllCertification = (page = 1, perPage = 10) => {
   });
 };
 
-export const getSingleCertification = (id) => {
+export const getSingleCertification = id => {
   return useClientApi({
     method: "get",
     key: ["get-single-certification"],
@@ -273,11 +264,11 @@ export const deleteDocument = () => {
   return useClientApi({
     method: "delete",
     isPrivate: true,
-    onSuccess: (data) => {
+    onSuccess: data => {
       queryClient.invalidateQueries(["get-single-instructor"]);
       toast.success(data?.message || "Document deleted successfully");
     },
-    onError: (err) => {
+    onError: err => {
       toast.error(err?.response?.data?.message || "Something went wrong!");
     },
   });
@@ -302,7 +293,7 @@ export const storeProductAddOns = () => {
   });
 };
 
-export const getSingleProductAddOns = (id) => {
+export const getSingleProductAddOns = id => {
   return useClientApi({
     method: "get",
     isPrivate: true,
@@ -337,7 +328,7 @@ export const storePromoCode = () => {
   });
 };
 
-export const getSinglePromoCode = (id) => {
+export const getSinglePromoCode = id => {
   return useClientApi({
     method: "get",
     isPrivate: true,
@@ -363,32 +354,6 @@ export const getAllPromoCode = (page = 1, perPage = 10) => {
   });
 };
 
-// key code
-export const addKeyCodeBank = () => {
-  return useClientApi({
-    method: "post",
-    isPrivate: true,
-    endpoint: "/api/keycode/store",
-  });
-};
-
-export const getSingleKeyCodeBank = (id) => {
-  return useClientApi({
-    method: "get",
-    isPrivate: true,
-    key: ["get-single-keycode-bank"],
-    endpoint: `/api/keycode/show?id=${id}`,
-  });
-};
-
-export const updateKeyCodeBank = () => {
-  return useClientApi({
-    method: "post",
-    isPrivate: true,
-    endpoint: `/api/keycode/update`,
-  });
-};
-
 export const getAllKeyCodeBank = (page = 1, perPage = 10) => {
   return useClientApi({
     method: "get",
@@ -407,7 +372,7 @@ export const storeCourse = () => {
   });
 };
 
-export const getSingleCourse = (id) => {
+export const getSingleCourse = id => {
   return useClientApi({
     method: "get",
     key: ["get-single-course"],
@@ -477,7 +442,7 @@ export const storeClass = () => {
   });
 };
 
-export const getSingleClass = (id) => {
+export const getSingleClass = id => {
   return useClientApi({
     method: "get",
     isPrivate: true,
@@ -657,7 +622,7 @@ export const useExportInstructorByDisciplinePDF = () => {
     axiosOptions: {
       responseType: "blob",
     },
-    onError: (err) => {
+    onError: err => {
       toast.error(err?.response?.data?.message || "Something went wrong!");
     },
   });
@@ -671,7 +636,7 @@ export const useExportClassByStudentPDF = () => {
     axiosOptions: {
       responseType: "blob",
     },
-    onError: (err) => {
+    onError: err => {
       toast.error(err?.response?.data?.message || "Something went wrong!");
     },
   });
@@ -685,7 +650,7 @@ export const useExportStudentDiscipline = () => {
     axiosOptions: {
       responseType: "blob",
     },
-    onError: (err) => {
+    onError: err => {
       toast.error(err?.response?.data?.message || "Something went wrong!");
     },
   });
@@ -709,7 +674,7 @@ export const getAllCertificationFile = (page = 1, perPage = 10) => {
   });
 };
 
-export const deleteSingleCertificationFile = (id) => {
+export const deleteSingleCertificationFile = id => {
   return useClientApi({
     method: "delete",
     isPrivate: true,
@@ -742,7 +707,7 @@ export const getWhatsNew = () => {
 };
 
 // get single data
-export const getSingleWhatsNew = (id) => {
+export const getSingleWhatsNew = id => {
   return useClientApi({
     method: "get",
     isPrivate: true,
@@ -758,7 +723,7 @@ export const addWhatsNew = () => {
     method: "post",
     isPrivate: true,
     endpoint: "/api/whats_new/store",
-    onError: (error) => {
+    onError: error => {
       toast.error(error?.response?.data?.message || "Something went wrong!");
     },
   });
@@ -770,7 +735,7 @@ export const updateWhatsNew = () => {
     method: "post",
     isPrivate: true,
     endpoint: "/api/whats_new/update",
-    onError: (error) => {
+    onError: error => {
       toast.error(error?.response?.data?.message || "Something went wrong!");
     },
   });
@@ -810,14 +775,14 @@ export const storeExternalSKU = () => {
     method: "post",
     isPrivate: true,
     endpoint: "/api/external_sku/store",
-    onError: (error) => {
+    onError: error => {
       toast.error(error?.response?.data?.message || "Something went wrong!");
     },
   });
 };
 
 // get class-course details for enrolment
-export const getEnrollmentDetails = (id) => {
+export const getEnrollmentDetails = id => {
   return useClientApi({
     method: "get",
     isPrivate: true,
@@ -826,12 +791,12 @@ export const getEnrollmentDetails = (id) => {
 };
 
 // student registration
-export const useStudentEnrollment = (id) => {
+export const useStudentEnrollment = id => {
   return useClientApi({
     method: "post",
     isPrivate: true,
     endpoint: `/api/student/registration?id=${id}`,
-    onError: (err) => {
+    onError: err => {
       toast.error(err?.response?.data?.message || "Something went wrong!");
     },
   });
@@ -843,14 +808,14 @@ export const usePaymentProcess = () => {
     method: "post",
     isPrivate: false,
     endpoint: `/api/student/payment/process`,
-    onError: (err) => {
+    onError: err => {
       toast.error(err?.response?.data?.message || "Something went wrong!");
     },
   });
 };
 
 // get student
-export const useGetStudentByClassId = (id) => {
+export const useGetStudentByClassId = id => {
   return useClientApi({
     method: "get",
     isPrivate: true,
@@ -891,7 +856,7 @@ export const useStoreStudentData = () => {
     method: "post",
     isPrivate: true,
     endpoint: "/api/student/store",
-    onError: (error) => {
+    onError: error => {
       toast.error(error?.response?.data?.message || "Something went wrong!");
     },
   });
@@ -902,14 +867,14 @@ export const useUpdateStudentData = () => {
     method: "post",
     isPrivate: true,
     endpoint: "/api/student/by_class",
-    onError: (error) => {
+    onError: error => {
       toast.error(error?.response?.data?.message || "Something went wrong!");
     },
   });
 };
 
 // get student data
-export const useGetStudent = (id) => {
+export const useGetStudent = id => {
   return useClientApi({
     method: "get",
     isPrivate: true,
@@ -924,7 +889,7 @@ export const useUpdateStudentScore = () => {
     method: "post",
     isPrivate: true,
     endpoint: `/api/score/update`,
-    onError: (error) => {
+    onError: error => {
       toast.error(error?.response?.data?.message || "Something went wrong!");
     },
   });
@@ -936,11 +901,11 @@ export const useFinalizeRoster = () => {
     method: "post",
     isPrivate: true,
     endpoint: `/api/student/finalize`,
-    onSuccess: (data) => {
+    onSuccess: data => {
       queryClient.invalidateQueries(["get-student-by-class"]);
       toast.success(data?.message || "Roster finalized successfully");
     },
-    onError: (err) => {
+    onError: err => {
       toast.error(err?.response?.data?.message || "Something went wrong!");
     },
   });
@@ -954,13 +919,13 @@ export const useDownloadStudentListPDF = () => {
     axiosOptions: {
       responseType: "blob",
     },
-    onError: (err) => {
+    onError: err => {
       toast.error(err?.response?.data?.message || "Something went wrong!");
     },
   });
 };
 
-export const useDownloadRoster = (id) => {
+export const useDownloadRoster = id => {
   return useClientApi({
     method: "post",
     isPrivate: true,
@@ -968,7 +933,7 @@ export const useDownloadRoster = (id) => {
     axiosOptions: {
       responseType: "blob",
     },
-    onError: (err) => {
+    onError: err => {
       toast.error(err?.response?.data?.message || "Something went wrong!");
     },
   });
@@ -992,14 +957,14 @@ export const useStoreTCProduct = () => {
     method: "post",
     isPrivate: true,
     endpoint: `/api/tc-product`,
-    onError: (err) => {
+    onError: err => {
       toast.error(err?.response?.data?.message || "Something went wrong!");
     },
   });
 };
 
 // show
-export const useGetSingleTCProduct = (id) => {
+export const useGetSingleTCProduct = id => {
   return useClientApi({
     method: "get",
     isPrivate: true,
@@ -1009,15 +974,15 @@ export const useGetSingleTCProduct = (id) => {
 };
 
 // update
-export const useUpdateTCProduct = (id) => {
+export const useUpdateTCProduct = id => {
   return useClientApi({
     method: "put",
     isPrivate: true,
     endpoint: `/api/tc-product/${id}`,
-    onSuccess: (data) => {
+    onSuccess: data => {
       toast.success(data?.message || "TC Product updated successfully");
     },
-    onError: (err) => {
+    onError: err => {
       toast.error(err?.response?.data?.message || "Something went wrong!");
     },
   });
@@ -1033,7 +998,7 @@ export const useGetTCProductOrder = (page = 1, perPage = 10) => {
   });
 };
 
-export const useGetSingleTCProductOrder = (id) => {
+export const useGetSingleTCProductOrder = id => {
   return useClientApi({
     method: "get",
     isPrivate: true,
@@ -1042,7 +1007,7 @@ export const useGetSingleTCProductOrder = (id) => {
   });
 };
 
-export const useChangeOrderStatus = (id) => {
+export const useChangeOrderStatus = id => {
   return useClientApi({
     method: "post",
     isPrivate: true,
@@ -1051,18 +1016,18 @@ export const useChangeOrderStatus = (id) => {
   });
 };
 
-export const useMarkAsPaid = (id) => {
+export const useMarkAsPaid = id => {
   const queryClient = useQueryClient();
   return useClientApi({
     method: "post",
     isPrivate: true,
     key: ["mark-as-paid", id],
     endpoint: `/api/tc-product-orders/${id}/mark-paid`,
-    onSuccess: (data) => {
+    onSuccess: data => {
       queryClient.invalidateQueries(["change-order-status"]);
       toast.success(data?.message || "Document deleted successfully");
     },
-    onError: (err) => {
+    onError: err => {
       toast.error(err?.response?.data?.message || "Something went wrong!");
     },
   });
@@ -1082,10 +1047,10 @@ export const useTSProductCheckout = () => {
     method: "post",
     isPrivate: true,
     endpoint: "/api/purchase-tc-product",
-    onSuccess: (data) => {
+    onSuccess: data => {
       toast.success(data?.message);
     },
-    onError: (err) => {
+    onError: err => {
       toast.error(err?.response?.data?.message || "Something went wrong!");
     },
   });
@@ -1097,7 +1062,7 @@ export const useConnectAccount = () => {
     method: "post",
     isPrivate: true,
     endpoint: `/api/instructor-account-connect`,
-    onError: (err) => {
+    onError: err => {
       toast.error(err?.response?.data?.message || "Something went wrong!");
     },
   });
@@ -1148,7 +1113,7 @@ export const useUpdateUserData = () => {
     method: "post",
     isPrivate: true,
     endpoint: `/api/instructors/basic-info`,
-    onError: (err) => {
+    onError: err => {
       toast.error(err?.response?.data?.message || "Something went wrong!");
     },
   });
@@ -1181,7 +1146,7 @@ export const useStoreUser = () => {
     axiosOptions: {
       headers: { "X-Site-Id": selectedTrainingSiteId },
     },
-    onError: (err) => {
+    onError: err => {
       toast.error(err?.response?.data?.message || "Something went wrong!");
     },
   });
@@ -1202,15 +1167,14 @@ export const useStoreUser = () => {
 // delete user
 export const useDeleteUser = () => {
   const queryClient = useQueryClient();
-
   return useClientApi({
     method: "delete",
     isPrivate: true,
-    onSuccess: (data) => {
+    onSuccess: data => {
       toast.success(data?.message || "User deleted successfully");
       queryClient.invalidateQueries(["get-all-users"]);
     },
-    onError: (err) => {
+    onError: err => {
       toast.error(err?.response?.data?.message || "Something went wrong!");
     },
   });
@@ -1223,5 +1187,78 @@ export const getAllRole = () => {
     isPrivate: true,
     key: ["get-all-role"],
     endpoint: "/api/all-role",
+  });
+};
+
+// store location
+export const storeLocation = () => {
+  const queryClient = useQueryClient();
+  const { selectedTrainingSiteId } = useAuth();
+
+  return useClientApi({
+    method: "post",
+    isPrivate: true,
+    endpoint: "/api/locations/store",
+    axiosOptions: {
+      headers: { "X-Site-Id": selectedTrainingSiteId },
+    },
+    onSuccess: data => {
+      toast.success(data?.message || "Location stored successfully");
+      queryClient.invalidateQueries(["get-all-locations"]);
+    },
+    onError: err => {
+      toast.error(err?.response?.data?.message || "Something went wrong!");
+    },
+  });
+};
+
+// store key code
+export const addKeyCodeBank = () => {
+  const { selectedTrainingSiteId } = useAuth();
+  
+  return useClientApi({
+    method: "post",
+    isPrivate: true,
+    endpoint: "/api/keycode/store",
+    axiosOptions: {
+      headers: { "X-Site-Id": selectedTrainingSiteId },
+    },
+  });
+};
+
+// get single key code
+export const getSingleKeyCodeBank = id => {
+  return useClientApi({
+    method: "get",
+    isPrivate: true,
+    key: ["get-single-keycode-bank"],
+    endpoint: `/api/keycode/show?id=${id}`,
+  });
+};
+
+// update key code
+export const updateKeyCodeBank = () => {
+  return useClientApi({
+    method: "post",
+    isPrivate: true,
+    endpoint: `/api/keycode/update`,
+  });
+};
+
+// delete key code bank
+export const deleteKeyCodeBank = id => {
+  return useClientApi({
+    method: "delete",
+    isPrivate: true,
+    endpoint: `/api/keycode/delete?id=${id}`,
+  });
+};
+
+// delete single key code
+export const deleteSingleKeyCode = id => {
+  return useClientApi({
+    method: "delete",
+    isPrivate: true,
+    endpoint: `/api/keycode-bank/link/${id}`,
   });
 };

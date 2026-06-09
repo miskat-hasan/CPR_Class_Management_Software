@@ -2,8 +2,9 @@ import SectionTitle from "../common/SectionTitle";
 
 const ProfileSkeleton = () => {
   const SkeletonBox = ({ className }) => (
-    <div className={`bg-gray-200 animate-pulse rounded-md ${className}`} />
+    <div className={`bg-gray-200 dark:bg-neutral-800 animate-pulse rounded-md ${className}`} />
   );
+  
   return (
     <section className="flex flex-col gap-4">
       <div className="bg-white dark:bg-black rounded-[14px] p-4 lg:p-8 space-y-4">

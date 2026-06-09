@@ -9,6 +9,13 @@ import { useRouter } from "next/navigation";
 import { getAllPromoCode } from "@/hooks/api/dashboardApi";
 import TableSkeleton from "@/components/skeleton/TableSkeleton";
 import Link from "next/link";
+import {
+  Table,
+  TableBodyRow,
+  TableButton,
+  TableFooter,
+  TableHead,
+} from "@/components/common/TableElement";
 
 const Page = () => {
   const [page, setPage] = useState(1);
@@ -22,10 +29,13 @@ const Page = () => {
       <div className="flex justify-between">
         <SectionTitle title={"Promo Codes"} />
         <Button
-          onClick={() => router.push("add_promo_code")}
-          className="py-[11px] lg:py-[22px] cursor-pointer bg-brown dark:bg-dark-brown flex items-center gap-2"
+          asChild
+          className="py-[11px] lg:py-[22px] cursor-pointer bg-brown dark:bg-dark-brown flex items-center gap-2 dark:hover:bg-brown"
         >
-          Add Promo Codes <PlusIcon />
+          <Link href={"promo-codes/add"}>
+            New Promo Code
+            <PlusIcon />
+          </Link>
         </Button>
       </div>
 
@@ -34,8 +44,8 @@ const Page = () => {
           <TableSkeleton />
         ) : (
           <div className="overflow-x-auto">
-            <table className="min-w-full text-sm text-left text-gray-700">
-              <thead className="bg-gray-50 text-black text-[14px] md:text-[16px] font-semibold">
+            <Table>
+              <TableHead>
                 <tr>
                   <th className="px-3 md:px-6 py-3 whitespace-nowrap">Code</th>
                   <th className="px-3 md:px-6 py-3 whitespace-nowrap">
@@ -53,15 +63,12 @@ const Page = () => {
                     Action
                   </th>
                 </tr>
-              </thead>
+              </TableHead>
 
               <tbody>
                 {promoCodeData?.data?.data?.length > 0 ? (
                   promoCodeData?.data?.data?.map((item, index) => (
-                    <tr
-                      key={index}
-                      className="border-b hover:bg-gray-50 transition-all"
-                    >
+                    <TableBodyRow key={index}>
                       <td className="px-3 md:px-6 py-4 whitespace-nowrap">
                         {item.code}
                       </td>
@@ -81,13 +88,11 @@ const Page = () => {
                         {item.remaining}
                       </td>
                       <td className="px-3 md:px-6 py-4 text-center whitespace-nowrap">
-                        <Link href={`promo_codes/${item.id}`}>
-                          <button className="p-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition cursor-pointer">
-                            <CiEdit className="text-gray-600 text-[16px]" />
-                          </button>
-                        </Link>
+                        <TableButton href={`promo-codes/${item.id}`}>
+                          <CiEdit className="text-gray-600 dark:text-gray text-[16px]" />
+                        </TableButton>
                       </td>
-                    </tr>
+                    </TableBodyRow>
                   ))
                 ) : (
                   <tr>
@@ -100,50 +105,17 @@ const Page = () => {
                   </tr>
                 )}
               </tbody>
-            </table>
+            </Table>
           </div>
         )}
 
         {/* Footer controls */}
-        <div className="flex flex-col md:flex-row items-center justify-end mt-3 lg:mt-6 gap-3">
-          {/* Show per page */}
-          {/* <div className="flex items-center gap-2">
-            <span className="text-gray-600 text-sm">Show:</span>
-            <select
-              value={perPage}
-              onChange={(e) => {
-                setPerPage(Number(e.target.value));
-                setPage(1);
-              }}
-              className="border border-gray-300 rounded-md px-2 py-1 text-sm"
-            >
-              <option value={10}>10</option>
-              <option value={25}>25</option>
-              <option value={50}>50</option>
-            </select>
-          </div> */}
-
-          {/* Pagination */}
-          <div className="flex items-center gap-2">
-            {promoCodeData?.data?.links?.map((link, index) => (
-              <button
-                key={index}
-                disabled={link.url === null || link.page === null}
-                onClick={() => link.page && setPage(link.page)}
-                className={`px-3 py-1 text-sm border rounded-md ${
-                  link.active
-                    ? "border-blue-500 text-blue-600 bg-blue-50"
-                    : "hover:bg-gray-100"
-                } ${
-                  link.url === null || link.page === null
-                    ? "text-gray-400 cursor-not-allowed"
-                    : "cursor-pointer"
-                }`}
-                dangerouslySetInnerHTML={{ __html: link.label }}
-              />
-            ))}
-          </div>
-        </div>
+        <TableFooter
+          Links={promoCodeData?.data?.links}
+          setPage={setPage}
+          perPage={perPage}
+          setPerPage={setPerPage}
+        />
       </div>
     </section>
   );

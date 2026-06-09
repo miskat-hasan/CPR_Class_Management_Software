@@ -46,9 +46,9 @@ export default function SelectRoleClient() {
   }, []);
 
   return (
-    <div className="min-h-screen w-full flex flex-col justify-center items-center gap-6 bg-gray-50">
-      <h1 className="text-2xl font-bold text-gray-800">Select a Role</h1>
-      <p className="text-gray-500 text-sm">
+    <div className="min-h-screen w-full flex flex-col justify-center items-center gap-6 bg-gray-50 dark:bg-dark">
+      <h1 className="text-2xl font-bold text-gray-800 dark:text-white">Select a Role</h1>
+      <p className="text-gray-500 text-sm dark:text-[#a7a19c]">
         You have access to multiple roles. Choose how you want to continue.
       </p>
 
@@ -62,12 +62,12 @@ export default function SelectRoleClient() {
             <button
               key={siteRole.role_id}
               onClick={() => handleRoleSelect(siteRole)}
-              className="w-full px-6 cursor-pointer py-4 bg-white dark:bg-black border border-gray-200 rounded-xl shadow-sm hover:border-brown hover:shadow-md transition-all text-left"
+              className="w-full px-6 cursor-pointer py-4 bg-white dark:bg-black border border-gray-200 dark:border-neutral-700 rounded-xl shadow-sm hover:border-brown dark:hover:border-border dark:hover:shadow-lg hover:shadow-md transition-all text-left"
             >
-              <p className="font-semibold text-gray-800">
+              <p className="font-semibold text-gray-800 dark:text-white">
                 {siteRole.role_name}
               </p>
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-gray-500 dark:text-[#a7a19c]">
                 {siteCount} training site{siteCount > 1 ? "s" : ""}
               </p>
             </button>

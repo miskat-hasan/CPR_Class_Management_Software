@@ -20,7 +20,7 @@ const FormTextarea = ({ name, label, description, placeholder, ...props }) => {
       render={({ field }) => (
         <FormItem>
           {label && (
-            <FormLabel className="leading-[1.45] font-medium text-base">
+            <FormLabel className="leading-[1.45] font-medium text-base dark:text-gray">
               {label}
             </FormLabel>
           )}
@@ -30,9 +30,9 @@ const FormTextarea = ({ name, label, description, placeholder, ...props }) => {
                 "h-[60px] lg:h-[88px] p-2 lg:p-4 gap-2.5 rounded-2xl resize-none !text-[12px] lg:!text-base",
                 "bg-light",
                 "font-normal leading-[1.45]",
-                "placeholder:text-base placeholder:text-muted-foreground hover:placeholder:text-foreground",
+                "placeholder:text-base placeholder:text-muted-foreground hover:placeholder:text-foreground dark:hover:border-neutral-500 dark:hover:placeholder:text-neutral-500",
                 "aria-invalid:text-destructive aria-invalid:placeholder:text-destructive",
-                "border-border-secondary hover:border-[#2F2F2F] focus-visible:border-[#686868]"
+                "border-border-secondary hover:border-[#2F2F2F] focus-visible:border-[#686868] dark:bg-transparent",
               )}
               placeholder={placeholder}
               {...field}

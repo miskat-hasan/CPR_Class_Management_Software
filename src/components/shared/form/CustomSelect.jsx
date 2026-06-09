@@ -42,7 +42,7 @@ const CustomSelect = ({
           <SelectValue placeholder={placeholder} />
         </SelectTrigger>
 
-        <SelectContent className="max-h-60 overflow-y-auto dark:bg-black dark:border-[#3b4042] dark:text-[#b9b6b1]">
+        <SelectContent className="max-h-60 lg:max-h-80 overflow-y-auto dark:bg-black dark:border-[#3b4042] dark:text-[#b9b6b1]">
           {isLoading ? (
             <div>Loading ....</div>
           ) : options?.length > 0 ? (
@@ -50,7 +50,7 @@ const CustomSelect = ({
               <SelectItem
                 key={opt.id}
                 value={String(opt.id)}
-                className="text-sm sm:text-base cursor-pointer"
+                className="text-sm cursor-pointer"
               >
                 {opt.name ??
                   opt?.training_center_name ??

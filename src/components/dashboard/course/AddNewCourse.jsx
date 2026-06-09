@@ -1,5 +1,6 @@
 "use client";
 
+import BackButton from "@/components/common/BackButton";
 import SectionTitle from "@/components/common/SectionTitle";
 import CustomSelect from "@/components/shared/form/CustomSelect";
 import FormContainer from "@/components/shared/form/FormContainer";
@@ -20,12 +21,10 @@ import { LucideTrash2, X } from "lucide-react";
 
 import dynamic from "next/dynamic";
 import Image from "next/image";
-import Link from "next/link";
 import React, { useRef } from "react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { FaPlus } from "react-icons/fa";
 import { toast } from "sonner";
-import Swal from "sweetalert2";
 
 const RichTextEditor = dynamic(() => import("@/components/shared/RichEditor"), {
   ssr: false,
@@ -104,20 +103,20 @@ const AddNewCourse = () => {
     getCourseOptions();
 
   const imagePreview = courseImageData?.data?.data?.find(
-    (item) => Number(item?.id) === Number(watchFields?.course_image),
+    item => Number(item?.id) === Number(watchFields?.course_image),
   );
 
   const handleAddPriceLevel = () => {
     append({ price: "", code: "", description: "" });
   };
 
-  const handleRemovePriceLevel = (index) => {
+  const handleRemovePriceLevel = index => {
     if (fields.length > 2) {
       remove(index);
     }
   };
 
-  const handleAddAddOns = (value) => {
+  const handleAddAddOns = value => {
     const addOnsId = typeof value === "object" ? value?.id : value;
     const numericId = Number(addOnsId);
 
@@ -126,19 +125,19 @@ const AddNewCourse = () => {
     }
   };
 
-  const handleRemoveAddOns = (addOnsId) => {
+  const handleRemoveAddOns = addOnsId => {
     const numericId = Number(addOnsId);
     setValue(
       "add_ons",
-      watchFields?.add_ons?.filter((id) => Number(id) !== numericId),
+      watchFields?.add_ons?.filter(id => Number(id) !== numericId),
     );
   };
 
   const availableAddOns = addOnsData?.data?.data?.filter(
-    (item) => !watchFields?.add_ons?.includes(Number(item.id)),
+    item => !watchFields?.add_ons?.includes(Number(item.id)),
   );
 
-  const onSubmit = (data) => {
+  const onSubmit = data => {
     const description = descriptionRef.current?.getContent();
     const emailBody = emailBodyRef.current?.getContent();
 
@@ -173,7 +172,7 @@ const AddNewCourse = () => {
     }
 
     formData.append("prompt", data.addonPrompt || "");
-    data.add_ons?.forEach((id) => {
+    data.add_ons?.forEach(id => {
       formData.append("selected_addons[]", id);
     });
 
@@ -203,7 +202,7 @@ const AddNewCourse = () => {
       formData.append("course_image_id", data.course_image || "");
     }
 
-    (data.selected_option_ids || []).forEach((optionId) => {
+    (data.selected_option_ids || []).forEach(optionId => {
       formData.append("selected_options[]", optionId);
     });
 
@@ -234,10 +233,10 @@ const AddNewCourse = () => {
     }
 
     storeCourseMutation(formData, {
-      onSuccess: (res) => {
+      onSuccess: res => {
         toast.success(res?.message || "Course created successfully");
       },
-      onError: (err) => {
+      onError: err => {
         toast.error(err?.response?.data?.message || "Something went wrong!");
       },
     });
@@ -257,10 +256,15 @@ const AddNewCourse = () => {
             />
 
             <div className="flex flex-col gap-2">
-              <p className="font-semibold text-[15px] text-gray-700">Mode</p>
-              <div className="flex flex-col gap-2">
-                {["on-site", "blended", "online"].map((mode) => (
-                  <label key={mode} className="flex items-center gap-2 text-sm">
+              <p className="font-semibold text-[15px] text-gray-700 dark:text-gray">
+                Mode
+              </p>
+              <div className="flex flex-col gap-2 dark:text-gray">
+                {["on-site", "blended", "online"].map(mode => (
+                  <label
+                    key={mode}
+                    className="flex items-center gap-2 text-sm cursor-pointer w-fit"
+                  >
                     <input
                       type="radio"
                       value={mode}
@@ -298,25 +302,27 @@ const AddNewCourse = () => {
             />
 
             <div className="flex flex-col gap-2">
-              <p className="font-semibold text-[15px] text-gray-700">
+              <p className="font-semibold text-[15px] text-gray-700 dark:text-gray">
                 Price Options
               </p>
-              <label className="flex items-center gap-2 text-sm">
-                <input
-                  {...register("deposit_registration")}
-                  type="checkbox"
-                  className="accent-brown"
-                />
-                Allow registrations with a deposit
-              </label>
-              <label className="flex items-center gap-2 text-sm">
-                <input
-                  {...register("multiple_pricing")}
-                  type="checkbox"
-                  className="accent-brown"
-                />
-                Allow multiple pricing levels
-              </label>
+              <div className="flex flex-col gap-2 dark:text-gray">
+                <label className="flex items-center gap-2 text-sm cursor-pointer w-fit">
+                  <input
+                    {...register("deposit_registration")}
+                    type="checkbox"
+                    className="accent-brown"
+                  />
+                  Allow registrations with a deposit
+                </label>
+                <label className="flex items-center gap-2 text-sm cursor-pointer w-fit">
+                  <input
+                    {...register("multiple_pricing")}
+                    type="checkbox"
+                    className="accent-brown"
+                  />
+                  Allow multiple pricing levels
+                </label>
+              </div>
             </div>
 
             {watchFields.deposit_registration && (
@@ -334,8 +340,8 @@ const AddNewCourse = () => {
                   label="Price Level Prompt"
                   rows={3}
                 />
-                <div className="bg-neutral-50 border px-1 sm:px-2 pt-2 pb-4 rounded-md mt-3">
-                  <h6 className="text-lg mb-1">Price Levels</h6>
+                <div className="bg-neutral-50 dark:bg-zinc-900 border dark:border-zinc-800 px-1 sm:px-2 pt-2 pb-4 rounded-md mt-3">
+                  <h6 className="text-lg mb-1 dark:text-white">Price Levels</h6>
                   {fields.map((field, index) => (
                     <div
                       key={field.id}
@@ -363,7 +369,7 @@ const AddNewCourse = () => {
                       {fields.length > 2 && (
                         <div
                           onClick={() => handleRemovePriceLevel(index)}
-                          className="bg-neutral-200 p-1 sm:p-2 rounded sm:rounded-md cursor-pointer hover:bg-neutral-300"
+                          className="bg-neutral-200 dark:bg-zinc-800 p-1 sm:p-2 rounded sm:rounded-md cursor-pointer hover:bg-neutral-300 dark:hover:bg-zinc-700 text-neutral-800 dark:text-neutral-200"
                         >
                           <LucideTrash2 className="size-[14px] sm:size-4" />
                         </div>
@@ -372,7 +378,7 @@ const AddNewCourse = () => {
                   ))}
                   <div
                     onClick={handleAddPriceLevel}
-                    className="mt-4 px-2 py-1.5 inline-flex items-center gap-1 border rounded-md text-sm bg-neutral-700 text-neutral-100 cursor-pointer hover:bg-neutral-600"
+                    className="mt-4 px-2 py-1.5 inline-flex items-center gap-1 border dark:border-zinc-700 rounded-md text-sm bg-neutral-700 text-neutral-100 cursor-pointer hover:bg-neutral-600 dark:bg-zinc-800 dark:hover:bg-zinc-700"
                   >
                     <FaPlus className="size-3" /> Add more
                   </div>
@@ -400,7 +406,7 @@ const AddNewCourse = () => {
                       placeholder="Select Add-ons"
                       isLoading={addOnsDataLoading}
                       options={availableAddOns}
-                      onChange={(value) => {
+                      onChange={value => {
                         if (value) {
                           handleAddAddOns(value);
                           field.onChange("");
@@ -412,20 +418,20 @@ const AddNewCourse = () => {
                 />
                 {watchFields.add_ons?.length > 0 && (
                   <div className="flex flex-wrap gap-2">
-                    {watchFields.add_ons.map((id) => {
+                    {watchFields.add_ons.map(id => {
                       const addon = addOnsData?.data?.data?.find(
-                        (a) => Number(a.id) === id,
+                        a => Number(a.id) === id,
                       );
                       return (
                         <div
                           key={id}
-                          className="inline-flex items-center gap-1 bg-neutral-200 text-neutral-800 px-3 py-1 rounded-full text-sm"
+                          className="inline-flex items-center gap-1 bg-neutral-200 dark:bg-zinc-800 text-neutral-800 dark:text-neutral-200 px-3 py-1 rounded-full text-sm"
                         >
                           {addon?.name || `Add-on #${id}`}
                           <button
                             type="button"
                             onClick={() => handleRemoveAddOns(id)}
-                            className="hover:bg-neutral-300 rounded-full p-0.5"
+                            className="hover:bg-neutral-300 dark:hover:bg-zinc-700 rounded-full p-0.5"
                           >
                             <X size={14} />
                           </button>
@@ -545,7 +551,7 @@ const AddNewCourse = () => {
                       placeholder="Select course image"
                       isLoading={courseImageDataLoading}
                       options={courseImageData?.data?.data}
-                      onChange={(val) => {
+                      onChange={val => {
                         field.onChange(val);
                         setValue("upload_image", null);
                       }}
@@ -554,12 +560,14 @@ const AddNewCourse = () => {
                   )}
                 />
                 <div className="flex flex-col gap-2">
-                  <label className="text-sm font-medium text-gray-700">Or Upload Image</label>
+                  <label className="text-sm font-medium text-gray-700 dark:text-gray">
+                    Or Upload Image
+                  </label>
                   <input
                     type="file"
                     accept="image/*"
-                    className="text-sm file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:bg-neutral-100 hover:file:bg-neutral-200 cursor-pointer"
-                    onChange={(e) => {
+                    className="text-sm w-fit file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:bg-neutral-100 dark:file:bg-zinc-800 dark:file:text-zinc-200 file:text-neutral-800 hover:file:bg-neutral-200 dark:hover:file:bg-zinc-700 dark:text-gray cursor-pointer"
+                    onChange={e => {
                       const file = e.target.files?.[0];
                       if (file) {
                         setValue("upload_image", file);
@@ -570,7 +578,7 @@ const AddNewCourse = () => {
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray mb-2">
                   Preview
                 </label>
                 {watchFields.upload_image ? (
@@ -579,7 +587,7 @@ const AddNewCourse = () => {
                     width={120}
                     height={120}
                     alt="Upload preview"
-                    className="object-cover rounded border"
+                    className="object-cover rounded border dark:border-zinc-800"
                   />
                 ) : watchFields.course_image && imagePreview?.image ? (
                   <Image
@@ -587,10 +595,10 @@ const AddNewCourse = () => {
                     width={120}
                     height={120}
                     alt="Course preview"
-                    className="object-cover rounded border"
+                    className="object-cover rounded border dark:border-zinc-800"
                   />
                 ) : (
-                  <div className="w-26 h-26 border-2 border-dashed border-gray-300 rounded flex items-center text-center justify-center text-gray-400 text-sm">
+                  <div className="w-26 h-26 border-2 border-dashed border-gray-300 dark:border-zinc-700 rounded flex items-center text-center justify-center text-gray-400 dark:text-zinc-500 text-sm">
                     No image selected
                   </div>
                 )}
@@ -598,15 +606,19 @@ const AddNewCourse = () => {
             </div>
 
             <div className="flex flex-col gap-2">
-              <p className="font-semibold text-[15px] text-gray-700">Options</p>
+              <p className="font-semibold text-[15px] text-gray-700 dark:text-gray">
+                Options
+              </p>
               {courseOptionLoading ? (
-                <div className="text-gray-500">Loading options...</div>
+                <div className="text-gray-500 dark:text-zinc-500">
+                  Loading options...
+                </div>
               ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-                  {courseOptionData?.data?.data?.map((option) => (
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 dark:text-gray">
+                  {courseOptionData?.data?.data?.map(option => (
                     <label
                       key={option.id}
-                      className="flex items-center gap-2 text-sm"
+                      className="flex items-center gap-2 text-sm cursor-pointer w-fit"
                     >
                       <input
                         type="checkbox"
@@ -628,7 +640,9 @@ const AddNewCourse = () => {
             />
 
             <div>
-              <h6 className="font-medium text-base mb-2">Description</h6>
+              <h5 className="font-medium text-base mb-2 dark:text-white">
+                Description
+              </h5>
               <RichTextEditor ref={descriptionRef} />
             </div>
 
@@ -652,33 +666,37 @@ const AddNewCourse = () => {
             />
 
             <div>
-              <h6 className="font-medium text-base mb-2">
+              <h5 className="font-medium text-base mb-2 dark:text-white">
                 Course Confirmation Email Body
-              </h6>
+              </h5>
               <RichTextEditor ref={emailBodyRef} />
             </div>
 
-            <label className="flex items-center gap-2 text-sm">
-              <input
-                {...register("use_email_for_payments")}
-                type="checkbox"
-                className="accent-brown"
-              />
-              Use the same email body for payments / general registrations
-            </label>
-
-            <div className="flex flex-col gap-2">
-              <p className="font-semibold text-[15px] text-gray-700">
-                SEO & Rich Results
-              </p>
-              <label className="flex items-center gap-2 text-sm">
+            <div className="dark:text-gray">
+              <label className="flex items-center gap-2 text-sm cursor-pointer w-fit">
                 <input
-                  {...register("enable_seo")}
+                  {...register("use_email_for_payments")}
                   type="checkbox"
                   className="accent-brown"
                 />
-                Enable SEO rich results
+                Use the same email body for payments / general registrations
               </label>
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <p className="font-semibold text-[15px] text-gray-700 dark:text-gray">
+                SEO & Rich Results
+              </p>
+              <div className="dark:text-gray">
+                <label className="flex items-center gap-2 text-sm cursor-pointer w-fit">
+                  <input
+                    {...register("enable_seo")}
+                    type="checkbox"
+                    className="accent-brown"
+                  />
+                  Enable SEO rich results
+                </label>
+              </div>
             </div>
 
             {watchFields.enable_seo && (
@@ -691,13 +709,11 @@ const AddNewCourse = () => {
             )}
 
             <div className="flex justify-end gap-4 mt-8">
-              <Button variant="outline" asChild>
-                <Link href="course_type">Cancel</Link>
-              </Button>
+              <BackButton />
               <Button
                 type="submit"
                 disabled={storeCoursePending}
-                className="bg-brown dark:bg-dark-brown hover:bg-brown  text-white px-8"
+                className="bg-brown dark:bg-dark-brown hover:bg-brown text-white px-8 cursor-pointer dark:hover:bg-brown"
               >
                 {storeCoursePending ? "Creating..." : "Create Course"}
               </Button>

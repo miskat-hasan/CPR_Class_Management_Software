@@ -67,14 +67,14 @@ const ForgetPassword = ({ params }) => {
 
   return (
     <div className="flex items-center justify-center min-h-screen">
-      <div className="flex flex-col bg-white dark:bg-black w-full max-w-[600px] p-5 rounded-2xl border border-gray-100">
+      <div className="flex flex-col bg-white dark:bg-black w-full max-w-[600px] p-5 rounded-2xl border border-gray-100 dark:border-neutral-700">
         <div className="flex flex-col justify-center items-center   ">
           <div className="flex items-center gap-1.5 justify-center">
             <Logo />
             <h5 className="font-black text-[14px]">ENROLL NATIONWIDE</h5>
           </div>
           <h3 className="text-2xl md:text-4xl mt-2">Enter OTP Code</h3>
-          <p className="text-xs md:text-base mt-2 md:mt-5 text-center">
+          <p className="text-xs md:text-base mt-2 md:mt-5 text-center dark:text-[#a7a19c]">
             Your verification code is on its way! Check your inbox and enter the
             code below to reset your password.
           </p>
@@ -98,7 +98,7 @@ const ForgetPassword = ({ params }) => {
                     numInputs={4}
                     renderInput={(props) => <input {...props} />}
                     containerStyle="flex items-center justify-center gap-4 md:gap-6 flex-wrap"
-                    inputStyle="!w-[55px] !h-[55px] md:!w-[64px] md:!h-[64px] border !border-gray-200 rounded-full text-lg md:text-xl lg:text-3xl font-medium focus:outline focus:outline-light-blue"
+                    inputStyle="!w-[55px] !h-[55px] md:!w-[64px] md:!h-[64px] border !border-gray-200 rounded-full text-lg md:text-xl lg:text-3xl font-medium focus:outline focus:outline-light-blue dark:text-[#a7a19c]"
                   />
                   {errors.otp && (
                     <p className="text-red-500 text-sm mt-1 text-center">
@@ -112,13 +112,13 @@ const ForgetPassword = ({ params }) => {
           <Button
             type="submit"
             disabled={isPending}
-            className="px-6 h-[40px] border border-brown rounded-md shadow-sm text-sm font-medium cursor-pointer text-white hover:text-brown bg-brown dark:bg-dark-brown hover:bg-transparent w-full duration-300 disabled:opacity-70"
+            className="px-6 h-[40px] border border-brown rounded-md shadow-sm text-sm font-medium cursor-pointer text-white  hover:text-brown dark:hover:text-red-500 bg-brown dark:bg-dark-brown dark:hover:bg-transparent hover:bg-transparent w-full duration-300 disabled:cursor-not-allowed disabled:opacity-70"
           >
             {isPending ? "Submitting..." : "Submit"}
           </Button>
         </FormContainer>
 
-        <div className="mt-5 text-center text-sm">
+        <div className="mt-5 text-center text-sm dark:text-[#a7a19c]">
           Didn't get the OTP?{" "}
           <button
             type="button"
@@ -127,7 +127,7 @@ const ForgetPassword = ({ params }) => {
             className={`font-semibold underline transition-colors ${
               counter > 0 || resendOTPLoading
                 ? "text-gray-400 cursor-not-allowed"
-                : "text-brown cursor-pointer hover:text-orange-800"
+                : "text-brown cursor-pointer hover:text-orange-800 dark:text-red-500 text-sm dark:hover:text-brown duration-300"
             }`}
           >
             {resendOTPLoading

@@ -9,9 +9,10 @@ import React from "react";
 import CustomSelect from "@/components/shared/form/CustomSelect";
 import FormTextarea from "@/components/shared/form/FormTextarea";
 import { getAllCountry, storeLocation } from "@/hooks/api/dashboardApi";
-import Swal from "sweetalert2";
 import Link from "next/link";
 import { toast } from "sonner";
+import useAuth from "@/hooks/useAuth";
+import BackButton from "@/components/common/BackButton";
 
 const Page = () => {
   const form = useForm({
@@ -39,12 +40,17 @@ const Page = () => {
     formState: { errors },
   } = form;
 
+  const { user, selectedTrainingSiteId } = useAuth();
+
   const { data: countryData, isLoading: countryDataLoading } = getAllCountry();
 
   const { mutateAsync: storeLocationMutation, isPending } = storeLocation();
 
-  const onSubmit = async (data) => {
+  const onSubmit = async data => {
     const formData = new FormData();
+
+    formData.append("created_by", user?.id);
+    formData.append("training_site_id", selectedTrainingSiteId);
 
     formData.append("name", data.name);
     formData.append("abbreviation", data.Abbreviation);
@@ -53,8 +59,7 @@ const Page = () => {
     formData.append("contact_phone", data.ContactPhone);
     formData.append("directions", data.Directions);
     formData.append("internal_notes", data.InternalNotes);
-    formData.append("print_card_line_1", data.PrintOnCards ? data.name : "");
-    formData.append("print_card_line_2", data.PrintOnCards ? data.name : "");
+    formData.append("print_card_line_2", data.PrintOnCards);
     formData.append("address_1", data.address1);
     formData.append("address_2", data.address2 || "");
     formData.append("city", data.city);
@@ -63,12 +68,8 @@ const Page = () => {
     formData.append("country", data.country);
 
     await storeLocationMutation(formData, {
-      onSuccess: (data) => {
+      onSuccess: () => {
         reset();
-        toast.success(data?.message || "Location added successfully");
-      },
-      onError: (err) => {
-        toast.error(err?.response?.data?.message || "Something went wrong!");
       },
     });
   };
@@ -111,13 +112,13 @@ const Page = () => {
               label={"Directions"}
               placeholder={"Directions here"}
             />
-            <div className="flex flex-col gap-1.5 md:gap-2.5">
+            {/* <div className="flex flex-col gap-1.5 md:gap-2.5">
               <p className="font-semibold text-[15px] text-gray-700">Options</p>
               <label className="flex items-center gap-2 text-[12px] sm:text-sm">
                 <input type="checkbox" className="accent-brown" />
                 Make this location my default selection when creating classes
               </label>
-            </div>
+            </div> */}
             <FormInput
               name="PrintOnCards"
               label="Print on Cards"
@@ -171,13 +172,13 @@ const Page = () => {
             </div>
           </div>
 
-          <div className="flex flex-col gap-2 my-2 lg:my-4">
+          {/* <div className="flex flex-col gap-2 my-2 lg:my-4">
             <p className="font-semibold text-[15px] text-gray-700">Options</p>
             <label className="flex items-center gap-2 text-[12px] sm:text-sm">
               <input type="checkbox" className="accent-brown" />
               Include address in class communications
             </label>
-          </div>
+          </div> */}
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-6 ">
             <FormInput
@@ -204,14 +205,7 @@ const Page = () => {
 
           {/* Footer Buttons */}
           <div className="flex justify-end gap-4 mt-5 lg:mt-10">
-            <Button
-              asChild={true}
-              className="px-6 py-2 bg-transparent border border-gray-300 rounded-md text-sm font-medium text-black hover:bg-gray-50"
-            >
-              <Link href={'location'}>
-              Back
-              </Link>
-            </Button>
+            <BackButton />
             <Button
               type="submit"
               className="px-6 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium cursor-pointer text-white bg-brown dark:bg-dark-brown hover:bg-brown "

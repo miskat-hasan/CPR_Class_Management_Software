@@ -18,7 +18,7 @@ export const TableHead = ({ children, className }) => {
   return (
     <thead
       className={cn(
-        "bg-gray-50 dark:bg-[#1B1D1E] text-black dark:text-gray capitalize text-[16px] sm:text-[18px] font-semibold",
+        "bg-gray-50 dark:bg-[#1B1D1E] text-black dark:text-gray dark:font-medium capitalize text-[16px] sm:text-[18px] font-semibold",
         className,
       )}
     >
@@ -52,7 +52,7 @@ export const TableButton = ({
     <Comp {...props}>
       <button
         className={cn(
-          "p-1.5 sm:p-2 bg-gray-100 dark:bg-transparent dark:border dark:border-[#343536] dark:hover:bg-[#292b2c] rounded-lg hover:bg-gray-200 transition cursor-pointer",
+          "p-1.5 sm:p-2 bg-gray-100 dark:bg-transparent dark:border dark:border-[#6b6c6d] dark:hover:bg-[#292b2c] rounded-lg hover:bg-gray-200 transition cursor-pointer",
           className,
         )}
       >
@@ -88,9 +88,9 @@ export const TableFooter = ({ Links, setPage, perPage, setPerPage }) => {
             key={index}
             disabled={link.url === null || link.page === null}
             onClick={() => link.page && setPage(link.page)}
-            className={`px-3 py-1 text-sm border rounded-md ${
+            className={`px-3 py-1 text-sm border rounded-md dark:text-gray ${
               link.active
-                ? "border-blue-500 dark:border-gray text-blue-600 dark:text-gray bg-blue-50 dark:bg-transparent"
+                ? "border-blue-500 dark:border-gray text-blue-600 bg-blue-50 dark:bg-transparent"
                 : "hover:bg-gray-100 dark:hover:bg-[#292b2c] dark:border-[#343536]"
             } ${
               link.url === null || link.page === null

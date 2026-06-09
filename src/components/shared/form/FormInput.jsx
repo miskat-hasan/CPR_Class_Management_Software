@@ -64,6 +64,8 @@ const FormInput = ({
                   text-sm sm:text-base
                   font-normal leading-[1.45]
                   placeholder:text-gray-400
+                  dark:placeholder:text-neutral-500
+                  dark:hover:border-neutral-500
                   focus:outline-none
                   focus-visible:ring-2 focus-visible:ring-gray-300
                   border border-border-secondary hover:border-gray-400
@@ -82,15 +84,15 @@ const FormInput = ({
               {isPasswordField && (
                 <button
                   type="button"
-                  onClick={() => setShowPassword((prev) => !prev)}
+                  onClick={() => setShowPassword(prev => !prev)}
                   className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors duration-150 focus:outline-none cursor-pointer"
                   tabIndex={-1}
                   aria-label={showPassword ? "Hide password" : "Show password"}
                 >
                   {showPassword ? (
-                    <EyeOff className="w-4 h-4 sm:w-5 sm:h-5" />
+                    <EyeOff className="w-4 h-4 sm:w-5 sm:h-5 dark:text-neutral-400" />
                   ) : (
-                    <Eye className="w-4 h-4 sm:w-5 sm:h-5" />
+                    <Eye className="w-4 h-4 sm:w-5 sm:h-5 dark:text-neutral-400" />
                   )}
                 </button>
               )}

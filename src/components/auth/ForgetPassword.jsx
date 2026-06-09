@@ -49,7 +49,7 @@ const ForgetPassword = ({ slug }) => {
 
   return (
     <div className="flex items-center justify-center min-h-screen">
-      <div className="flex flex-col bg-white dark:bg-black w-full max-w-[600px] p-5 rounded-2xl border border-gray-100">
+      <div className="flex flex-col bg-white dark:bg-black w-full max-w-[600px] p-5 rounded-2xl border border-gray-100 dark:border-neutral-700">
         <div className="  flex flex-col justify-center items-center   ">
           <div className="flex items-center gap-1.5 justify-center">
             <Logo />

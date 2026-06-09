@@ -1,4 +1,5 @@
 "use client";
+import BackButton from "@/components/common/BackButton";
 import SectionTitle from "@/components/common/SectionTitle";
 import CustomSelect from "@/components/shared/form/CustomSelect";
 import FormContainer from "@/components/shared/form/FormContainer";
@@ -9,7 +10,6 @@ import Link from "next/link";
 import React from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
-import Swal from "sweetalert2";
 
 const Page = () => {
   const form = useForm({
@@ -91,17 +91,60 @@ const Page = () => {
                       id: "2",
                       name: "2",
                     },
+                    {
+                      id: "3",
+                      name: "3",
+                    },
+                    {
+                      id: "4",
+                      name: "4",
+                    },
+                    {
+                      id: "5",
+                      name: "5",
+                    },
+                    {
+                      id: "6",
+                      name: "6",
+                    },
+                    {
+                      id: "7",
+                      name: "7",
+                    },
+                    {
+                      id: "8",
+                      name: "8",
+                    },
+                    {
+                      id: "9",
+                      name: "9",
+                    },
+                    {
+                      id: "10",
+                      name: "10",
+                    },
+                    {
+                      id: "n/a",
+                      name: "N/A",
+                    },
                   ]}
                 />
               )}
             />
+            <FormInput name="price" label="Price" placeholder="Price" />
+            <FormInput
+              name="quick-books"
+              label="QuickBooks Item Name"
+              placeholder="Enter QuickBooks Item Name"
+            />
           </div>
-          <FormInput name="price" label="Price" placeholder="Price" />
 
           <div className="flex flex-col gap-1 lg:gap-2  lg:mt-2">
-            <p className="font-semibold text-[15px] text-gray-700">Type</p>
-            <div className="flex flex-col gap-2">
-              <label className="flex items-center gap-2 text-sm">
+            <p className="font-semibold text-[15px] text-gray-700 dark:text-gray">
+              Type
+            </p>
+            <div className="flex flex-col gap-2 dark:text-gray">
+              <label className="flex items-center gap-2 text-sm cursor-pointer w-fit">
                 <input
                   type="radio"
                   value="shippable"
@@ -111,7 +154,7 @@ const Page = () => {
                 Shippable Item
               </label>
 
-              <label className="flex items-center gap-2 text-sm">
+              <label className="flex items-center gap-2 text-sm cursor-pointer w-fit">
                 <input
                   type="radio"
                   value="non_shippable"
@@ -121,37 +164,34 @@ const Page = () => {
                 Non-shippable Item
               </label>
 
-              <label className="flex items-center gap-2 text-sm">
+              <label className="flex items-center gap-2 text-sm cursor-pointer w-fit">
                 <input
                   type="radio"
                   value="digital"
                   {...register("shipping_type")}
                   className="accent-brown"
                 />
-                Digital Item
+                KeyCode
               </label>
             </div>
           </div>
 
           <div className="flex flex-col gap-1 lg:gap-2 lg:mt-2">
-            <p className="font-semibold text-[15px] text-gray-700">Options</p>
+            <p className="font-semibold text-[15px] text-gray-700 dark:text-gray">
+              Options
+            </p>
 
-            <label className="flex items-center gap-2 text-sm">
+            <label className="inline-flex w-fit items-center gap-2 text-sm dark:text-gray cursor-pointer">
               <input type="checkbox" className="accent-brown" />
-              Default the selection to yes for all registrations
+              Default the selection to &quot;yes&quot; for all registrations
             </label>
           </div>
           {/* Footer Buttons */}
           <div className="flex justify-end gap-4 mt-5 lg:mt-10">
-            <Button
-              asChild={true}
-              className="px-6 py-2 bg-transparent border border-gray-300 rounded-md text-sm font-medium text-black hover:bg-gray-50"
-            >
-              <Link href={"product_add_ons"}>Back</Link>
-            </Button>
+            <BackButton />
             <Button
               type="submit"
-              className="px-6 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium cursor-pointer text-white bg-brown dark:bg-dark-brown hover:bg-brown "
+              className="px-6 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium cursor-pointer text-white bg-brown dark:bg-dark-brown hover:bg-brown dark:hover:bg-brown"
             >
               {isPending ? "Saving..." : "Save Changes"}
             </Button>
