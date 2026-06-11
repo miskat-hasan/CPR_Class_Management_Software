@@ -199,15 +199,6 @@ export const getSingleInstructor = id => {
   });
 };
 
-export const getAllDiscipline = (page = 1, perPage = 10) => {
-  return useClientApi({
-    method: "get",
-    isPrivate: true,
-    key: ["get-all-discipline", page, perPage],
-    endpoint: `/api/discipline/index?page=${page}&per_page=${perPage}`,
-  });
-};
-
 export const storeCertification = () => {
   return useClientApi({
     method: "post",
@@ -1152,18 +1143,6 @@ export const useStoreUser = () => {
   });
 };
 
-// update user
-// export const useUpdateUser = () => {
-//   return useClientApi({
-//     method: "post",
-//     isPrivate: true,
-//     endpoint: `/api/site-users/update`,
-//     onError: (err) => {
-//       toast.error(err?.response?.data?.message || "Something went wrong!");
-//     },
-//   });
-// };
-
 // delete user
 export const useDeleteUser = () => {
   const queryClient = useQueryClient();
@@ -1260,5 +1239,81 @@ export const deleteSingleKeyCode = id => {
     method: "delete",
     isPrivate: true,
     endpoint: `/api/keycode-bank/link/${id}`,
+  });
+};
+
+// get all certifying bodies
+export const getAllCertifyingBody = (page = 1, perPage = 10) => {
+  return useClientApi({
+    method: "get",
+    isPrivate: true,
+    key: ["get-all-certifying-body", page, perPage],
+    endpoint: `/api/course_cb/index?page=${page}&per_page=${perPage}`,
+  });
+};
+
+// store certifying body
+export const storeCertifyingBody = () => {
+  return useClientApi({
+    method: "post",
+    isPrivate: true,
+    endpoint: "/api/course_cb/store",
+  });
+};
+
+// delete certifying body
+export const deleteCertifyingBody = () => {
+  return useClientApi({
+    method: "delete",
+    isPrivate: true,
+    endpoint: "/api/course_cb/delete",
+  });
+};
+
+// get all disciplines
+export const getAllDiscipline = (page = 1, perPage = 10) => {
+  return useClientApi({
+    method: "get",
+    isPrivate: true,
+    key: ["get-all-discipline", page, perPage],
+    endpoint: `/api/discipline/index?page=${page}&per_page=${perPage}`,
+  });
+};
+
+// get single discipline
+export const getSingleDiscipline = (id) => {
+  return useClientApi({
+    method: "get",
+    isPrivate: true,
+    key: ["get-single-discipline", id],
+    endpoint: `/api/discipline/show?id=${id}`,
+    enabled: !!id,
+  });
+};
+
+// store discipline
+export const storeDiscipline = () => {
+  return useClientApi({
+    method: "post",
+    isPrivate: true,
+    endpoint: "/api/discipline/store",
+  });
+};
+
+// update discipline
+export const updateDiscipline = () => {
+  return useClientApi({
+    method: "post",
+    isPrivate: true,
+    endpoint: "/api/discipline/update",
+  });
+};
+
+// delete discipline
+export const deleteDiscipline = () => {
+  return useClientApi({
+    method: "delete",
+    isPrivate: true,
+    endpoint: "/api/discipline/delete",
   });
 };

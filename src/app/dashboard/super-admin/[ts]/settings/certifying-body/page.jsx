@@ -1,12 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import SectionTitle from "@/components/common/SectionTitle";
 import TableSkeleton from "@/components/skeleton/TableSkeleton";
 import ConfirmModal from "@/components/common/ConfirmModal";
-import AddExternalSKUModal from "@/components/dashboard/settings/external-sku/AddExternalSKUModal";
+import AddCertifyingBodyModal from "@/components/dashboard/settings/certifying-body/AddCertifyingBodyModal";
 import {
   Table,
   TableHead,
@@ -17,40 +16,29 @@ import {
 import { Button } from "@/components/ui/button";
 import { PlusIcon } from "@/components/svg/SvgContainer";
 import {
-  getAllExternalSKU,
-  deleteSingleExternalSKU,
+  getAllCertifyingBody,
+  deleteCertifyingBody,
 } from "@/hooks/api/dashboardApi";
 import { HiOutlineTrash } from "react-icons/hi";
 
-const formatDate = iso => {
-  if (!iso) return "---";
-  return new Date(iso).toLocaleDateString();
-};
-
-export default function ExternalSkuPage() {
+export default function CertifyingBodyPage() {
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
   const [showAddModal, setShowAddModal] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState(null);
 
-  const queryClient = useQueryClient();
-
-  const {
-    data: externalSkuData,
-    isLoading,
-    refetch,
-  } = getAllExternalSKU(page, perPage);
+  const { data, isLoading, refetch } = getAllCertifyingBody(page, perPage);
   const { mutate: deleteMutate, isPending: isDeleting } =
-    deleteSingleExternalSKU();
+    deleteCertifyingBody();
 
   const handleConfirmDelete = () => {
     deleteMutate(
-      { endpoint: `/api/external_sku/delete?id=${deleteTarget.id}` },
+      { endpoint: `/api/course_cb/delete?id=${deleteTarget.id}` },
       {
         onSuccess: res => {
-          toast.success(res?.message || "External SKU deleted successfully");
+          toast.success(res?.message || "Certifying body deleted successfully");
           setDeleteTarget(null);
-          queryClient.invalidateQueries(["get-all-external-sku"]);
+          refetch();
         },
         onError: err => {
           toast.error(err?.response?.data?.message || "Something went wrong!");
@@ -64,12 +52,12 @@ export default function ExternalSkuPage() {
     <>
       <section className="flex flex-col gap-[12.5px] lg:gap-[25px]">
         <div className="flex justify-between">
-          <SectionTitle title="External SKU" />
+          <SectionTitle title="Certifying Bodies" />
           <Button
             onClick={() => setShowAddModal(true)}
             className="py-[11px] lg:py-[22px] cursor-pointer bg-brown dark:bg-dark-brown flex items-center gap-2 dark:hover:bg-brown"
           >
-            Add External SKU
+            Add Certifying Body
             <PlusIcon />
           </Button>
         </div>
@@ -82,14 +70,9 @@ export default function ExternalSkuPage() {
               <Table>
                 <TableHead>
                   <tr>
-                    <th className="px-3 md:px-6 py-3 whitespace-nowrap">
-                      Create Date
-                    </th>
+                    <th className="px-3 md:px-6 py-3 whitespace-nowrap">#</th>
                     <th className="px-3 md:px-6 py-3 whitespace-nowrap">
                       Name
-                    </th>
-                    <th className="px-3 md:px-6 py-3 whitespace-nowrap">
-                      Code
                     </th>
                     <th className="px-3 md:px-6 py-3 text-center whitespace-nowrap">
                       Action
@@ -97,17 +80,14 @@ export default function ExternalSkuPage() {
                   </tr>
                 </TableHead>
                 <tbody>
-                  {externalSkuData?.data?.data?.length > 0 ? (
-                    externalSkuData.data.data.map(item => (
+                  {data?.data?.data?.length > 0 ? (
+                    data.data.data.map((item, index) => (
                       <TableBodyRow key={item.id}>
-                        <td className="px-3 md:px-6 py-4 whitespace-nowrap text-sm">
-                          {formatDate(item.created_at)}
+                        <td className="px-3 md:px-6 py-4 text-sm text-gray-500 dark:text-gray-400 w-12">
+                          {(page - 1) * perPage + index + 1}
                         </td>
-                        <td className="px-3 md:px-6 py-4 text-sm">
+                        <td className="px-3 md:px-6 py-4 text-sm font-medium">
                           {item.name}
-                        </td>
-                        <td className="px-3 md:px-6 py-4 whitespace-nowrap text-sm">
-                          {item.code}
                         </td>
                         <td className="px-3 md:px-6 py-4 text-center">
                           <TableButton
@@ -123,7 +103,7 @@ export default function ExternalSkuPage() {
                   ) : (
                     <tr>
                       <td
-                        colSpan="4"
+                        colSpan="3"
                         className="text-center py-6 text-gray-500 italic text-sm"
                       >
                         No results found
@@ -135,7 +115,7 @@ export default function ExternalSkuPage() {
             </div>
 
             <TableFooter
-              Links={externalSkuData?.data?.links}
+              Links={data?.data?.links}
               perPage={perPage}
               setPage={setPage}
               setPerPage={setPerPage}
@@ -144,7 +124,7 @@ export default function ExternalSkuPage() {
         )}
       </section>
 
-      <AddExternalSKUModal
+      <AddCertifyingBodyModal
         open={showAddModal}
         onClose={() => setShowAddModal(false)}
         onSuccess={refetch}
@@ -152,7 +132,7 @@ export default function ExternalSkuPage() {
 
       <ConfirmModal
         open={!!deleteTarget}
-        title="Delete this External SKU?"
+        title="Delete this certifying body?"
         description={`"${deleteTarget?.name}" will be permanently deleted.`}
         confirmLabel="Delete"
         onConfirm={handleConfirmDelete}

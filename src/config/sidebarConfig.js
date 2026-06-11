@@ -89,7 +89,7 @@ const clientMenu = () => [
   },
 ];
 
-const superAdminFullMenu = (ts) => [
+const superAdminFullMenu = ts => [
   {
     label: "Classes and Students",
     submenu: [
@@ -230,6 +230,14 @@ const superAdminFullMenu = (ts) => [
       {
         label: "External SKUs",
         href: `/dashboard/super-admin/${ts}/settings/external-sku`,
+      },
+      {
+        label: "Discipline",
+        href: `/dashboard/super-admin/${ts}/settings/discipline`,
+      },
+      {
+        label: "Course Certifying Body",
+        href: `/dashboard/super-admin/${ts}/settings/certifying-body`,
       },
       { label: "Users", href: `/dashboard/super-admin/${ts}/settings/users` },
       {

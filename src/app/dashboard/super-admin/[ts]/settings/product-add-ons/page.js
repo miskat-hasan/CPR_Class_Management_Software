@@ -83,8 +83,8 @@ const Page = () => {
                       </td>
                       <td className="px-3 md:px-6 py-4 text-center whitespace-nowrap">
                         <div className="flex items-center justify-center">
-                          <TableButton href={`product_add_ons/${item.id}`}>
-                            <CiEdit className="text-gray-600 text-[16px]" />
+                          <TableButton href={`product-add-ons/${item.id}`}>
+                            <CiEdit className="text-gray-600 text-[16px] dark:text-white" />
                           </TableButton>
                         </div>
                       </td>

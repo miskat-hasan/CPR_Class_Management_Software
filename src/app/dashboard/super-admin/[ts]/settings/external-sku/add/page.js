@@ -1,3 +1,4 @@
+// src/app/dashboard/super-admin/[ts]/settings/external-sku/add/page.js
 "use client";
 import BackButton from "@/components/common/BackButton";
 import SectionTitle from "@/components/common/SectionTitle";
@@ -5,10 +6,8 @@ import FormContainer from "@/components/shared/form/FormContainer";
 import FormInput from "@/components/shared/form/FormInput";
 import { Button } from "@/components/ui/button";
 import { storeExternalSKU } from "@/hooks/api/dashboardApi";
-import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import Swal from "sweetalert2";
 
 const Page = () => {
   const form = useForm();
