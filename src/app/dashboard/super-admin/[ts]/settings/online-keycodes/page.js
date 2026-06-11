@@ -11,6 +11,7 @@ import Link from "next/link";
 import {
   Table,
   TableBodyRow,
+  TableButton,
   TableFooter,
   TableHead,
 } from "@/components/common/TableElement";
@@ -29,7 +30,7 @@ const Page = () => {
         <SectionTitle title={"Keycode Banks"} />
         <Button
           asChild
-          className="py-[11px] lg:py-[22px] text-[12px] lg:text-base cursor-pointer bg-brown dark:bg-dark-brown flex items-center gap-2"
+          className="py-[11px] lg:py-[22px] text-[12px] lg:text-base cursor-pointer bg-brown dark:bg-dark-brown dark:hover:bg-brown flex items-center gap-2"
         >
           <Link href={"online-keycodes/add"}>
             Add keycode bank <PlusIcon />
@@ -61,22 +62,18 @@ const Page = () => {
                   keycodeData?.data?.data?.map((item, index) => (
                     <TableBodyRow key={index}>
                       <td className="px-3 md:px-6 py-4 whitespace-nowrap">
-                        <span className="font-medium text-gray-800">
-                          {item.name}
-                        </span>
+                        <span className="font-medium ">{item.name}</span>
                       </td>
                       <td className="px-3 md:px-6 py-4 whitespace-nowrap">
-                        {item.total}
+                        {item.total_links}
                       </td>
                       <td className="px-3 md:px-6 py-4 whitespace-nowrap">
-                        {item.unused}
+                        {item.total_links - item.used}
                       </td>
                       <td className="px-3 md:px-6 py-4 text-center whitespace-nowrap">
-                        <Link href={`online_keycodes/${item.id}`}>
-                          <button className="p-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition cursor-pointer">
-                            <CiEdit className="text-gray-600 text-[16px]" />
-                          </button>
-                        </Link>
+                        <TableButton href={`online-keycodes/${item.id}`}>
+                          <CiEdit className="text-gray-600 text-[16px] dark:text-gray" />
+                        </TableButton>
                       </td>
                     </TableBodyRow>
                   ))

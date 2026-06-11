@@ -204,3 +204,70 @@ h6 {
 .files {
   height: auto;
 }
+
+/* =========================
+   Quill RichTextEditor Theme
+   ========================= */
+
+/* Light mode base (optional polish) */
+.ql-toolbar.ql-snow {
+  border-radius: 6px 6px 0 0;
+}
+
+.ql-container.ql-snow {
+  border-radius: 0 0 6px 6px;
+}
+
+/* =========================
+   DARK MODE FIX
+   ========================= */
+
+.dark .rich-editor .ql-toolbar.ql-snow {
+  background: #131314;
+  border: 1px solid #4c4d4e;
+  border-bottom: none;
+}
+
+.dark .rich-editor .ql-container.ql-snow {
+  background: #212224;
+  border: 1px solid #4c4d4e;
+  color: #e5e7eb;
+}
+
+.dark .rich-editor .ql-editor {
+  color: #e5e7eb;
+}
+
+/* Placeholder */
+.dark .rich-editor .ql-editor.ql-blank::before {
+  color: #6b7280;
+}
+
+/* Toolbar icons */
+.dark .rich-editor .ql-toolbar button {
+  .dark .rich-editor .ql-stroke {
+    stroke: #e5e7eb !important;
+  }
+
+  .dark .rich-editor .ql-fill {
+    fill: #e5e7eb !important;
+  }
+}
+
+/* dropdown menus */
+.dark .rich-editor .ql-picker {
+  color: #e5e7eb;
+}
+
+.dark .rich-editor .ql-picker-options {
+  background: #0f172a;
+  border-color: #1f2937;
+  color: #e5e7eb;
+}
+
+/* tooltip (link editor etc.) */
+.dark .rich-editor .ql-tooltip {
+  background: #0f172a;
+  border: 1px solid #1f2937;
+  color: #e5e7eb;
+}

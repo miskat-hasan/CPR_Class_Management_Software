@@ -1,13 +1,13 @@
+// src/app/dashboard/super-admin/[ts]/settings/external-sku/add/page.js
 "use client";
+import BackButton from "@/components/common/BackButton";
 import SectionTitle from "@/components/common/SectionTitle";
 import FormContainer from "@/components/shared/form/FormContainer";
 import FormInput from "@/components/shared/form/FormInput";
 import { Button } from "@/components/ui/button";
 import { storeExternalSKU } from "@/hooks/api/dashboardApi";
-import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import Swal from "sweetalert2";
 
 const Page = () => {
   const form = useForm();
@@ -39,13 +39,11 @@ const Page = () => {
               <FormInput name="code" label="Code" placeholder="Code here" />
             </div>
             <div className="flex justify-end gap-4 mt-8">
-              <Button variant="outline" asChild>
-                <Link href="external_sku">Cancel</Link>
-              </Button>
+              <BackButton />
               <Button
                 type="submit"
                 disabled={storeExternalSkuPending}
-                className="bg-brown dark:bg-dark-brown hover:bg-brown  text-white px-8"
+                className="bg-brown dark:bg-dark-brown hover:bg-brown  text-white px-8 dark:hover:bg-brown"
               >
                 {storeExternalSkuPending ? "Adding ..." : "Add External SKU"}
               </Button>

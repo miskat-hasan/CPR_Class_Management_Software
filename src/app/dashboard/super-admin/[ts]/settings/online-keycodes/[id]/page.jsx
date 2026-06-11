@@ -2,107 +2,131 @@
 
 import SectionTitle from "@/components/common/SectionTitle";
 import FormContainer from "@/components/shared/form/FormContainer";
-import FormInput from "@/components/shared/form/FormInput";
-import { Button } from "@/components/ui/button";
+import ConfirmModal from "@/components/common/ConfirmModal";
+import KeycodeBankForm from "@/components/dashboard/settings/keycodes/KeycodeBankForm";
+import KeycodeLinksTable from "@/components/dashboard/settings/keycodes/KeycodeLinksTable";
 import { useForm } from "react-hook-form";
-import React, { useEffect } from "react";
-import FormTextarea from "@/components/shared/form/FormTextarea";
 import {
   getSingleKeyCodeBank,
   updateKeyCodeBank,
+  deleteKeyCodeBank,
 } from "@/hooks/api/dashboardApi";
-import Link from "next/link";
-import Swal from "sweetalert2";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { useEffect, useState } from "react";
 
-const Page = ({ params }) => {
+export default function Page({ params }) {
   const { id } = params;
+  const router = useRouter();
+
+  const [showDeleteBankModal, setShowDeleteBankModal] = useState(false);
 
   const form = useForm({
     defaultValues: {
       name: "",
       instructions: "",
-      course_link: "",
+      course_links: [{ url: "" }],
     },
   });
+  const { control, register, reset } = form;
 
-  const { reset } = form;
+  const { data: keyCodeData, isLoading, refetch } = getSingleKeyCodeBank(id);
+  const { mutate: updateMutate, isPending: isUpdating } = updateKeyCodeBank();
+  const { mutate: deleteBankMutate, isPending: isDeletingBank } =
+    deleteKeyCodeBank();
 
-  const { mutate, isPending } = updateKeyCodeBank();
-
-  const { data: keyCodeData, isLoading: keyCodeLoading } =
-    getSingleKeyCodeBank(id);
+  const bankData = keyCodeData?.data;
 
   useEffect(() => {
-    if (keyCodeData) {
+    if (bankData) {
       reset({
-        name: keyCodeData?.data?.name || "",
-        instructions: keyCodeData?.data?.instructions || "",
-        course_link: keyCodeData?.data?.course_link || "",
+        name: bankData.name ?? "",
+        instructions: bankData.instructions ?? "",
+        course_links: [{ url: "" }],
       });
     }
-  }, [keyCodeData, reset]);
+  }, [bankData, reset]);
 
-  const onSubmit = (data) => {
-    const formData = new FormData();
+  const onSubmit = data => {
+    const newLinks = data.course_links
+      .map(l => l.url.trim())
+      .filter(Boolean)
+      .map(url => ({ url }));
 
-    formData.append("id", id);
-    formData.append("name", data?.name);
-    formData.append("instructions", data?.instructions);
-    formData.append("course_link", data?.course_link);
-
-    mutate(formData, {
-      onSuccess: (data) => {
-        toast.success(data?.message || "Keycode Bank updated successfully");
+    updateMutate(
+      {
+        data: {
+          id: Number(id),
+          name: data.name,
+          instructions: data.instructions,
+          ...(newLinks.length > 0 && { course_links: newLinks }),
+        },
       },
-      onError: (err) => {
-        toast.error(err?.response?.data?.message || "Something went wrong!");
+      {
+        onSuccess: res => {
+          toast.success(res?.message || "Updated successfully");
+          reset(prev => ({ ...prev, course_links: [{ url: "" }] }));
+          refetch();
+        },
+        onError: err => {
+          toast.error(err?.response?.data?.message || "Update failed");
+        },
       },
-    });
+    );
+  };
+
+  const handleDeleteBank = () => {
+    deleteBankMutate(
+      { endpoint: `/api/keycode/delete?id=${id}` },
+      {
+        onSuccess: res => {
+          toast.success(res?.message || "Keycode bank deleted");
+          router.back();
+        },
+        onError: err => {
+          toast.error(err?.response?.data?.message || "Delete failed");
+          setShowDeleteBankModal(false);
+        },
+      },
+    );
   };
 
   return (
-    <section className="flex flex-col gap-4">
-      {/* Title */}
-      <SectionTitle title="Add Keycode Banks" />
+    <>
+      <section className="flex flex-col gap-4">
+        <SectionTitle title="Edit Keycode Bank" />
 
-      {/* White Form Card */}
-      <div className="bg-white dark:bg-black rounded-[14px] p-8 shadow-sm">
-        <FormContainer form={form} onSubmit={onSubmit}>
-          <FormInput name="name" label="Name" placeholder="Name here" />
+        <div className="bg-white dark:bg-black rounded-[14px] p-8 shadow-sm">
+          <FormContainer form={form} onSubmit={onSubmit}>
+            <KeycodeBankForm
+              control={control}
+              register={register}
+              isEdit={true}
+              isPending={isUpdating}
+              onDelete={() => setShowDeleteBankModal(true)}
+              isDeleting={isDeletingBank}
+            />
+          </FormContainer>
+        </div>
 
-          <FormTextarea
-            name={"instructions"}
-            label={"Instructions"}
-            placeholder={"Instructions here"}
+        <div className="bg-white dark:bg-black rounded-[14px] p-6 shadow-sm">
+          <KeycodeLinksTable
+            links={bankData?.links ?? []}
+            isLoading={isLoading}
+            onRefetch={refetch}
           />
+        </div>
+      </section>
 
-          <FormTextarea
-            name={"course_link"}
-            label={"Add New Keycodes / Course Links"}
-            placeholder={"Add New Keycodes / Course Links here"}
-          />
-
-          {/* Footer Buttons */}
-          <div className="flex justify-end gap-4 mt-10">
-            <Button
-              asChild={true}
-              className="px-6 py-2 bg-transparent border border-gray-300 rounded-md text-sm font-medium text-black hover:bg-gray-50"
-            >
-              <Link href={"../online_keycodes"}>Back</Link>
-            </Button>
-            <Button
-              type="submit"
-              className="px-6 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium cursor-pointer text-white bg-brown dark:bg-dark-brown hover:bg-brown "
-              disabled={isPending}
-            >
-              {isPending ? "Updating..." : "Update Keycode Bank"}
-            </Button>
-          </div>
-        </FormContainer>
-      </div>
-    </section>
+      <ConfirmModal
+        open={showDeleteBankModal}
+        title="Delete this keycode bank?"
+        description={`"${bankData?.name}" and all its links will be permanently deleted.`}
+        confirmLabel="Delete Bank"
+        onConfirm={handleDeleteBank}
+        onCancel={() => setShowDeleteBankModal(false)}
+        isPending={isDeletingBank}
+      />
+    </>
   );
-};
-
-export default Page;
+}

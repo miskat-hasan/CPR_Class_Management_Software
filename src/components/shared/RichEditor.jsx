@@ -52,7 +52,7 @@ const RichTextEditor = forwardRef((_, ref) => {
       return quillRef.current?.root.innerHTML || "";
     },
 
-    setContents: (htmlContent) => {
+    setContents: htmlContent => {
       if (quillRef.current) {
         if (htmlContent) {
           // Use clipboard.dangerouslyPasteHTML to set HTML content
@@ -70,7 +70,11 @@ const RichTextEditor = forwardRef((_, ref) => {
     },
   }));
 
-  return <div ref={editorRef} style={{ height: "300px" }} />;
+  return (
+    <div className="rich-editor">
+      <div ref={editorRef} style={{ height: "300px" }} />
+    </div>
+  );
 });
 
 RichTextEditor.displayName = "RichTextEditor";

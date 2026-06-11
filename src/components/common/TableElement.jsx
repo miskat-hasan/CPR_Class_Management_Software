@@ -88,9 +88,9 @@ export const TableFooter = ({ Links, setPage, perPage, setPerPage }) => {
             key={index}
             disabled={link.url === null || link.page === null}
             onClick={() => link.page && setPage(link.page)}
-            className={`px-3 py-1 text-sm border rounded-md ${
+            className={`px-3 py-1 text-sm border rounded-md dark:text-gray ${
               link.active
-                ? "border-blue-500 dark:border-gray text-blue-600 dark:text-gray bg-blue-50 dark:bg-transparent"
+                ? "border-blue-500 dark:border-gray text-blue-600 bg-blue-50 dark:bg-transparent"
                 : "hover:bg-gray-100 dark:hover:bg-[#292b2c] dark:border-[#343536]"
             } ${
               link.url === null || link.page === null

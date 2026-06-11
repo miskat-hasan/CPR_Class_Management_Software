@@ -8,56 +8,57 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { CiEdit } from "react-icons/ci";
-import { Table, TableHead } from "@/components/common/TableElement";
+import SectionTitle from "@/components/common/SectionTitle";
+import {
+  Table,
+  TableBodyRow,
+  TableButton,
+  TableFooter,
+  TableHead,
+} from "@/components/common/TableElement";
 
 const Page = () => {
-  const router = useRouter();
-  const [selectedRows, setSelectedRows] = useState([]);
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
+
+  const router = useRouter();
 
   const { data: coursesTypeData, isLoading: coursesTypeLoading } =
     getAllCourses(page, perPage);
 
   return (
-    <div>
-      <div className="py-[10px] lg:pb-[20px] rounded-[16px] flex flex-col gap-2.5">
-        <div className="flex w-full items-center justify-between">
-          <div className="flex justify-between items-center w-full">
-            <div
-              className={`text-black text-[20px] lg:text-[24px] font-semibold leading-[32.5px]`}
-            >
-              Course Type
-            </div>
-            <Button
-              onClick={() => router.push("add_course_type")}
-              className="py-[11px] text-[12px] lg:text-base lg:py-[22px] cursor-pointer bg-brown dark:bg-dark-brown flex items-center gap-2"
-            >
-              Add Course Type
-              <PlusIcon />
-            </Button>
-          </div>
-        </div>
+    <section className="flex flex-col gap-[12.5px] lg:gap-[25px] ">
+      <div className="flex justify-between">
+        <SectionTitle title={"Course Type"} />
+        <Button
+          asChild
+          className="py-[11px] lg:py-[22px] cursor-pointer bg-brown dark:bg-dark-brown flex items-center gap-2 dark:hover:bg-brown"
+        >
+          <Link href={"course-type/add"}>
+            Add Course Type
+            <PlusIcon />
+          </Link>
+        </Button>
       </div>
 
-      <div className="p-[13px] lg:p-[26px] bg-white dark:bg-black rounded-[14px] flex flex-col gap-[24px]">
-        {coursesTypeLoading ? (
-          <TableSkeleton />
-        ) : (
+      {coursesTypeLoading ? (
+        <TableSkeleton />
+      ) : (
+        <div className="p-[13px] lg:p-[26px] bg-white dark:bg-black rounded-[14px] flex flex-col gap-[12px] lg:gap-[24px]">
           <div className="overflow-x-auto">
             <Table>
               <TableHead>
                 <tr>
-                  <th className="px-3 py-3 md:px-6 whitespace-nowrap">Name</th>
-                  <th className="px-3 py-3 md:px-6 whitespace-nowrap">
+                  <th className="px-3 md:px-6 py-3 whitespace-nowrap">Name</th>
+                  <th className="px-3 md:px-6 py-3 whitespace-nowrap">
                     Discipline
                   </th>
-                  <th className="px-3 py-3 md:px-6 whitespace-nowrap">
+                  <th className="px-3 md:px-6 py-3 whitespace-nowrap">
                     Add-ons
                   </th>
-                  <th className="px-3 py-3 md:px-6 whitespace-nowrap">Price</th>
-                  <th className="px-3 py-3 md:px-6 whitespace-nowrap">Ship</th>
-                  <th className="px-3 py-3 md:px-6 text-center whitespace-nowrap">
+                  <th className="px-3 md:px-6 py-3 whitespace-nowrap">Price</th>
+                  <th className="px-3 md:px-6 py-3 whitespace-nowrap">Ship</th>
+                  <th className="px-3 md:px-6 py-3 text-center whitespace-nowrap">
                     Action
                   </th>
                 </tr>
@@ -66,42 +67,37 @@ const Page = () => {
               <tbody>
                 {coursesTypeData?.data?.data?.length > 0 ? (
                   coursesTypeData?.data?.data?.map((item, index) => (
-                    <tr
-                      key={index}
-                      className={`border-b hover:bg-gray-50 transition-all ${
-                        selectedRows.includes(index) ? "bg-gray-100" : ""
-                      }`}
-                    >
-                      <td className="px-3 py-4 md:px-6 whitespace-nowrap">
+                    <TableBodyRow key={index}>
+                      <td className="px-3 md:px-6 py-4 whitespace-nowrap">
                         {item.course_name}
                       </td>
-                      <td className="px-3 py-4 md:px-6 whitespace-nowrap">
+                      <td className="px-3 md:px-6 py-4 whitespace-nowrap">
                         {item.discipline_name?.name}
                       </td>
-                      <td className="px-3 py-4 md:px-6 whitespace-nowrap">
+                      <td className="px-3 md:px-6 py-4 whitespace-nowrap">
                         {item.addons.length > 0
                           ? item.addons?.product_code
                           : "--"}
                       </td>
-                      <td className="px-3 py-4 md:px-6 whitespace-nowrap">
+                      <td className="px-3 md:px-6 py-4 whitespace-nowrap">
                         ${item.price}
                       </td>
-                      <td className="px-3 py-4 md:px-6 whitespace-nowrap">
+                      <td className="px-3 md:px-6 py-4 whitespace-nowrap">
                         ${item.shipping_price}
                       </td>
-                      <td className="px-3 py-4 md:px-6 text-center whitespace-nowrap">
-                        <Link href={`course_type/${item.id}`}>
-                          <button className="p-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition cursor-pointer">
-                            <CiEdit className="text-gray-600 text-[16px]" />
-                          </button>
-                        </Link>
+                      <td className="px-3 md:px-6 py-4 text-center whitespace-nowrap">
+                        <div className="flex items-center justify-center">
+                          <TableButton href={`course_type/${item.id}`}>
+                            <CiEdit className="text-gray-600 text-[16px] dark:text-gray" />
+                          </TableButton>
+                        </div>
                       </td>
-                    </tr>
+                    </TableBodyRow>
                   ))
                 ) : (
                   <tr>
                     <td
-                      colSpan="8"
+                      colSpan="6"
                       className="text-center py-6 text-gray-500 italic"
                     >
                       No results found
@@ -111,33 +107,17 @@ const Page = () => {
               </tbody>
             </Table>
           </div>
-        )}
 
-        {/* Footer controls */}
-        <div className="flex flex-col md:flex-row items-center justify-end mt-3 lg:mt-6 gap-3">
-          {/* Pagination */}
-          <div className="flex items-center gap-2">
-            {coursesTypeData?.data?.links?.map((link, index) => (
-              <button
-                key={index}
-                disabled={link.url === null || link.page === null}
-                onClick={() => link.page && setPage(link.page)}
-                className={`px-3 py-1 text-sm border rounded-md ${
-                  link.active
-                    ? "border-blue-500 text-blue-600 bg-blue-50"
-                    : "hover:bg-gray-100"
-                } ${
-                  link.url === null || link.page === null
-                    ? "text-gray-400 cursor-not-allowed"
-                    : "cursor-pointer"
-                }`}
-                dangerouslySetInnerHTML={{ __html: link.label }}
-              />
-            ))}
-          </div>
+          {/* Footer controls */}
+          <TableFooter
+            Links={coursesTypeData?.data?.links}
+            perPage={coursesTypeData?.data?.per_page}
+            setPage={setPage}
+            setPerPage={setPerPage}
+          />
         </div>
-      </div>
-    </div>
+      )}
+    </section>
   );
 };
 

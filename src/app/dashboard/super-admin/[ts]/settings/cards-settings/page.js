@@ -63,7 +63,7 @@ const Page = () => {
     }
   }, [cardSettingsData, reset, cardTypeData]);
 
-  const onSubmit = (data) => {
+  const onSubmit = data => {
     const formData = new FormData();
 
     formData.append("id", 1);
@@ -78,20 +78,21 @@ const Page = () => {
     formData.append("is_default", Number(data?.is_default));
 
     mutate(formData, {
-      onSuccess: (data) => {
+      onSuccess: data => {
         toast.success(data?.message || "Card Settings Updated Successfully");
       },
-      onError: (error) => {
+      onError: error => {
         toast.error(error?.response?.data?.message || "Something went wrong!");
       },
     });
   };
+
   return (
-    <section className="flex flex-col gap-2 lg:gap-4">
+    <section className="flex flex-col gap-4">
       <SectionTitle title={"Certification Card Settings"} />
-      <div className="p-[13px] lg:p-[26px] bg-white dark:bg-black rounded-[14px] flex flex-col gap-[12px] lg:gap-[24px]">
+      <div className="px-1.5 py-3 min-[374px]:p-[13px] lg:p-[26px] bg-white dark:bg-black rounded-[14px] flex flex-col gap-[12px] lg:gap-[24px]">
         <SubSectionTitle
-          className={"!text-[18px] lg:!text-2xl"}
+          className={"!text-[18px] lg:!text-2xl dark:text-white"}
           subtitle={"Setting Profile"}
         />
         <FormContainer form={form} onSubmit={onSubmit}>
@@ -139,10 +140,12 @@ const Page = () => {
               placeholder="Course Location here"
             />
           </div>
-          <div className="leading-[1.45] font-medium text-sm sm:text-base text-gray-700 mt-3 lg:mt-6">
+
+          <div className="leading-[1.45] font-semibold text-sm sm:text-base text-gray-700 dark:text-white mt-5 mb-2">
             Card Alignment Adjustments
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 lg:gap-6 shadow border rounded-xl p-4">
+
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 lg:gap-6 bg-neutral-50 dark:bg-neutral-900 border border-gray-200 dark:border-zinc-800 shadow rounded-xl p-4">
             <Controller
               name="card_1"
               control={control}
@@ -154,34 +157,13 @@ const Page = () => {
                   label="Card 1"
                   placeholder="Card Type here"
                   options={[
-                    {
-                      id: `Up 1/4"`,
-                      name: `Up 1/4"`,
-                    },
-                    {
-                      id: `Up 3/16"`,
-                      name: `Up 3/16"`,
-                    },
-                    {
-                      id: `Up 1/8"`,
-                      name: `Up 1/8"`,
-                    },
-                    {
-                      id: `None`,
-                      name: `None`,
-                    },
-                    {
-                      id: `Down 1/8"`,
-                      name: `Down 1/8"`,
-                    },
-                    {
-                      id: `Down 3/16"`,
-                      name: `Down 3/16"`,
-                    },
-                    {
-                      id: `Down 1/4"`,
-                      name: `Down 1/4"`,
-                    },
+                    { id: `Up 1/4"`, name: `Up 1/4"` },
+                    { id: `Up 3/16"`, name: `Up 3/16"` },
+                    { id: `Up 1/8"`, name: `Up 1/8"` },
+                    { id: `None`, name: `None` },
+                    { id: `Down 1/8"`, name: `Down 1/8"` },
+                    { id: `Down 3/16"`, name: `Down 3/16"` },
+                    { id: `Down 1/4"`, name: `Down 1/4"` },
                   ]}
                   error={errors.card_1?.message}
                   className="flex-1"
@@ -199,34 +181,13 @@ const Page = () => {
                   label="Card 2"
                   placeholder="Card Type here"
                   options={[
-                    {
-                      id: `Up 1/4"`,
-                      name: `Up 1/4"`,
-                    },
-                    {
-                      id: `Up 3/16"`,
-                      name: `Up 3/16"`,
-                    },
-                    {
-                      id: `Up 1/8"`,
-                      name: `Up 1/8"`,
-                    },
-                    {
-                      id: `None`,
-                      name: `None`,
-                    },
-                    {
-                      id: `Down 1/8"`,
-                      name: `Down 1/8"`,
-                    },
-                    {
-                      id: `Down 3/16"`,
-                      name: `Down 3/16"`,
-                    },
-                    {
-                      id: `Down 1/4"`,
-                      name: `Down 1/4"`,
-                    },
+                    { id: `Up 1/4"`, name: `Up 1/4"` },
+                    { id: `Up 3/16"`, name: `Up 3/16"` },
+                    { id: `Up 1/8"`, name: `Up 1/8"` },
+                    { id: `None`, name: `None` },
+                    { id: `Down 1/8"`, name: `Down 1/8"` },
+                    { id: `Down 3/16"`, name: `Down 3/16"` },
+                    { id: `Down 1/4"`, name: `Down 1/4"` },
                   ]}
                   error={errors.card_2?.message}
                   className="flex-1"
@@ -244,34 +205,13 @@ const Page = () => {
                   label="Card 3"
                   placeholder="Card Type here"
                   options={[
-                    {
-                      id: `Up 1/4"`,
-                      name: `Up 1/4"`,
-                    },
-                    {
-                      id: `Up 3/16"`,
-                      name: `Up 3/16"`,
-                    },
-                    {
-                      id: `Up 1/8"`,
-                      name: `Up 1/8"`,
-                    },
-                    {
-                      id: `None`,
-                      name: `None`,
-                    },
-                    {
-                      id: `Down 1/8"`,
-                      name: `Down 1/8"`,
-                    },
-                    {
-                      id: `Down 3/16"`,
-                      name: `Down 3/16"`,
-                    },
-                    {
-                      id: `Down 1/4"`,
-                      name: `Down 1/4"`,
-                    },
+                    { id: `Up 1/4"`, name: `Up 1/4"` },
+                    { id: `Up 3/16"`, name: `Up 3/16"` },
+                    { id: `Up 1/8"`, name: `Up 1/8"` },
+                    { id: `None`, name: `None` },
+                    { id: `Down 1/8"`, name: `Down 1/8"` },
+                    { id: `Down 3/16"`, name: `Down 3/16"` },
+                    { id: `Down 1/4"`, name: `Down 1/4"` },
                   ]}
                   error={errors.card_3?.message}
                   className="flex-1"
@@ -279,9 +219,12 @@ const Page = () => {
               )}
             />
           </div>
+
           <div className="flex flex-col gap-2 my-6">
-            <p className="font-semibold text-[15px] text-gray-700">Options</p>
-            <label className="flex items-center gap-2 text-sm">
+            <p className="font-semibold text-[15px] text-gray-700 dark:text-gray">
+              Options
+            </p>
+            <label className="flex items-center gap-2 text-sm dark:text-gray cursor-pointer w-fit">
               <input
                 {...register("is_default")}
                 type="checkbox"
@@ -290,16 +233,15 @@ const Page = () => {
               This is the default card printing profile
             </label>
           </div>
-          <div className="flex items-center justify-end">
-            <div className="flex justify-end gap-4 mt-4 lg:mt-8">
-              <Button
-                type="submit"
-                className="px-6 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium cursor-pointer text-white bg-brown dark:bg-dark-brown cursor hover:bg-brown  focus:outline-none"
-                disabled={isPending}
-              >
-                {isPending ? "Updating..." : "Update Settings"}
-              </Button>
-            </div>
+
+          <div className="flex justify-end gap-4 mt-4 lg:mt-8">
+            <Button
+              type="submit"
+              disabled={isPending}
+              className="bg-brown dark:bg-dark-brown hover:bg-brown text-white px-8 cursor-pointer"
+            >
+              {isPending ? "Updating..." : "Update Settings"}
+            </Button>
           </div>
         </FormContainer>
       </div>

@@ -89,7 +89,7 @@ const clientMenu = () => [
   },
 ];
 
-const superAdminFullMenu = (ts) => [
+const superAdminFullMenu = ts => [
   {
     label: "Classes and Students",
     submenu: [
@@ -217,15 +217,11 @@ const superAdminFullMenu = (ts) => [
       },
       {
         label: "Promo Codes",
-        href: `/dashboard/super-admin/${ts}/settings/promo_codes`,
+        href: `/dashboard/super-admin/${ts}/settings/promo-codes`,
       },
       {
         label: "Locations",
         href: `/dashboard/super-admin/${ts}/settings/location`,
-      },
-      {
-        label: "Card Settings",
-        href: `/dashboard/super-admin/${ts}/settings/cards_settings`,
       },
       {
         label: "Certificates",
@@ -233,9 +229,25 @@ const superAdminFullMenu = (ts) => [
       },
       {
         label: "External SKUs",
-        href: `/dashboard/super-admin/${ts}/settings/external_sku`,
+        href: `/dashboard/super-admin/${ts}/settings/external-sku`,
+      },
+      {
+        label: "Discipline",
+        href: `/dashboard/super-admin/${ts}/settings/discipline`,
+      },
+      {
+        label: "Course Certifying Body",
+        href: `/dashboard/super-admin/${ts}/settings/certifying-body`,
       },
       { label: "Users", href: `/dashboard/super-admin/${ts}/settings/users` },
+      {
+        label: "Card Settings",
+        href: `/dashboard/super-admin/${ts}/settings/cards-settings`,
+      },
+      {
+        label: "Site Settings",
+        href: `/dashboard/super-admin/${ts}/settings/site-settings`,
+      },
     ],
   },
   {
@@ -331,7 +343,7 @@ const superAdminSiteMenu = (ts) => [
       },
       {
         label: "Promo Codes",
-        href: `/dashboard/super-admin/${ts}/settings/promo_codes`,
+        href: `/dashboard/super-admin/${ts}/settings/promo-codes`,
       },
       {
         label: "Locations",
@@ -339,7 +351,7 @@ const superAdminSiteMenu = (ts) => [
       },
       {
         label: "Card Settings",
-        href: `/dashboard/super-admin/${ts}/settings/cards_settings`,
+        href: `/dashboard/super-admin/${ts}/settings/cards-settings`,
       },
       {
         label: "Certificates",
@@ -347,7 +359,7 @@ const superAdminSiteMenu = (ts) => [
       },
       {
         label: "External SKUs",
-        href: `/dashboard/super-admin/${ts}/settings/external_sku`,
+        href: `/dashboard/super-admin/${ts}/settings/external-sku`,
       },
       { label: "Users", href: `/dashboard/super-admin/${ts}/settings/users` },
     ],
@@ -478,7 +490,7 @@ const adminMenu = (ts) => [
       },
       {
         label: "Promo Codes",
-        href: `/dashboard/admin/${ts}/settings/promo_codes`,
+        href: `/dashboard/admin/${ts}/settings/promo-codes`,
       },
       {
         label: "Locations",
@@ -486,7 +498,7 @@ const adminMenu = (ts) => [
       },
       {
         label: "Card Settings",
-        href: `/dashboard/admin/${ts}/settings/cards_settings`,
+        href: `/dashboard/admin/${ts}/settings/cards-settings`,
       },
       {
         label: "Certificates",
@@ -494,7 +506,7 @@ const adminMenu = (ts) => [
       },
       {
         label: "External SKUs",
-        href: `/dashboard/admin/${ts}/settings/external_sku`,
+        href: `/dashboard/admin/${ts}/settings/external-sku`,
       },
       { label: "Users", href: `/dashboard/admin/${ts}/settings/users` },
     ],
@@ -625,7 +637,7 @@ const instructorMenu = (ts) => [
       },
       {
         label: "Promo Codes",
-        href: `/dashboard/instructor/${ts}/settings/promo_codes`,
+        href: `/dashboard/instructor/${ts}/settings/promo-codes`,
       },
       {
         label: "Locations",
@@ -633,7 +645,7 @@ const instructorMenu = (ts) => [
       },
       {
         label: "Card Settings",
-        href: `/dashboard/instructor/${ts}/settings/cards_settings`,
+        href: `/dashboard/instructor/${ts}/settings/cards-settings`,
       },
       {
         label: "Certificates",
@@ -641,7 +653,7 @@ const instructorMenu = (ts) => [
       },
       {
         label: "External SKUs",
-        href: `/dashboard/instructor/${ts}/settings/external_sku`,
+        href: `/dashboard/instructor/${ts}/settings/external-sku`,
       },
     ],
   },
@@ -771,7 +783,7 @@ const assistantMenu = (ts) => [
       },
       {
         label: "Promo Codes",
-        href: `/dashboard/instructor-assistant/${ts}/settings/promo_codes`,
+        href: `/dashboard/instructor-assistant/${ts}/settings/promo-codes`,
       },
       {
         label: "Locations",
@@ -779,7 +791,7 @@ const assistantMenu = (ts) => [
       },
       {
         label: "Card Settings",
-        href: `/dashboard/instructor-assistant/${ts}/settings/cards_settings`,
+        href: `/dashboard/instructor-assistant/${ts}/settings/cards-settings`,
       },
       {
         label: "Certificates",
@@ -787,7 +799,7 @@ const assistantMenu = (ts) => [
       },
       {
         label: "External SKUs",
-        href: `/dashboard/instructor-assistant/${ts}/settings/external_sku`,
+        href: `/dashboard/instructor-assistant/${ts}/settings/external-sku`,
       },
     ],
   },
