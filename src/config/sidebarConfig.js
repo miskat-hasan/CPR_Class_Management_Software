@@ -240,6 +240,7 @@ const superAdminFullMenu = ts => [
         href: `/dashboard/super-admin/${ts}/settings/certifying-body`,
       },
       { label: "Users", href: `/dashboard/super-admin/${ts}/settings/users` },
+      { label: "Email Campaigns", href: `/dashboard/super-admin/${ts}/settings/email-campaigns` },
       {
         label: "Card Settings",
         href: `/dashboard/super-admin/${ts}/settings/cards-settings`,

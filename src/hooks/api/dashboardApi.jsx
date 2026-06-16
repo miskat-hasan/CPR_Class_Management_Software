@@ -1194,7 +1194,7 @@ export const storeLocation = () => {
 // store key code
 export const addKeyCodeBank = () => {
   const { selectedTrainingSiteId } = useAuth();
-  
+
   return useClientApi({
     method: "post",
     isPrivate: true,
@@ -1281,7 +1281,7 @@ export const getAllDiscipline = (page = 1, perPage = 10) => {
 };
 
 // get single discipline
-export const getSingleDiscipline = (id) => {
+export const getSingleDiscipline = id => {
   return useClientApi({
     method: "get",
     isPrivate: true,
@@ -1315,5 +1315,101 @@ export const deleteDiscipline = () => {
     method: "delete",
     isPrivate: true,
     endpoint: "/api/discipline/delete",
+  });
+};
+
+// =========== email campaign =================
+// get all campaigns
+export const getAllEmailCampaigns = () => {
+  return useClientApi({
+    method: "get",
+    isPrivate: true,
+    key: ["get-all-email-campaigns"],
+    endpoint: "/api/email-campaigns?type=all",
+  });
+};
+
+// get single campaign
+export const getSingleEmailCampaign = id => {
+  return useClientApi({
+    method: "get",
+    isPrivate: true,
+    key: ["get-single-email-campaign", id],
+    endpoint: `/api/email-campaigns/${id}`,
+    enabled: !!id,
+  });
+};
+
+// store campaign
+export const storeEmailCampaign = () => {
+  return useClientApi({
+    method: "post",
+    isPrivate: true,
+    endpoint: "/api/email-campaigns",
+  });
+};
+
+// update campaign
+export const updateEmailCampaign = id => {
+  return useClientApi({
+    method: "put",
+    isPrivate: true,
+    endpoint: `/api/email-campaigns/${id}`,
+  });
+};
+
+// delete campaign
+export const deleteEmailCampaign = () => {
+  return useClientApi({
+    method: "delete",
+    isPrivate: true,
+    endpoint: "/api/email-campaigns",
+  });
+};
+
+// get single email template
+export const getSingleEmailTemplate = id => {
+  return useClientApi({
+    method: "get",
+    isPrivate: true,
+    key: ["get-single-email-template", id],
+    endpoint: `/api/email-campaigns/emails/${id}`,
+    enabled: !!id,
+  });
+};
+
+// store email template
+export const storeEmailTemplate = campaignId => {
+  return useClientApi({
+    method: "post",
+    isPrivate: true,
+    endpoint: `/api/email-campaigns/${campaignId}/emails`,
+  });
+};
+
+// update email template
+export const updateEmailTemplate = id => {
+  return useClientApi({
+    method: "put",
+    isPrivate: true,
+    endpoint: `/api/email-campaigns/emails/${id}`,
+  });
+};
+
+// delete email template
+export const deleteEmailTemplate = () => {
+  return useClientApi({
+    method: "delete",
+    isPrivate: true,
+    endpoint: "/api/email-campaigns/emails",
+  });
+};
+
+// send test email
+export const sendTestEmail = () => {
+  return useClientApi({
+    method: "post",
+    isPrivate: true,
+    endpoint: "/api/email-campaigns/test-email",
   });
 };
