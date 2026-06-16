@@ -25,7 +25,7 @@ const DashboardTopbar = () => {
   return (
     <div className="relative flex justify-between xl:justify-end items-center px-3 md:px-7">
       <button onClick={handleSidebar} className="xl:hidden block z-50 relative">
-        <CgMenuLeft className="text-3xl hover:text-brown cursor-pointer" />
+        <CgMenuLeft className="text-3xl hover:text-brown cursor-pointer dark:text-gray" />
       </button>
 
       {/* Right-side icons */}

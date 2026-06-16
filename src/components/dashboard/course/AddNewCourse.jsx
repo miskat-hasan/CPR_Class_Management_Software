@@ -13,7 +13,6 @@ import {
   getAllKeyCodeBank,
   getAllProductAddOns,
   getCourseImage,
-  getCourseOptions,
   getSecondCardType,
   storeCourse,
 } from "@/hooks/api/dashboardApi";
@@ -99,8 +98,6 @@ const AddNewCourse = () => {
     getSecondCardType();
   const { data: courseImageData, isLoading: courseImageDataLoading } =
     getCourseImage();
-  const { data: courseOptionData, isLoading: courseOptionLoading } =
-    getCourseOptions();
 
   const imagePreview = courseImageData?.data?.data?.find(
     item => Number(item?.id) === Number(watchFields?.course_image),
@@ -609,28 +606,24 @@ const AddNewCourse = () => {
               <p className="font-semibold text-[15px] text-gray-700 dark:text-gray">
                 Options
               </p>
-              {courseOptionLoading ? (
-                <div className="text-gray-500 dark:text-zinc-500">
-                  Loading options...
-                </div>
-              ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 dark:text-gray">
-                  {courseOptionData?.data?.data?.map(option => (
-                    <label
-                      key={option.id}
-                      className="flex items-center gap-2 text-sm cursor-pointer w-fit"
-                    >
-                      <input
-                        type="checkbox"
-                        value={option.id}
-                        className="accent-brown"
-                        {...register("selected_option_ids")}
-                      />
-                      {option.title}
-                    </label>
-                  ))}
-                </div>
-              )}
+              <label className="flex items-center gap-2 text-sm cursor-pointer w-fit">
+                <input
+                  type="checkbox"
+                  value={"prompt_for_certification"}
+                  className="accent-brown"
+                  {...register("prompt_for_certification")}
+                />
+                prompt for certification
+              </label>
+              <label className="flex items-center gap-2 text-sm cursor-pointer w-fit">
+                <input
+                  type="checkbox"
+                  value={"prompt_for_certification"}
+                  className="accent-brown"
+                  {...register("prompt_for_certification")}
+                />
+                prompt for certification
+              </label>
             </div>
 
             <FormInput
@@ -682,31 +675,6 @@ const AddNewCourse = () => {
                 Use the same email body for payments / general registrations
               </label>
             </div>
-
-            <div className="flex flex-col gap-2">
-              <p className="font-semibold text-[15px] text-gray-700 dark:text-gray">
-                SEO & Rich Results
-              </p>
-              <div className="dark:text-gray">
-                <label className="flex items-center gap-2 text-sm cursor-pointer w-fit">
-                  <input
-                    {...register("enable_seo")}
-                    type="checkbox"
-                    className="accent-brown"
-                  />
-                  Enable SEO rich results
-                </label>
-              </div>
-            </div>
-
-            {watchFields.enable_seo && (
-              <FormTextarea
-                name="seoDescription"
-                label="SEO Description"
-                placeholder="seo description"
-                rows={4}
-              />
-            )}
 
             <div className="flex justify-end gap-4 mt-8">
               <BackButton />
