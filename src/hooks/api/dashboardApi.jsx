@@ -354,49 +354,6 @@ export const getAllKeyCodeBank = (page = 1, perPage = 10) => {
   });
 };
 
-// course
-export const storeCourse = () => {
-  return useClientApi({
-    method: "post",
-    isPrivate: true,
-    endpoint: "/api/couese/store",
-  });
-};
-
-export const getSingleCourse = id => {
-  return useClientApi({
-    method: "get",
-    key: ["get-single-course"],
-    isPrivate: true,
-    endpoint: `/api/couese/show?id=${id}`,
-  });
-};
-
-export const updateCourse = () => {
-  return useClientApi({
-    method: "post",
-    isPrivate: true,
-    endpoint: "/api/couese/update",
-  });
-};
-export const getAllCourses = (page = 1, perPage = 10) => {
-  return useClientApi({
-    method: "get",
-    key: ["get-all-course", page, perPage],
-    isPrivate: true,
-    endpoint: `/api/couese/index?page=${page}&per_page=${perPage}`,
-  });
-};
-
-// course
-export const getCourseOptions = () => {
-  return useClientApi({
-    method: "get",
-    isPrivate: true,
-    key: ["get-all-course-type"],
-    endpoint: `/api/course_option/index`,
-  });
-};
 // card type
 export const getAllCardType = () => {
   return useClientApi({
@@ -1411,5 +1368,127 @@ export const sendTestEmail = () => {
     method: "post",
     isPrivate: true,
     endpoint: "/api/email-campaigns/test-email",
+  });
+};
+
+// get text campaign settings + messages
+export const getTextCampaignSettings = () => {
+  return useClientApi({
+    method: "get",
+    isPrivate: true,
+    key: ["get-text-campaign-settings"],
+    endpoint: "/api/text-campaigns/settings",
+  });
+};
+
+// update basic settings
+export const updateTextCampaignSettings = () => {
+  return useClientApi({
+    method: "put",
+    isPrivate: true,
+    endpoint: "/api/text-campaigns/settings",
+  });
+};
+
+// get all scheduled messages
+export const getAllTextMessages = () => {
+  return useClientApi({
+    method: "get",
+    isPrivate: true,
+    key: ["get-all-text-messages"],
+    endpoint: "/api/text-campaigns/all-messages?type=all",
+  });
+};
+
+// get single message
+export const getSingleTextMessage = (id) => {
+  return useClientApi({
+    method: "get",
+    isPrivate: true,
+    key: ["get-single-text-message", id],
+    endpoint: `/api/text-campaigns/messages/${id}`,
+    enabled: !!id,
+  });
+};
+
+// store message
+export const storeTextMessage = () => {
+  return useClientApi({
+    method: "post",
+    isPrivate: true,
+    endpoint: "/api/text-campaigns/messages",
+  });
+};
+
+// update message
+export const updateTextMessage = (id) => {
+  return useClientApi({
+    method: "put",
+    isPrivate: true,
+    endpoint: `/api/text-campaigns/messages/${id}`,
+  });
+};
+
+// delete message
+export const deleteTextMessage = () => {
+  return useClientApi({
+    method: "delete",
+    isPrivate: true,
+    endpoint: "/api/text-campaigns/messages",
+  });
+};
+
+// send test message
+export const sendTestTextMessage = () => {
+  return useClientApi({
+    method: "post",
+    isPrivate: true,
+    endpoint: "/api/text-campaigns/test-message",
+  });
+};
+
+// ================ course type ================
+
+// course
+export const storeCourse = () => {
+  return useClientApi({
+    method: "post",
+    isPrivate: true,
+    endpoint: "/api/couese/store",
+  });
+};
+
+export const getSingleCourse = id => {
+  return useClientApi({
+    method: "get",
+    key: ["get-single-course"],
+    isPrivate: true,
+    endpoint: `/api/couese/show?id=${id}`,
+  });
+};
+
+export const updateCourse = () => {
+  return useClientApi({
+    method: "post",
+    isPrivate: true,
+    endpoint: "/api/couese/update",
+  });
+};
+export const getAllCourses = (page = 1, perPage = 10) => {
+  return useClientApi({
+    method: "get",
+    key: ["get-all-course", page, perPage],
+    isPrivate: true,
+    endpoint: `/api/couese/index?page=${page}&per_page=${perPage}`,
+  });
+};
+
+// course
+export const getCourseOptions = () => {
+  return useClientApi({
+    method: "get",
+    isPrivate: true,
+    key: ["get-all-course-type"],
+    endpoint: `/api/course_option/index`,
   });
 };
