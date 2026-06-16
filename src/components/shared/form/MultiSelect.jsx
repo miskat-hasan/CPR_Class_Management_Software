@@ -1,4 +1,3 @@
-// src/components/shared/form/MultiSelect.jsx
 "use client";
 
 import { useState, useRef, useEffect } from "react";
@@ -16,27 +15,37 @@ const MultiSelect = ({
   error,
 }) => {
   const [open, setOpen] = useState(false);
+  const [search, setSearch] = useState("");
   const containerRef = useRef(null);
+  const searchRef = useRef(null);
 
-  // value is array of ids (strings or numbers)
   const selected = Array.isArray(value) ? value.map(String) : [];
 
-  const toggle = (optId) => {
+  const toggle = optId => {
     const strId = String(optId);
-    const next  = selected.includes(strId)
-      ? selected.filter((v) => v !== strId)
+    const next = selected.includes(strId)
+      ? selected.filter(v => v !== strId)
       : [...selected, strId];
     onChange(next);
   };
 
-  const remove = (optId, e) => {
+  const removeItem = (optId, e) => {
     e.stopPropagation();
-    onChange(selected.filter((v) => v !== String(optId)));
+    onChange(selected.filter(v => v !== String(optId)));
   };
+
+  // Focus search input when dropdown opens
+  useEffect(() => {
+    if (open) {
+      setTimeout(() => searchRef.current?.focus(), 50);
+    } else {
+      setSearch("");
+    }
+  }, [open]);
 
   // Close on outside click
   useEffect(() => {
-    const handler = (e) => {
+    const handler = e => {
       if (containerRef.current && !containerRef.current.contains(e.target)) {
         setOpen(false);
       }
@@ -45,9 +54,7 @@ const MultiSelect = ({
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
-  const selectedOptions = options.filter((o) => selected.includes(String(o.id)));
-
-  const getLabel = (opt) =>
+  const getLabel = opt =>
     opt.name ??
     opt.training_center_name ??
     opt.company ??
@@ -55,80 +62,150 @@ const MultiSelect = ({
     opt.title ??
     `${opt.first_name ?? ""} ${opt.last_name ?? ""}`.trim();
 
+  const filteredOptions = options.filter(opt =>
+    getLabel(opt).toLowerCase().includes(search.toLowerCase()),
+  );
+
+  const selectedOptions = options.filter(o => selected.includes(String(o.id)));
+
   return (
-    <div ref={containerRef} className={`flex flex-col gap-2 sm:gap-3 w-full ${className || ""}`}>
+    <div
+      ref={containerRef}
+      className={`flex flex-col gap-2 w-full ${className || ""}`}
+    >
       {label && (
-        <label htmlFor={id} className="text-sm sm:text-base font-medium text-gray-700">
+        <label
+          htmlFor={id}
+          className="text-sm font-medium text-gray-700 dark:text-gray"
+        >
           {label}
         </label>
       )}
 
       {/* Trigger */}
       <div
-        onClick={() => setOpen((p) => !p)}
+        onClick={() => setOpen(p => !p)}
         className={`relative w-full min-h-[48px] border ${
-          error ? "border-red-500" : "border-gray-300"
-        } bg-light rounded-md px-3 py-2 text-sm text-gray-700 cursor-pointer flex items-center flex-wrap gap-1.5 focus-within:ring-2 ${
-          error ? "focus-within:ring-red-400" : "focus-within:ring-gray-300"
-        } transition-all duration-150`}
+          error ? "border-red-500" : "border-gray-300 dark:border-gray-600"
+        } bg-light dark:bg-black rounded-md px-3 py-2 text-sm text-gray-700 dark:text-gray cursor-pointer flex items-center flex-wrap gap-1.5 transition-all duration-150 ${
+          open ? "ring-2 ring-gray-300 dark:ring-gray-600" : ""
+        }`}
       >
         {selectedOptions.length === 0 ? (
-          <span className="text-gray-400">{placeholder}</span>
+          <span className="text-gray-400 dark:text-gray-500">
+            {placeholder}
+          </span>
         ) : (
-          selectedOptions.map((opt) => (
+          selectedOptions.map(opt => (
             <span
               key={opt.id}
-              className="inline-flex items-center gap-1 bg-brown dark:bg-dark-brown/10 text-brown text-xs font-medium px-2 py-1 rounded-md"
+              className="inline-flex items-center gap-1 bg-brown/10 dark:bg-dark-brown/20 text-brown dark:text-gray text-xs font-medium px-2 py-1 rounded-md"
             >
               {getLabel(opt)}
               <FaTimes
                 className="size-2.5 cursor-pointer hover:text-red-500"
-                onClick={(e) => remove(opt.id, e)}
+                onClick={e => removeItem(opt.id, e)}
               />
             </span>
           ))
         )}
 
         <FaChevronDown
-          className={`ml-auto size-3 text-gray-400 transition-transform shrink-0 ${open ? "rotate-180" : ""}`}
+          className={`ml-auto size-3 text-gray-400 dark:text-gray-500 transition-transform shrink-0 ${
+            open ? "rotate-180" : ""
+          }`}
         />
       </div>
 
       {/* Dropdown */}
       {open && (
         <div className="relative z-50">
-          <div className="absolute top-0 left-0 w-full bg-white dark:bg-black border border-gray-200 rounded-md shadow-lg max-h-60 overflow-y-auto">
-            {isLoading ? (
-              <div className="px-3 py-2 text-sm text-gray-500">Loading...</div>
-            ) : options.length === 0 ? (
-              <div className="px-3 py-2 text-sm text-gray-500">No data found</div>
-            ) : (
-              options.map((opt) => {
-                const isSelected = selected.includes(String(opt.id));
-                return (
-                  <div
-                    key={opt.id}
-                    onClick={() => toggle(opt.id)}
-                    className={`flex items-center gap-2 px-3 py-2.5 text-sm cursor-pointer hover:bg-gray-50 transition-colors ${
-                      isSelected ? "bg-brown dark:bg-dark-brown/5 text-brown font-medium" : "text-gray-700"
-                    }`}
-                  >
-                    {/* Checkbox */}
+          <div className="absolute top-0 left-0 w-full bg-white dark:bg-black border border-gray-200 dark:border-gray-700 rounded-md shadow-lg">
+            {/* Search */}
+            <div className="p-2 border-b border-gray-100 dark:border-gray-700">
+              <input
+                ref={searchRef}
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+                onClick={e => e.stopPropagation()}
+                placeholder="Search..."
+                className="w-full px-3 py-1.5 text-sm border border-gray-200 dark:border-gray-600 dark:bg-dark dark:text-gray rounded-md focus:outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600"
+              />
+            </div>
+
+            {/* Options */}
+            <div className="max-h-52 overflow-y-auto">
+              {isLoading ? (
+                <div className="px-3 py-3 text-sm text-gray-400 dark:text-gray-500">
+                  Loading...
+                </div>
+              ) : filteredOptions.length === 0 ? (
+                <div className="px-3 py-3 text-sm text-gray-400 dark:text-gray-500">
+                  {search ? "No results found" : "No options available"}
+                </div>
+              ) : (
+                filteredOptions.map(opt => {
+                  const isSelected = selected.includes(String(opt.id));
+                  return (
                     <div
-                      className={`size-4 rounded border flex items-center justify-center shrink-0 ${
-                        isSelected ? "bg-brown dark:bg-dark-brown border-brown" : "border-gray-300"
+                      key={opt.id}
+                      onClick={e => {
+                        e.stopPropagation();
+                        toggle(opt.id);
+                      }}
+                      className={`flex items-center gap-2.5 px-3 py-2.5 text-sm cursor-pointer transition-colors ${
+                        isSelected
+                          ? "bg-brown/5 dark:bg-dark-brown/10 text-brown dark:text-gray font-medium"
+                          : "text-gray-700 dark:text-gray hover:bg-gray-50 dark:hover:bg-dark"
                       }`}
                     >
-                      {isSelected && (
-                        <svg viewBox="0 0 10 8" className="size-2.5 text-white fill-white">
-                          <path d="M1 4l3 3 5-6" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-                        </svg>
-                      )}
+                      <div
+                        className={`size-4 rounded border flex items-center justify-center shrink-0 transition-colors ${
+                          isSelected
+                            ? "bg-brown dark:bg-dark-brown border-brown dark:border-dark-brown"
+                            : "border-gray-300 dark:border-gray-600"
+                        }`}
+                      >
+                        {isSelected && (
+                          <svg
+                            viewBox="0 0 10 8"
+                            className="size-2.5 fill-white"
+                          >
+                            <path
+                              d="M1 4l3 3 5-6"
+                              stroke="white"
+                              strokeWidth="1.5"
+                              fill="none"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
+                        )}
+                      </div>
+                      {getLabel(opt)}
                     </div>
-                    {getLabel(opt)}
-                  </div>
-                );
-              })
+                  );
+                })
+              )}
+            </div>
+
+            {/* Footer: selected count + clear */}
+            {selected.length > 0 && (
+              <div className="flex items-center justify-between px-3 py-2 border-t border-gray-100 dark:border-gray-700">
+                <span className="text-xs text-gray-400 dark:text-gray-500">
+                  {selected.length} selected
+                </span>
+                <button
+                  type="button"
+                  onClick={e => {
+                    e.stopPropagation();
+                    onChange([]);
+                  }}
+                  className="text-xs text-red-500 hover:text-red-600 cursor-pointer"
+                >
+                  Clear all
+                </button>
+              </div>
             )}
           </div>
         </div>

@@ -23,7 +23,7 @@ export default function DisciplinePage() {
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
   const [showModal, setShowModal] = useState(false);
-  const [editItem, setEditItem] = useState(null); // null = add, object = edit
+  const [editItem, setEditItem] = useState(null);
   const [deleteTarget, setDeleteTarget] = useState(null);
 
   const { data, isLoading, refetch } = getAllDiscipline(page, perPage);
