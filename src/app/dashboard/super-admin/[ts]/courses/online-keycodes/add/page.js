@@ -2,7 +2,7 @@
 
 import SectionTitle from "@/components/common/SectionTitle";
 import FormContainer from "@/components/shared/form/FormContainer";
-import KeycodeBankForm from "@/components/dashboard/settings/keycodes/KeycodeBankForm";
+import KeycodeBankForm from "@/components/dashboard/courses/keycodes/KeycodeBankForm";
 import { useForm } from "react-hook-form";
 import { addKeyCodeBank } from "@/hooks/api/dashboardApi";
 import useAuth from "@/hooks/useAuth";

@@ -1492,3 +1492,48 @@ export const getCourseOptions = () => {
     endpoint: `/api/course_option/index`,
   });
 };
+
+// ============== course image ===============
+// course image
+export const getAllCourseImages = (page = 1, perPage = 10) => {
+  return useClientApi({
+    method: "get",
+    isPrivate: true,
+    key: ["get-all-course-images", page, perPage],
+    endpoint: `/api/course_image/index?page=${page}&per_page=${perPage}`,
+  });
+};
+
+export const getSingleCourseImage = (id) => {
+  return useClientApi({
+    method: "get",
+    isPrivate: true,
+    key: ["get-single-course-image", id],
+    endpoint: `/api/course_image/show?id=${id}`,
+    enabled: !!id,
+  });
+};
+
+export const storeCourseImage = () => {
+  return useClientApi({
+    method: "post",
+    isPrivate: true,
+    endpoint: "/api/course_image/store",
+  });
+};
+
+export const updateCourseImage = () => {
+  return useClientApi({
+    method: "post",
+    isPrivate: true,
+    endpoint: "/api/course_image/update",
+  });
+};
+
+export const deleteCourseImage = () => {
+  return useClientApi({
+    method: "delete",
+    isPrivate: true,
+    endpoint: "/api/course_image/delete",
+  });
+};

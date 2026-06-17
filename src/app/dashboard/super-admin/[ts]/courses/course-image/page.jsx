@@ -5,7 +5,6 @@ import { toast } from "sonner";
 import SectionTitle from "@/components/common/SectionTitle";
 import TableSkeleton from "@/components/skeleton/TableSkeleton";
 import ConfirmModal from "@/components/common/ConfirmModal";
-import DisciplineModal from "@/components/dashboard/settings/discipline/DisciplineModal";
 import {
   Table,
   TableHead,
@@ -15,46 +14,36 @@ import {
 } from "@/components/common/TableElement";
 import { Button } from "@/components/ui/button";
 import { PlusIcon } from "@/components/svg/SvgContainer";
-import { getAllDiscipline, deleteDiscipline } from "@/hooks/api/dashboardApi";
-import { HiOutlineTrash } from "react-icons/hi";
+import {
+  getAllCourseImages,
+  deleteCourseImage,
+} from "@/hooks/api/dashboardApi";
 import { CiEdit } from "react-icons/ci";
+import { HiOutlineTrash } from "react-icons/hi";
+import Image from "next/image";
+import CourseImageModal from "@/components/dashboard/courses/course-image/CourseImageModal";
 
-export default function DisciplinePage() {
+export default function CourseImagePage() {
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
   const [showModal, setShowModal] = useState(false);
   const [editItem, setEditItem] = useState(null);
   const [deleteTarget, setDeleteTarget] = useState(null);
 
-  const { data, isLoading, refetch } = getAllDiscipline(page, perPage);
-  const { mutate: deleteMutate, isPending: isDeleting } = deleteDiscipline();
-
-  const handleOpenAdd = () => {
-    setEditItem(null);
-    setShowModal(true);
-  };
-
-  const handleOpenEdit = item => {
-    setEditItem(item);
-    setShowModal(true);
-  };
-
-  const handleCloseModal = () => {
-    setShowModal(false);
-    setEditItem(null);
-  };
+  const { data, isLoading, refetch } = getAllCourseImages(page, perPage);
+  const { mutate: deleteMutate, isPending: isDeleting } = deleteCourseImage();
 
   const handleConfirmDelete = () => {
     deleteMutate(
-      { endpoint: `/api/discipline/delete?id=${deleteTarget.id}` },
+      { endpoint: `/api/course_image/delete?id=${deleteTarget.id}` },
       {
         onSuccess: res => {
-          toast.success(res?.message || "Discipline deleted successfully");
+          toast.success(res?.message || "Deleted");
           setDeleteTarget(null);
           refetch();
         },
         onError: err => {
-          toast.error(err?.response?.data?.message || "Something went wrong!");
+          toast.error(err?.response?.data?.message || "Delete failed");
           setDeleteTarget(null);
         },
       },
@@ -65,13 +54,15 @@ export default function DisciplinePage() {
     <>
       <section className="flex flex-col gap-[12.5px] lg:gap-[25px]">
         <div className="flex justify-between">
-          <SectionTitle title="Disciplines" />
+          <SectionTitle title="Course Images" />
           <Button
-            onClick={handleOpenAdd}
+            onClick={() => {
+              setEditItem(null);
+              setShowModal(true);
+            }}
             className="py-[11px] lg:py-[22px] cursor-pointer bg-brown dark:bg-dark-brown flex items-center gap-2 dark:hover:bg-brown"
           >
-            Add Discipline
-            <PlusIcon />
+            Add Course Image <PlusIcon />
           </Button>
         </div>
 
@@ -85,7 +76,10 @@ export default function DisciplinePage() {
                   <tr>
                     <th className="px-3 md:px-6 py-3 whitespace-nowrap">#</th>
                     <th className="px-3 md:px-6 py-3 whitespace-nowrap">
-                      Name
+                      Image
+                    </th>
+                    <th className="px-3 md:px-6 py-3 whitespace-nowrap">
+                      Title
                     </th>
                     <th className="px-3 md:px-6 py-3 text-center whitespace-nowrap">
                       Action
@@ -99,15 +93,33 @@ export default function DisciplinePage() {
                         <td className="px-3 md:px-6 py-4 text-sm text-gray-500 dark:text-gray-400 w-12">
                           {(page - 1) * perPage + index + 1}
                         </td>
+                        <td className="px-3 md:px-6 py-4">
+                          {item.image ? (
+                            <Image
+                              src={`${process.env.NEXT_PUBLIC_SITE_URL}/${item.image}`}
+                              width={148}
+                              height={48}
+                              alt={item.title}
+                              className="object-cover rounded border dark:border-gray-700"
+                            />
+                          ) : (
+                            <div className="w-12 h-12 bg-gray-100 dark:bg-gray-800 rounded flex items-center justify-center text-xs text-gray-400">
+                              No img
+                            </div>
+                          )}
+                        </td>
                         <td className="px-3 md:px-6 py-4 text-sm font-medium">
-                          {item.name}
+                          {item.title}
                         </td>
                         <td className="px-3 md:px-6 py-4 text-center">
                           <div className="flex items-center justify-center gap-2">
                             <TableButton
                               isLink={false}
                               type="button"
-                              onClick={() => handleOpenEdit(item)}
+                              onClick={() => {
+                                setEditItem(item);
+                                setShowModal(true);
+                              }}
                             >
                               <CiEdit className="text-gray-600 dark:text-gray text-[16px]" />
                             </TableButton>
@@ -125,17 +137,16 @@ export default function DisciplinePage() {
                   ) : (
                     <tr>
                       <td
-                        colSpan="3"
-                        className="text-center py-6 text-gray-500 italic text-sm"
+                        colSpan="4"
+                        className="text-center py-6 text-gray-400 italic text-sm"
                       >
-                        No results found
+                        No course images found
                       </td>
                     </tr>
                   )}
                 </tbody>
               </Table>
             </div>
-
             <TableFooter
               Links={data?.data?.links}
               perPage={perPage}
@@ -146,17 +157,20 @@ export default function DisciplinePage() {
         )}
       </section>
 
-      <DisciplineModal
+      <CourseImageModal
         open={showModal}
-        onClose={handleCloseModal}
+        onClose={() => {
+          setShowModal(false);
+          setEditItem(null);
+        }}
         onSuccess={refetch}
         editItem={editItem}
       />
 
       <ConfirmModal
         open={!!deleteTarget}
-        title="Delete this discipline?"
-        description={`"${deleteTarget?.name}" will be permanently deleted.`}
+        title="Delete this course image?"
+        description={`"${deleteTarget?.title}" will be permanently deleted.`}
         confirmLabel="Delete"
         onConfirm={handleConfirmDelete}
         onCancel={() => setDeleteTarget(null)}

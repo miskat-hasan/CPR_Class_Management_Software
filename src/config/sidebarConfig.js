@@ -159,6 +159,86 @@ const superAdminFullMenu = ts => [
     ],
   },
   {
+    label: "Credit Card Services",
+    submenu: [
+      {
+        label: "Merchant Track",
+        href: `/dashboard/super-admin/${ts}/credit_card_services/merchant_track`,
+      },
+      {
+        label: "Payment Report",
+        href: `/dashboard/super-admin/${ts}/credit_card_services/payment_report`,
+      },
+    ],
+  },
+  {
+    label: "Courses",
+    submenu: [
+      {
+        label: "Course Type",
+        href: `/dashboard/super-admin/${ts}/courses/course-type`,
+      },
+      {
+        label: "Product Add-ons",
+        href: `/dashboard/super-admin/${ts}/courses/product-add-ons`,
+      },
+      {
+        label: "Online Keycodes",
+        href: `/dashboard/super-admin/${ts}/courses/online-keycodes`,
+      },
+      {
+        label: "External SKUs",
+        href: `/dashboard/super-admin/${ts}/courses/external-sku`,
+      },
+      {
+        label: "Discipline",
+        href: `/dashboard/super-admin/${ts}/courses/discipline`,
+      },
+      {
+        label: "Course Certifying Body",
+        href: `/dashboard/super-admin/${ts}/courses/certifying-body`,
+      },
+      {
+        label: "Course Image",
+        href: `/dashboard/super-admin/${ts}/courses/course-image`,
+      },
+    ],
+  },
+  {
+    label: "Settings",
+    submenu: [
+      { label: "Users", href: `/dashboard/super-admin/${ts}/settings/users` },
+      {
+        label: "Certificates",
+        href: `/dashboard/super-admin/${ts}/settings/certificates`,
+      },
+      {
+        label: "Locations",
+        href: `/dashboard/super-admin/${ts}/settings/location`,
+      },
+      {
+        label: "Promo Codes",
+        href: `/dashboard/super-admin/${ts}/settings/promo-codes`,
+      },
+      {
+        label: "Email Campaigns",
+        href: `/dashboard/super-admin/${ts}/settings/email-campaigns`,
+      },
+      {
+        label: "Test Messaging",
+        href: `/dashboard/super-admin/${ts}/settings/text-messaging`,
+      },
+      {
+        label: "Card Settings",
+        href: `/dashboard/super-admin/${ts}/settings/cards-settings`,
+      },
+      {
+        label: "Site Settings",
+        href: `/dashboard/super-admin/${ts}/settings/site-settings`,
+      },
+    ],
+  },
+  {
     label: "Reports",
     submenu: [
       {
@@ -188,77 +268,6 @@ const superAdminFullMenu = ts => [
     ],
   },
   {
-    label: "Credit Card Services",
-    submenu: [
-      {
-        label: "Merchant Track",
-        href: `/dashboard/super-admin/${ts}/credit_card_services/merchant_track`,
-      },
-      {
-        label: "Payment Report",
-        href: `/dashboard/super-admin/${ts}/credit_card_services/payment_report`,
-      },
-    ],
-  },
-  {
-    label: "Settings",
-    submenu: [
-      {
-        label: "Course Type",
-        href: `/dashboard/super-admin/${ts}/settings/course-type`,
-      },
-      {
-        label: "Product Add-ons",
-        href: `/dashboard/super-admin/${ts}/settings/product-add-ons`,
-      },
-      {
-        label: "Online Keycodes",
-        href: `/dashboard/super-admin/${ts}/settings/online-keycodes`,
-      },
-      {
-        label: "Promo Codes",
-        href: `/dashboard/super-admin/${ts}/settings/promo-codes`,
-      },
-      {
-        label: "Locations",
-        href: `/dashboard/super-admin/${ts}/settings/location`,
-      },
-      {
-        label: "Certificates",
-        href: `/dashboard/super-admin/${ts}/settings/certificates`,
-      },
-      {
-        label: "External SKUs",
-        href: `/dashboard/super-admin/${ts}/settings/external-sku`,
-      },
-      {
-        label: "Discipline",
-        href: `/dashboard/super-admin/${ts}/settings/discipline`,
-      },
-      {
-        label: "Course Certifying Body",
-        href: `/dashboard/super-admin/${ts}/settings/certifying-body`,
-      },
-      { label: "Users", href: `/dashboard/super-admin/${ts}/settings/users` },
-      {
-        label: "Email Campaigns",
-        href: `/dashboard/super-admin/${ts}/settings/email-campaigns`,
-      },
-      {
-        label: "Test Messaging",
-        href: `/dashboard/super-admin/${ts}/settings/text-messaging`,
-      },
-      {
-        label: "Card Settings",
-        href: `/dashboard/super-admin/${ts}/settings/cards-settings`,
-      },
-      {
-        label: "Site Settings",
-        href: `/dashboard/super-admin/${ts}/settings/site-settings`,
-      },
-    ],
-  },
-  {
     label: "Help",
     submenu: [
       {
@@ -273,7 +282,7 @@ const superAdminFullMenu = ts => [
   },
 ];
 
-const superAdminSiteMenu = (ts) => [
+const superAdminSiteMenu = ts => [
   {
     label: "Classes",
     submenu: [
@@ -420,7 +429,7 @@ const superAdminSiteMenu = (ts) => [
   },
 ];
 
-const adminMenu = (ts) => [
+const adminMenu = ts => [
   {
     label: "Classes",
     submenu: [
@@ -567,7 +576,7 @@ const adminMenu = (ts) => [
   },
 ];
 
-const instructorMenu = (ts) => [
+const instructorMenu = ts => [
   {
     label: "Classes",
     submenu: [
@@ -713,7 +722,7 @@ const instructorMenu = (ts) => [
   },
 ];
 
-const assistantMenu = (ts) => [
+const assistantMenu = ts => [
   {
     label: "Classes",
     submenu: [

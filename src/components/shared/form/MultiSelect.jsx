@@ -23,9 +23,11 @@ const MultiSelect = ({
 
   const toggle = optId => {
     const strId = String(optId);
+
     const next = selected.includes(strId)
       ? selected.filter(v => v !== strId)
       : [...selected, strId];
+
     onChange(next);
   };
 
@@ -34,7 +36,6 @@ const MultiSelect = ({
     onChange(selected.filter(v => v !== String(optId)));
   };
 
-  // Focus search input when dropdown opens
   useEffect(() => {
     if (open) {
       setTimeout(() => searchRef.current?.focus(), 50);
@@ -43,15 +44,18 @@ const MultiSelect = ({
     }
   }, [open]);
 
-  // Close on outside click
   useEffect(() => {
     const handler = e => {
       if (containerRef.current && !containerRef.current.contains(e.target)) {
         setOpen(false);
       }
     };
+
     document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
+
+    return () => {
+      document.removeEventListener("mousedown", handler);
+    };
   }, []);
 
   const getLabel = opt =>
@@ -84,34 +88,23 @@ const MultiSelect = ({
 
       {/* Trigger */}
       <div
-        onClick={() => setOpen(p => !p)}
+        onClick={() => setOpen(prev => !prev)}
         className={`relative w-full min-h-[48px] border ${
           error ? "border-red-500" : "border-gray-300 dark:border-gray-600"
-        } bg-light dark:bg-black rounded-md px-3 py-2 text-sm text-gray-700 dark:text-gray cursor-pointer flex items-center flex-wrap gap-1.5 transition-all duration-150 ${
+        } bg-light dark:bg-black rounded-md px-3 py-2 text-sm text-gray-700 dark:text-gray cursor-pointer flex items-center justify-between transition-all duration-150 ${
           open ? "ring-2 ring-gray-300 dark:ring-gray-600" : ""
         }`}
       >
-        {selectedOptions.length === 0 ? (
-          <span className="text-gray-400 dark:text-gray-500">
-            {placeholder}
-          </span>
-        ) : (
-          selectedOptions.map(opt => (
-            <span
-              key={opt.id}
-              className="inline-flex items-center gap-1 bg-brown/10 dark:bg-dark-brown/20 text-brown dark:text-gray text-xs font-medium px-2 py-1 rounded-md"
-            >
-              {getLabel(opt)}
-              <FaTimes
-                className="size-2.5 cursor-pointer hover:text-red-500"
-                onClick={e => removeItem(opt.id, e)}
-              />
-            </span>
-          ))
-        )}
+        <span className="text-gray-500 dark:text-gray-400">
+          {selected.length > 0
+            ? `${selected.length} item${
+                selected.length > 1 ? "s" : ""
+              } selected`
+            : placeholder}
+        </span>
 
         <FaChevronDown
-          className={`ml-auto size-3 text-gray-400 dark:text-gray-500 transition-transform shrink-0 ${
+          className={`size-3 text-gray-400 transition-transform ${
             open ? "rotate-180" : ""
           }`}
         />
@@ -146,6 +139,7 @@ const MultiSelect = ({
               ) : (
                 filteredOptions.map(opt => {
                   const isSelected = selected.includes(String(opt.id));
+
                   return (
                     <div
                       key={opt.id}
@@ -182,6 +176,7 @@ const MultiSelect = ({
                           </svg>
                         )}
                       </div>
+
                       {getLabel(opt)}
                     </div>
                   );
@@ -189,12 +184,13 @@ const MultiSelect = ({
               )}
             </div>
 
-            {/* Footer: selected count + clear */}
+            {/* Footer */}
             {selected.length > 0 && (
               <div className="flex items-center justify-between px-3 py-2 border-t border-gray-100 dark:border-gray-700">
                 <span className="text-xs text-gray-400 dark:text-gray-500">
                   {selected.length} selected
                 </span>
+
                 <button
                   type="button"
                   onClick={e => {
@@ -211,6 +207,24 @@ const MultiSelect = ({
         </div>
       )}
 
+      {/* Selected Items Outside */}
+      {selectedOptions.length > 0 && (
+        <div className="flex flex-wrap gap-2">
+          {selectedOptions.map(opt => (
+            <span
+              key={opt.id}
+              className="inline-flex items-center gap-1 bg-brown/10 dark:bg-dark-brown/20 text-brown dark:text-gray text-xs font-medium px-2 py-1 rounded-md border border-brown/20"
+            >
+              {getLabel(opt)}
+              <FaTimes
+                className="size-2.5 cursor-pointer hover:text-red-500"
+                onClick={e => removeItem(opt.id, e)}
+              />
+            </span>
+          ))}
+        </div>
+      )}
+      
       {error && <p className="text-xs text-red-500 font-medium">{error}</p>}
     </div>
   );

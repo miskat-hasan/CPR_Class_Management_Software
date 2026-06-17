@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import SectionTitle from "@/components/common/SectionTitle";
 import TableSkeleton from "@/components/skeleton/TableSkeleton";
 import ConfirmModal from "@/components/common/ConfirmModal";
-import AddExternalSKUModal from "@/components/dashboard/settings/external-sku/AddExternalSKUModal";
+import AddExternalSKUModal from "@/components/dashboard/courses/external-sku/AddExternalSKUModal";
 import {
   Table,
   TableHead,
