@@ -2,7 +2,7 @@
 
 import SectionTitle from "@/components/common/SectionTitle";
 import FormContainer from "@/components/shared/form/FormContainer";
-import ProductAddOnForm from "@/components/dashboard/settings/product-add-ons/ProductAddOnForm";
+import ProductAddOnForm from "@/components/dashboard/courses/product-add-ons/ProductAddOnForm";
 import { useForm } from "react-hook-form";
 import { storeProductAddOns } from "@/hooks/api/dashboardApi";
 import useAuth from "@/hooks/useAuth";

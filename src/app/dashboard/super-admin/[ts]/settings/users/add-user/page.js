@@ -1,11 +1,11 @@
-import AddUser from "@/components/dashboard/settings/AddUser"
+import AddUser from "@/components/dashboard/settings/users/AddUser";
 
 const AddUserPage = () => {
   return (
     <div>
       <AddUser />
     </div>
-  )
-}
+  );
+};
 
-export default AddUserPage
+export default AddUserPage;

@@ -16,7 +16,7 @@
 // import { IoClose } from "react-icons/io5";
 // import DeleteUserConfirmModal from "@/components/dashboard/settings/DeleteUserConfirmModal";
 
-import UserPage from "@/components/dashboard/settings/UserPage";
+import UserPage from "@/components/dashboard/settings/users/UserPage";
 
 // const Page = () => {
 //   const form = useForm();

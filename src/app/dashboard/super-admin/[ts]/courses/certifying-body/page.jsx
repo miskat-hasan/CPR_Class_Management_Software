@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import SectionTitle from "@/components/common/SectionTitle";
 import TableSkeleton from "@/components/skeleton/TableSkeleton";
 import ConfirmModal from "@/components/common/ConfirmModal";
-import AddCertifyingBodyModal from "@/components/dashboard/settings/certifying-body/AddCertifyingBodyModal";
+import AddCertifyingBodyModal from "@/components/dashboard/courses/certifying-body/AddCertifyingBodyModal";
 import {
   Table,
   TableHead,

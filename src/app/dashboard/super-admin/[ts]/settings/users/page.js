@@ -1,4 +1,4 @@
-import UserPage from "@/components/dashboard/settings/UserPage";
+import UserPage from "@/components/dashboard/settings/users/UserPage";
 
 const Page = () => {
   return (

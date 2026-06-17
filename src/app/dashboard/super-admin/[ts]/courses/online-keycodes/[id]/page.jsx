@@ -3,8 +3,8 @@
 import SectionTitle from "@/components/common/SectionTitle";
 import FormContainer from "@/components/shared/form/FormContainer";
 import ConfirmModal from "@/components/common/ConfirmModal";
-import KeycodeBankForm from "@/components/dashboard/settings/keycodes/KeycodeBankForm";
-import KeycodeLinksTable from "@/components/dashboard/settings/keycodes/KeycodeLinksTable";
+import KeycodeBankForm from "@/components/dashboard/courses/keycodes/KeycodeBankForm";
+import KeycodeLinksTable from "@/components/dashboard/courses/keycodes/KeycodeLinksTable";
 import { useForm } from "react-hook-form";
 import {
   getSingleKeyCodeBank,

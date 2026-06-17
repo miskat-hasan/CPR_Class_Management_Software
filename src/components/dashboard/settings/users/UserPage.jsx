@@ -14,7 +14,7 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { CiEdit } from "react-icons/ci";
 import { IoClose } from "react-icons/io5";
-import DeleteUserConfirmModal from "@/components/dashboard/settings/DeleteUserConfirmModal";
+import DeleteUserConfirmModal from "@/components/dashboard/settings/users/DeleteUserConfirmModal";
 
 const UserPage = () => {
   const form = useForm();
