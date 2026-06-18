@@ -19,72 +19,90 @@ import {
   getAllCertifyingBody,
   getAllExternalSKU,
 } from "@/hooks/api/dashboardApi";
-import { LucideTrash2, X } from "lucide-react";
+import { LucideTrash2 } from "lucide-react";
 import { FaPlus } from "react-icons/fa";
+import Image from "next/image";
 import dynamic from "next/dynamic";
+import Link from "next/link";
 
 const RichTextEditor = dynamic(() => import("@/components/shared/RichEditor"), {
   ssr: false,
 });
 
-const OPTION_KEYS = [
+// Options with parent-child relationships
+const OPTION_GROUPS = [
   {
     key: "prompt_for_certification",
     label: "Prompt for certification / recertification during registration",
+    children: [],
   },
   {
     key: "include_student_instructor_ratio",
     label: "Include student to instructor ratio on roster",
+    children: [],
   },
   {
     key: "include_student_manikin_ratio",
     label: "Include student to manikin ratio on roster",
+    children: [],
   },
   {
     key: "include_electronic_signature_aha",
     label: "Include electronic signature for AHA roster",
+    children: [],
   },
   {
     key: "use_certificate_number_instead_score",
     label: "Use certificate number instead of test score (online course)",
+    children: [],
   },
   {
     key: "show_seats_remaining",
     label: "Show the number of seats remaining on the schedule page",
+    children: [],
   },
   {
     key: "allow_will_call_to_schedule",
     label: 'Allow students to select "will call to schedule"',
+    children: [],
   },
   {
     key: "prompt_for_license_number",
     label: "Prompt for license number during registration",
-  },
-  {
-    key: "require_license_number",
-    label: "Require license number during registration",
+    children: [
+      {
+        key: "require_license_number",
+        label: "Require license number during registration",
+      },
+    ],
   },
   {
     key: "allow_alternate_date_time",
     label: "Allow an alternate date/time description",
+    children: [],
   },
   {
     key: "enable_class_roster_expirations",
     label: "Enable Class Roster Expirations",
+    children: [],
   },
   {
     key: "enable_registration_waitlist",
     label: "Enable Registration Waitlist",
+    children: [{ key: "automatic_waitlist", label: "Automatic Waitlist" }],
   },
-  { key: "automatic_waitlist", label: "Automatic Waitlist" },
   {
     key: "allow_students_reschedule",
     label: "Allow students taking this course to reschedule themselves",
+    children: [],
   },
 ];
 
 const DEFAULT_OPTIONS = Object.fromEntries(
-  OPTION_KEYS.map(o => [o.key, false]),
+  OPTION_GROUPS.flatMap(g => [
+    [g.key, false],
+    ...g.children.map(c => [c.key, false]),
+  ]),
 );
 
 export default function CourseForm({
@@ -110,7 +128,7 @@ export default function CourseForm({
       add_ons: [],
       shipping_price: "",
       keycode_bank: "",
-      course_certifying_body: "",
+      course_certifying_body_id: "",
       sku_ids: [],
       cardType: "",
       secondCardType: "",
@@ -121,7 +139,7 @@ export default function CourseForm({
       prevent_reschedule_days_before: "",
       will_call_prompt: "",
       ceu_credits: "",
-      courseConfirmationEmailCCS: [],
+      courseConfirmationEmailCCS: "",
       courseConfirmationEmailSubject: "",
       payloadConfirmationEmailSubject: "",
       use_email_for_payments: false,
@@ -154,7 +172,7 @@ export default function CourseForm({
     }
   }, [defaultValues, reset]);
 
-  // Data fetching — all from backend
+  // Data fetching
   const { data: disciplineData, isLoading: disciplineLoading } =
     getAllDiscipline();
   const { data: addOnsData, isLoading: addOnsLoading } = getAllProductAddOns();
@@ -170,24 +188,42 @@ export default function CourseForm({
   const { data: externalSkuData, isLoading: externalSkuLoading } =
     getAllExternalSKU(1, 100);
 
-  // Add-ons helpers
-  const availableAddOns = (addOnsData?.data?.data ?? []).filter(
-    item => !(watchFields.add_ons ?? []).includes(Number(item.id)),
+  // Format options for selects
+  const courseImageOptions = (courseImageData?.data?.data ?? []).map(img => ({
+    id: img.id,
+    name: img.title,
+    image: img.image,
+  }));
+
+  const certifyingOptions = (certifyingBodies?.data?.data ?? []).map(cb => ({
+    id: cb.id,
+    name: cb.name,
+  }));
+
+  certifyingOptions.push({ id: null, name: "None" });
+
+  const skuOptions = (externalSkuData?.data?.data ?? []).map(sku => ({
+    id: sku.id,
+    name: `${sku.name} (${sku.code})`,
+  }));
+
+  // Add-ons helpers — same pattern as SKU multiselect
+  const addOnOptions = (addOnsData?.data?.data ?? []).map(a => ({
+    id: a.id,
+    name: a.name,
+  }));
+
+  // Selected image preview
+  const selectedImage = courseImageOptions.find(
+    img => String(img.id) === String(watchFields.course_image),
   );
 
-  const handleAddAddOn = value => {
-    const id = Number(typeof value === "object" ? value?.id : value);
-    if (id && !(watchFields.add_ons ?? []).includes(id)) {
-      setValue("add_ons", [...(watchFields.add_ons ?? []), id]);
-    }
-  };
+  const certBody = watchFields.course_certifying_body_id;
 
-  const handleRemoveAddOn = id => {
-    setValue(
-      "add_ons",
-      (watchFields.add_ons ?? []).filter(a => Number(a) !== Number(id)),
-    );
-  };
+  const isARC = certBody === "1";
+  const isAHA = certBody === "2";
+  const allowReschedule = watchFields.options?.allow_students_reschedule;
+  const allowWillCall = watchFields.options?.allow_will_call_to_schedule;
 
   const handleFormSubmit = data => {
     const description = descriptionRef.current?.getContent?.() ?? "";
@@ -201,16 +237,14 @@ export default function CourseForm({
       allow_multiple: data.multiple_pricing,
       shipping_price: Number(data.shipping_price) || 0,
       prompt: data.addonPrompt,
-      selected_addons: data.add_ons,
+      selected_addons: (data.add_ons ?? []).map(Number),
       ecu_credits: data.ceu_credits,
       description,
       email_body: emailBody,
-      confirmation_email: Array.isArray(data.courseConfirmationEmailCCS)
-        ? data.courseConfirmationEmailCCS
-        : (data.courseConfirmationEmailCCS ?? "")
-            .split(",")
-            .map(e => e.trim())
-            .filter(Boolean),
+      confirmation_email: (data.courseConfirmationEmailCCS ?? "")
+        .split(",")
+        .map(e => e.trim())
+        .filter(Boolean),
       course_confirmation_email_subject: data.courseConfirmationEmailSubject,
       payment_confirmation_email_subject: data.payloadConfirmationEmailSubject,
       use_general_email_body: data.use_email_for_payments ? 1 : 0,
@@ -221,24 +255,20 @@ export default function CourseForm({
       reschedule_insurance_price: Number(data.reschedule_insurance_price) || 0,
       prevent_reschedule_days_before:
         Number(data.prevent_reschedule_days_before) || 0,
+      course_certifying_body_id: Number(data.course_certifying_body_id) || null,
     };
 
     if (data.keycode_bank) payload.keycode_bank_id = Number(data.keycode_bank);
     if (data.course_image) payload.course_image_id = Number(data.course_image);
     if (data.sku_ids?.length) payload.sku_ids = data.sku_ids.map(Number);
-
-    // Certifying body
-    payload.course_certifying_body = data.course_certifying_body || "none";
     if (data.cardType) payload.card_type_id = Number(data.cardType);
     if (data.secondCardType)
       payload.second_card_type_id = Number(data.secondCardType);
 
-    // Deposit
     if (data.deposit_registration) {
       payload.deposit_amount = Number(data.deposit_amounts);
     }
 
-    // Pricing
     if (data.multiple_pricing) {
       payload.multiple_price = data.priceLevel.map(level => ({
         price: Number(level.price),
@@ -251,27 +281,6 @@ export default function CourseForm({
 
     onSubmit(payload);
   };
-
-  const allowReschedule = watchFields.options?.allow_students_reschedule;
-  const allowWillCall = watchFields.options?.allow_will_call_to_schedule;
-
-  // Format certifying bodies for select
-  const certifyingOptions = (certifyingBodies?.data?.data ?? []).map(cb => ({
-    id: cb.name,
-    name: cb.name,
-  }));
-
-  // Format course images for select
-  const courseImageOptions = (courseImageData?.data?.data ?? []).map(img => ({
-    id: img.id,
-    name: img.title,
-  }));
-
-  // Format external SKUs for multiselect
-  const skuOptions = (externalSkuData?.data?.data ?? []).map(sku => ({
-    id: sku.id,
-    name: `${sku.name} (${sku.code})`,
-  }));
 
   return (
     <FormContainer form={form} onSubmit={handleFormSubmit}>
@@ -308,7 +317,7 @@ export default function CourseForm({
           ].map(({ value, label, desc }) => (
             <label
               key={value}
-              className="flex items-center gap-2 text-sm cursor-pointer dark:text-gray"
+              className="flex w-fit items-center gap-2 text-sm cursor-pointer dark:text-gray"
             >
               <input
                 type="radio"
@@ -322,8 +331,21 @@ export default function CourseForm({
             </label>
           ))}
         </div>
+        {isEdit && (
+          <div className="flex max-md:flex-col gap-2 font-semibold text-sm text-gray-700 dark:text-gray">
+              Direct Schedule Link:
+              <Link
+                target="_blank"
+                href={`/schedule/${defaultValues?.course_id}`}
+                className="text-brown"
+              >
+                {window.location.origin}/schedule/{defaultValues?.course_id}
+              </Link>
+            
+          </div>
+        )}
 
-        {/* Discipline — from backend */}
+        {/* Discipline */}
         <Controller
           name="discipline"
           control={control}
@@ -332,7 +354,7 @@ export default function CourseForm({
             <CustomSelect
               {...field}
               label="Discipline"
-              placeholder="Search discipline..."
+              placeholder="Select discipline"
               isLoading={disciplineLoading}
               options={disciplineData?.data?.data ?? []}
               error={fieldState.error?.message}
@@ -345,7 +367,7 @@ export default function CourseForm({
           <p className="font-semibold text-sm text-gray-700 dark:text-gray">
             Price Options
           </p>
-          <label className="flex items-center gap-2 text-sm cursor-pointer dark:text-gray">
+          <label className="flex items-center gap-2 w-fit text-sm cursor-pointer dark:text-gray">
             <input
               {...register("deposit_registration")}
               type="checkbox"
@@ -353,7 +375,7 @@ export default function CourseForm({
             />
             Allow registrations with a deposit
           </label>
-          <label className="flex items-center gap-2 text-sm cursor-pointer dark:text-gray">
+          <label className="flex items-center gap-2 w-fit text-sm cursor-pointer dark:text-gray">
             <input
               {...register("multiple_pricing")}
               type="checkbox"
@@ -422,61 +444,29 @@ export default function CourseForm({
           <FormInput name="price" label="Price" placeholder="0.00" />
         )}
 
-        {/* Add-ons */}
+        {/* Add-ons — MultiSelect same as SKU */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <FormTextarea
             name="addonPrompt"
             label="Add-on Prompt"
             placeholder="Prompt for add-ons"
           />
-          <div className="flex flex-col gap-2">
-            <Controller
-              name="add_ons_selector"
-              control={control}
-              render={({ field }) => (
-                <CustomSelect
-                  {...field}
-                  label="Add-ons"
-                  placeholder="Search add-ons..."
-                  isLoading={addOnsLoading}
-                  options={availableAddOns}
-                  value=""
-                  onChange={val => {
-                    if (val) {
-                      handleAddAddOn(val);
-                      field.onChange("");
-                    }
-                  }}
-                />
-              )}
-            />
-            {(watchFields.add_ons?.length ?? 0) > 0 && (
-              <div className="flex flex-wrap gap-2">
-                {watchFields.add_ons.map(id => {
-                  const addon = (addOnsData?.data?.data ?? []).find(
-                    a => Number(a.id) === id,
-                  );
-                  return (
-                    <span
-                      key={id}
-                      className="inline-flex items-center gap-1 bg-neutral-200 dark:bg-gray-700 text-neutral-800 dark:text-gray px-3 py-1 rounded-full text-sm"
-                    >
-                      {addon?.name ?? `Add-on #${id}`}
-                      <button
-                        type="button"
-                        onClick={() => handleRemoveAddOn(id)}
-                      >
-                        <X size={12} className="hover:text-red-500" />
-                      </button>
-                    </span>
-                  );
-                })}
-              </div>
+          <Controller
+            name="add_ons"
+            control={control}
+            render={({ field }) => (
+              <MultiSelect
+                {...field}
+                label="Add-ons"
+                placeholder="Search and select add-ons..."
+                isLoading={addOnsLoading}
+                options={addOnOptions}
+              />
             )}
-          </div>
+          />
         </div>
 
-        {/* Shipping + Keycode Bank — from backend */}
+        {/* Shipping + Keycode Bank */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <FormInput
             name="shipping_price"
@@ -490,7 +480,7 @@ export default function CourseForm({
               <CustomSelect
                 {...field}
                 label="Keycode Bank"
-                placeholder="Search keycode bank..."
+                placeholder="Select keycode bank"
                 isLoading={keyCodeBankLoading}
                 options={keyCodeBankData?.data?.data ?? []}
               />
@@ -498,23 +488,23 @@ export default function CourseForm({
           />
         </div>
 
-        {/* Certifying Body — from backend */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Controller
-            name="course_certifying_body"
-            control={control}
-            render={({ field }) => (
-              <CustomSelect
-                {...field}
-                label="Course Certifying Body"
-                placeholder="Search certifying body..."
-                isLoading={certifyingLoading}
-                options={certifyingOptions}
-              />
-            )}
-          />
+        {/* Certifying Body */}
+        <Controller
+          name="course_certifying_body_id"
+          control={control}
+          render={({ field }) => (
+            <CustomSelect
+              {...field}
+              label="Course Certifying Body"
+              placeholder="Select certifying body"
+              isLoading={certifyingLoading}
+              options={certifyingOptions}
+            />
+          )}
+        />
 
-          {/* Course SKUs — multi select from external SKU, from backend */}
+        {/* ARC — Course SKUs multi select */}
+        {isARC && (
           <Controller
             name="sku_ids"
             control={control}
@@ -528,11 +518,10 @@ export default function CourseForm({
               />
             )}
           />
-        </div>
+        )}
 
-        {/* Card types — only for AHA */}
-        {watchFields.course_certifying_body ===
-          "American Heart Association" && (
+        {/* AHA — Card Types */}
+        {isAHA && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Controller
               name="cardType"
@@ -541,7 +530,7 @@ export default function CourseForm({
                 <CustomSelect
                   {...field}
                   label="Card Type"
-                  placeholder="Search card type..."
+                  placeholder="Select card type"
                   isLoading={cardTypeLoading}
                   options={cardTypeData?.data?.data ?? []}
                 />
@@ -554,7 +543,7 @@ export default function CourseForm({
                 <CustomSelect
                   {...field}
                   label="Second Card Type"
-                  placeholder="Search second card type..."
+                  placeholder="Select second card type"
                   isLoading={secondCardLoading}
                   options={secondCardData?.data?.data ?? []}
                 />
@@ -563,20 +552,37 @@ export default function CourseForm({
           </div>
         )}
 
-        {/* Course Image — from backend, no upload */}
-        <Controller
-          name="course_image"
-          control={control}
-          render={({ field }) => (
-            <CustomSelect
-              {...field}
-              label="Course Image"
-              placeholder="Search course image..."
-              isLoading={courseImageLoading}
-              options={courseImageOptions}
-            />
+        {/* Course Image — select + preview */}
+        <div className="flex flex-col gap-3">
+          <Controller
+            name="course_image"
+            control={control}
+            render={({ field }) => (
+              <CustomSelect
+                {...field}
+                label="Course Image"
+                placeholder="Select course image"
+                isLoading={courseImageLoading}
+                options={courseImageOptions}
+              />
+            )}
+          />
+          {/* Preview */}
+          {selectedImage?.image && (
+            <div className="flex flex-col gap-1.5">
+              <label className="text-sm font-medium text-gray-700 dark:text-gray">
+                Preview
+              </label>
+              <Image
+                src={`${process.env.NEXT_PUBLIC_SITE_URL}/${selectedImage.image}`}
+                width={120}
+                height={120}
+                alt={selectedImage.name}
+                className="object-cover rounded border dark:border-gray-700"
+              />
+            </div>
           )}
-        />
+        </div>
 
         {/* Options */}
         <div className="flex flex-col gap-2">
@@ -584,24 +590,46 @@ export default function CourseForm({
             Options
           </p>
           <div className="flex flex-col gap-2">
-            {OPTION_KEYS.map(({ key, label }) => (
-              <label
-                key={key}
-                className="flex items-center gap-2 text-sm cursor-pointer dark:text-gray w-fit"
-              >
-                <input
-                  type="checkbox"
-                  {...register(`options.${key}`)}
-                  className="accent-brown"
-                />
-                {label}
-              </label>
+            {OPTION_GROUPS.map(({ key, label, children }) => (
+              <div key={key} className="flex flex-col gap-1">
+                <label className="flex items-center gap-2 text-sm cursor-pointer dark:text-gray w-fit">
+                  <input
+                    type="checkbox"
+                    {...register(`options.${key}`)}
+                    className="accent-brown"
+                  />
+                  {label}
+                </label>
+
+                {/* Children — indented, disabled if parent unchecked */}
+                {children.map(child => {
+                  const parentChecked = watchFields.options?.[key];
+                  return (
+                    <label
+                      key={child.key}
+                      className={`ml-6 flex items-center gap-2 text-sm w-fit ${
+                        parentChecked
+                          ? "cursor-pointer dark:text-gray"
+                          : "cursor-not-allowed opacity-40 dark:text-gray"
+                      }`}
+                    >
+                      <input
+                        type="checkbox"
+                        {...register(`options.${child.key}`)}
+                        disabled={!parentChecked}
+                        className="accent-brown"
+                      />
+                      {child.label}
+                    </label>
+                  );
+                })}
+              </div>
             ))}
           </div>
 
-          {/* Conditional: reschedule fields */}
+          {/* Reschedule fields — shown when allow_students_reschedule checked */}
           {allowReschedule && (
-            <div className="flex flex-wrap items-center gap-3 ml-5 mt-2 p-3 bg-gray-50 dark:bg-dark border border-gray-200 dark:border-gray-700 rounded-md">
+            <div className="flex flex-wrap items-center gap-3 ml-0 mt-2 p-3 bg-gray-50 dark:bg-dark border border-gray-200 dark:border-gray-700 rounded-md">
               <div className="flex items-center gap-2">
                 <label className="text-sm text-gray-600 dark:text-gray whitespace-nowrap">
                   Reschedule Price:
@@ -641,9 +669,9 @@ export default function CourseForm({
             </div>
           )}
 
-          {/* Conditional: will call prompt */}
+          {/* Will call prompt — shown when allow_will_call_to_schedule checked */}
           {allowWillCall && (
-            <div className="ml-5 mt-2">
+            <div className="mt-2">
               <FormInput
                 name="will_call_prompt"
                 label='"Will Call" Prompt'
@@ -668,7 +696,7 @@ export default function CourseForm({
           <RichTextEditor ref={descriptionRef} />
         </div>
 
-        {/* Email fields — CC takes multiple emails */}
+        {/* Email fields */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="flex flex-col gap-1.5">
             <label className="text-sm font-medium text-gray-700 dark:text-gray">
@@ -683,7 +711,6 @@ export default function CourseForm({
               className="border border-gray-300 dark:border-gray-600 dark:bg-black dark:text-gray rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-300"
             ></textarea>
           </div>
-          
           <FormInput
             name="courseConfirmationEmailSubject"
             label="Confirmation Email Subject"

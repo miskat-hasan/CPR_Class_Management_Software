@@ -7,16 +7,24 @@ import FormContainer from "@/components/shared/form/FormContainer";
 import FormInput from "@/components/shared/form/FormInput";
 import { storeCourseImage, updateCourseImage } from "@/hooks/api/dashboardApi";
 import Image from "next/image";
+import { useEffect } from "react";
 
 function CourseImageModal({ open, onClose, onSuccess, editItem }) {
   const isEdit = !!editItem;
-  console.log(editItem)
 
   const form = useForm({
     defaultValues: { title: "", image: null },
   });
-  const { register, reset, setValue, watch } = form;
+  const { reset, setValue, watch } = form;
   const previewFile = watch("image");
+
+  useEffect(() => {
+    if (editItem) {
+      reset({ title: editItem.title ?? "", image: null });
+    } else {
+      reset({ title: "", image: null });
+    }
+  }, [editItem, reset]);
 
   const { mutate: storeMutate, isPending: isStoring } = storeCourseImage();
   const { mutate: updateMutate, isPending: isUpdating } = updateCourseImage();

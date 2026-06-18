@@ -14,13 +14,14 @@ export default function EditCoursePage() {
   const { selectedTrainingSiteId } = useAuth();
 
   const { data: courseData, isLoading } = getSingleCourse(id);
-  const { mutate, isPending } = updateCourse();
+  const { mutate, isPending } = updateCourse(id);
 
   const course = courseData?.data;
 
   // Map API response → form shape
   const defaultValues = course
     ? {
+        course_id: String(course.id ?? ""),
         course_name: course.course_name ?? "",
         mode: course.mode === "onsite" ? "on-site" : (course.mode ?? "on-site"),
         discipline: String(course.discipline ?? ""),
@@ -44,17 +45,13 @@ export default function EditCoursePage() {
         add_ons: (course.addons ?? []).map(a => Number(a.id)),
         shipping_price: String(course.shipping_price ?? ""),
         keycode_bank: String(course.keycode_bank_id ?? ""),
-        course_certifying_body:
-          course.course_certifying_body === "american_red_cross"
-            ? "American Red Cross"
-            : course.course_certifying_body === "american_heart_association"
-              ? "American Heart Association"
-              : "none",
-        courseSKUs: course.course_skus ?? "",
+        course_certifying_body_id: String(
+          course.course_certifying_body_id ?? null,
+        ),
+        sku_ids: (course.skus ?? []).map(s => Number(s.id)) ?? "",
         cardType: String(course.card_type_id ?? ""),
         secondCardType: String(course.second_card_type_id ?? ""),
         course_image: String(course.course_image_id ?? ""),
-        upload_image: null,
         options: course.options ?? {},
         ceu_credits: course.ecu_credits ?? "",
         courseConfirmationEmailCCS: Array.isArray(course.confirmation_email)
@@ -65,10 +62,13 @@ export default function EditCoursePage() {
         payloadConfirmationEmailSubject:
           course.payment_confirmation_email_subject ?? "",
         use_email_for_payments: !!course.use_general_email_body,
-        enable_seo: !!course.seo_rich_results,
-        seoDescription: course.seo_description ?? "",
         description: course.description ?? "",
         email_body: course.email_body ?? "",
+        reschedule_price: course.reschedule_price ?? "",
+        reschedule_insurance_price: course?.reschedule_insurance_price ?? "",
+        prevent_reschedule_days_before:
+          course?.prevent_reschedule_days_before ?? "",
+        will_call_prompt: course?.will_call_prompt ?? "",
       }
     : null;
 
@@ -84,7 +84,7 @@ export default function EditCoursePage() {
     mutate(isFormData ? payload : { data: payload }, {
       onSuccess: res => {
         toast.success(res?.message || "Course updated successfully");
-        router.push(`/dashboard/super-admin/${ts}/settings/course_type`);
+        router.back();
       },
       onError: err => {
         toast.error(err?.response?.data?.message || "Something went wrong!");

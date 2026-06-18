@@ -26,7 +26,7 @@ export default function AddNewCourse() {
     mutate(isFormData ? payload : { data: payload }, {
       onSuccess: res => {
         toast.success(res?.message || "Course created successfully");
-        router.push(`/dashboard/super-admin/${ts}/settings/course_type`);
+        router.back();
       },
       onError: err => {
         toast.error(err?.response?.data?.message || "Something went wrong!");

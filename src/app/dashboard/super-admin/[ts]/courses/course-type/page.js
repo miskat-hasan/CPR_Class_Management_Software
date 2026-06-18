@@ -74,20 +74,22 @@ const Page = () => {
                       <td className="px-3 md:px-6 py-4 whitespace-nowrap">
                         {item.discipline_name?.name}
                       </td>
-                      <td className="px-3 md:px-6 py-4 whitespace-nowrap">
-                        {item.addons.length > 0
-                          ? item.addons?.product_code
-                          : "--"}
+                      <td className="px-3 md:px-6 py-4 text-sm">
+                        <div className="min-w-[200px]">
+                          {item.addons.length > 0
+                            ? item.addons?.map(addon => addon.name).join(", ")
+                            : "--"}
+                        </div>
                       </td>
                       <td className="px-3 md:px-6 py-4 whitespace-nowrap">
-                        ${item.price}
+                        ${item.price ?? "--"}
                       </td>
                       <td className="px-3 md:px-6 py-4 whitespace-nowrap">
                         ${item.shipping_price}
                       </td>
                       <td className="px-3 md:px-6 py-4 text-center whitespace-nowrap">
                         <div className="flex items-center justify-center">
-                          <TableButton href={`course_type/${item.id}`}>
+                          <TableButton href={`course-type/${item.id}`}>
                             <CiEdit className="text-gray-600 text-[16px] dark:text-gray" />
                           </TableButton>
                         </div>
