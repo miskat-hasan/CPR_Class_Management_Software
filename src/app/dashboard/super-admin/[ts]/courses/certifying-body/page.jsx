@@ -90,13 +90,18 @@ export default function CertifyingBodyPage() {
                           {item.name}
                         </td>
                         <td className="px-3 md:px-6 py-4 text-center">
-                          <TableButton
-                            isLink={false}
-                            type="button"
-                            onClick={() => setDeleteTarget(item)}
-                          >
-                            <HiOutlineTrash className="text-gray-600 dark:text-gray text-[16px]" />
-                          </TableButton>
+                          {![
+                            "American Red Cross (ARC)",
+                            "American Heart Association (AHA)",
+                          ].includes(item.name) && (
+                            <TableButton
+                              isLink={false}
+                              type="button"
+                              onClick={() => setDeleteTarget(item)}
+                            >
+                              <HiOutlineTrash className="text-gray-600 dark:text-gray text-[16px]" />
+                            </TableButton>
+                          )}
                         </td>
                       </TableBodyRow>
                     ))

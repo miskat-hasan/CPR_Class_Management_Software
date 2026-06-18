@@ -1454,7 +1454,7 @@ export const storeCourse = () => {
   return useClientApi({
     method: "post",
     isPrivate: true,
-    endpoint: "/api/couese/store",
+    endpoint: "/api/courses/store",
   });
 };
 
@@ -1463,15 +1463,15 @@ export const getSingleCourse = id => {
     method: "get",
     key: ["get-single-course"],
     isPrivate: true,
-    endpoint: `/api/couese/show?id=${id}`,
+    endpoint: `/api/courses/show?id=${id}`,
   });
 };
 
-export const updateCourse = () => {
+export const updateCourse = (id) => {
   return useClientApi({
-    method: "post",
+    method: "put",
     isPrivate: true,
-    endpoint: "/api/couese/update",
+    endpoint: `/api/courses/${id}`,
   });
 };
 export const getAllCourses = (page = 1, perPage = 10) => {
@@ -1479,7 +1479,7 @@ export const getAllCourses = (page = 1, perPage = 10) => {
     method: "get",
     key: ["get-all-course", page, perPage],
     isPrivate: true,
-    endpoint: `/api/couese/index?page=${page}&per_page=${perPage}`,
+    endpoint: `/api/courses/index?page=${page}&per_page=${perPage}`,
   });
 };
 
