@@ -399,14 +399,6 @@ export const getSingleClass = id => {
   });
 };
 
-export const updateClass = () => {
-  return useClientApi({
-    method: "post",
-    isPrivate: true,
-    endpoint: "/api/class/update",
-  });
-};
-
 export const getAllUpcomingClasses = (page = 1, perPage = 10) => {
   return useClientApi({
     method: "get",
@@ -436,33 +428,33 @@ export const getAllClasses = (page = 1, perPage = 10) => {
 
 // class search
 
-export const searchClasses = (
-  is_enabled,
-  course_id,
-  type,
-  instructor_id,
-  location_id,
-  id,
-) => {
-  return useClientApi({
-    method: "get",
-    isPrivate: true,
-    key: [
-      "get-searched-classes",
-      course_id,
-      type,
-      instructor_id,
-      location_id,
-      id,
-    ],
-    params: { course_id, type, instructor_id, location_id, id },
-    endpoint: "/api/class/search",
-    enabled: is_enabled,
-    queryOptions: {
-      retry: false,
-    },
-  });
-};
+// export const searchClasses = (
+//   is_enabled,
+//   course_id,
+//   type,
+//   instructor_id,
+//   location_id,
+//   id,
+// ) => {
+//   return useClientApi({
+//     method: "get",
+//     isPrivate: true,
+//     key: [
+//       "get-searched-classes",
+//       course_id,
+//       type,
+//       instructor_id,
+//       location_id,
+//       id,
+//     ],
+//     params: { course_id, type, instructor_id, location_id, id },
+//     endpoint: "/api/class/search",
+//     enabled: is_enabled,
+//     queryOptions: {
+//       retry: false,
+//     },
+//   });
+// };
 
 // card type
 export const getSecondCardType = () => {
@@ -1537,3 +1529,151 @@ export const deleteCourseImage = () => {
     endpoint: "/api/course_image/delete",
   });
 };
+
+// get single class
+// export const getSingleClass = (id) => {
+//   return useClientApi({
+//     method: "get",
+//     isPrivate: true,
+//     key: ["get-single-class", id],
+//     endpoint: `/api/class/show?id=${id}`,
+//     enabled: !!id,
+//   });
+// };
+
+// // store class
+// export const storeClass = () => {
+//   return useClientApi({
+//     method: "post",
+//     isPrivate: true,
+//     endpoint: "/api/class/store",
+//   });
+// };
+
+// // update class
+export const updateClass = (id) => {
+  return useClientApi({
+    method: "post",
+    isPrivate: true,
+    endpoint: `/api/class/update/${id}`,
+    
+  });
+};
+
+// delete class
+export const deleteClass = () => {
+  return useClientApi({
+    method: "delete",
+    isPrivate: true,
+    endpoint: "/api/class/delete",
+  });
+};
+
+// bulk delete classes
+export const bulkDeleteClasses = () => {
+  return useClientApi({
+    method: "post",
+    isPrivate: true,
+    endpoint: "/api/class/bulk-delete",
+  });
+};
+
+// get upcoming classes
+// export const getAllUpcomingClasses = (page = 1, perPage = 10) => {
+//   return useClientApi({
+//     method: "get",
+//     isPrivate: true,
+//     key: ["get-all-upcoming-classes", page, perPage],
+//     endpoint: `/api/class/upcoming?page=${page}&per_page=${perPage}`,
+//   });
+// };
+
+// get past classes
+// export const getAllPastClasses = (page = 1, perPage = 10) => {
+//   return useClientApi({
+//     method: "get",
+//     isPrivate: true,
+//     key: ["get-all-past-classes", page, perPage],
+//     endpoint: `/api/class/past?page=${page}&per_page=${perPage}`,
+//   });
+// };
+
+// search classes
+export const searchClasses = (enabled, courseId, type, instructorId, locationId, classId, search) => {
+  const params = new URLSearchParams();
+  if (type)        params.append("type", type);
+  if (courseId)    params.append("course_id", courseId);
+  if (instructorId)params.append("instructor_id", instructorId);
+  if (locationId)  params.append("location_id", locationId);
+  if (classId)     params.append("class_id", classId);
+  if (search)      params.append("search", search);
+
+  return useClientApi({
+    method: "get",
+    isPrivate: true,
+    key: ["search-classes", courseId, type, instructorId, locationId, classId, search],
+    endpoint: `/api/class/search?${params.toString()}`,
+    enabled: !!enabled,
+  });
+};
+
+// get all courses (type=all)
+// export const getAllCourses = () => {
+//   return useClientApi({
+//     method: "get",
+//     isPrivate: true,
+//     key: ["get-all-courses"],
+//     endpoint: "/api/courses?type=all",
+//   });
+// };
+
+// get all locations (type=all)
+// export const getAllLocation = () => {
+//   return useClientApi({
+//     method: "get",
+//     isPrivate: true,
+//     key: ["get-all-locations"],
+//     endpoint: "/api/location?type=all",
+//   });
+// };
+
+// get users by role
+export const getUsersByRole = (roleId) => {
+  return useClientApi({
+    method: "get",
+    isPrivate: true,
+    key: ["get-users-by-role", roleId],
+    endpoint: `/api/site-users?type=all&role_id=${roleId}`,
+    enabled: !!roleId,
+  });
+};
+
+// get all clients (role_id=6)
+// export const getAllClient = () => {
+//   return useClientApi({
+//     method: "get",
+//     isPrivate: true,
+//     key: ["get-all-clients"],
+//     endpoint: "/api/site-users?type=all&role_id=6",
+//   });
+// };
+
+// // get all instructors (role_id=3)
+// export const getAllInstructor = () => {
+//   return useClientApi({
+//     method: "get",
+//     isPrivate: true,
+//     key: ["get-all-instructors"],
+//     endpoint: "/api/site-users?type=all&role_id=3",
+//   });
+// };
+
+// // get all certifying bodies
+// export const getAllCertifyingBody = () => {
+//   return useClientApi({
+//     method: "get",
+//     isPrivate: true,
+//     key: ["get-all-certifying-body"],
+//     endpoint: "/api/course_cb/index?type=all",
+//   });
+// };

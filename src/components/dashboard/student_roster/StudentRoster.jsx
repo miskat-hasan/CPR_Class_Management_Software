@@ -33,7 +33,7 @@ const StudentRoster = ({ id }) => {
     downloadRoster(
       { id },
       {
-        onSuccess: (blob) => {
+        onSuccess: blob => {
           const file = new Blob([blob], {
             type: "application/pdf",
           });
@@ -62,7 +62,7 @@ const StudentRoster = ({ id }) => {
     downloadStudentList(
       { class_details_id: id },
       {
-        onSuccess: (blob) => {
+        onSuccess: blob => {
           const file = new Blob([blob], {
             type: "application/pdf",
           });
@@ -84,11 +84,7 @@ const StudentRoster = ({ id }) => {
   };
   return (
     <div className="flex flex-col gap-[12.5px] lg:gap-[25px]">
-      {/* Header */}
-      <div className="flex justify-between">
-        {/* <SectionTitle title={"Classes"} /> */}
-      </div>
-
+      <SubSectionTitle subtitle="Student Lists" />
       {/* Table */}
       <div className="p-[13px] lg:p-[26px] bg-white dark:bg-black rounded-[14px] flex flex-col gap-[12px] lg:gap-[24px]">
         <div className="flex sm:justify-end flex-wrap gap-2">
@@ -112,7 +108,7 @@ const StudentRoster = ({ id }) => {
             <Link href={`${id}/edit-score`}>Edit Scores</Link>
           </Button>
           {studentData?.data?.students?.find(
-            (item) => item.is_finalized === 1,
+            item => item.is_finalized === 1,
           ) ? (
             <Button
               onClick={() => handleDownloadRoster()}
@@ -138,7 +134,7 @@ const StudentRoster = ({ id }) => {
             {downloadStudentListPending ? "Downloading..." : "Student List"}
           </Button>
         </div>
-        <SubSectionTitle subtitle="Student Lists" />
+
         {studentDataLoading ? (
           <TableSkeleton />
         ) : (
@@ -156,7 +152,7 @@ const StudentRoster = ({ id }) => {
               </thead>
               <tbody>
                 {studentData?.data?.students?.length > 0 ? (
-                  studentData?.data?.students?.map((item) => (
+                  studentData?.data?.students?.map(item => (
                     <tr
                       key={item?.id}
                       className="border-b hover:bg-gray-50 transition-all"

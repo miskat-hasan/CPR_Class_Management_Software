@@ -27,10 +27,10 @@ export const Roles = [
 ];
 
 export const roleDefaultPage = {
-  "Super Admin": "class_and_students/upcoming_classes",
-  Admin: "class_and_students/classes",
-  Instructor: "class_and_students/classes",
-  "Instructor Assistant": "class_and_students/classes",
+  "Super Admin": "class-and-students/upcoming-classes",
+  Admin: "class-and-students/classes",
+  Instructor: "class-and-students/classes",
+  "Instructor Assistant": "class-and-students/classes",
   Student: "classes/upcoming-classes",
   Client: "class-and-students/upcoming-classes",
 };
