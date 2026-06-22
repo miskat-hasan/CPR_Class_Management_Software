@@ -1,3 +1,4 @@
+// src/components/dashboard/courses/course-type/AddNewCourse.jsx
 "use client";
 
 import SectionTitle from "@/components/common/SectionTitle";

@@ -18,16 +18,22 @@ export default function UpcomingClassesPage() {
     refetch,
   } = getAllUpcomingClasses(page, perPage);
 
-  const { data: searchData, isLoading: searchLoading } = searchClasses(
-    !!filters,
-    filters?.course_id,
-    "upcoming",
-    filters?.instructor_id,
-    filters?.location_id,
-    filters?.class_id,
-  );
+  const isSearchActive =
+    filters && Object.values(filters).some(value => value !== null);
+  
+  const { data: searchData, isLoading: searchLoading } = searchClasses({
+    enabled: isSearchActive,
+    type: "upcoming",
+    courseId: filters?.course_id,
+    instructorId: filters?.instructor_id,
+    locationId: filters?.location_id,
+    classId: filters?.class_id,
+    search: filters?.search,
+    startDate: filters?.start_date,
+    endDate: filters?.end_date,
+  });
 
-  const isSearchActive = !!filters;
+
   const tableData = isSearchActive
     ? searchData?.data?.data
     : upcomingData?.data?.data;

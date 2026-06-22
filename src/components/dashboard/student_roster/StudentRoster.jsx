@@ -1,3 +1,4 @@
+// src/components/dashboard/student_roster/StudentRoster.jsx
 "use client";
 
 import BackButton from "@/components/common/BackButton";
@@ -101,38 +102,6 @@ const StudentRoster = ({ id }) => {
           >
             <Link href={`${id}/add-student`}>Add Student</Link>
           </Button>
-          <Button
-            asChild
-            className="h-8 border border-transparent rounded-md shadow-sm text-sm font-medium cursor-pointer text-white bg-brown dark:bg-dark-brown cursor hover:bg-brown  focus:outline-none"
-          >
-            <Link href={`${id}/edit-score`}>Edit Scores</Link>
-          </Button>
-          {studentData?.data?.students?.find(
-            item => item.is_finalized === 1,
-          ) ? (
-            <Button
-              onClick={() => handleDownloadRoster()}
-              disabled={downloadRosterPending}
-              className="h-8 border border-transparent rounded-md shadow-sm text-sm font-medium cursor-pointer text-white bg-brown dark:bg-dark-brown cursor hover:bg-brown  focus:outline-none disabled:opacity-60"
-            >
-              {downloadRosterPending ? "Downloading..." : "View Roster"}
-            </Button>
-          ) : (
-            <Button
-              onClick={() => finalizeRosterMutation({ course_id: id })}
-              disabled={finalizeRosterPending}
-              className="h-8 border border-transparent rounded-md shadow-sm text-sm font-medium cursor-pointer text-white bg-brown dark:bg-dark-brown cursor hover:bg-brown  focus:outline-none disabled:opacity-60"
-            >
-              {finalizeRosterPending ? "Processing..." : "Finalized Roster"}
-            </Button>
-          )}
-          <Button
-            onClick={() => handleDownloadStudentList()}
-            disabled={downloadStudentListPending}
-            className="h-8 border border-transparent rounded-md shadow-sm text-sm font-medium cursor-pointer text-white bg-brown dark:bg-dark-brown cursor hover:bg-brown  focus:outline-none disabled:opacity-60"
-          >
-            {downloadStudentListPending ? "Downloading..." : "Student List"}
-          </Button>
         </div>
 
         {studentDataLoading ? (
@@ -202,8 +171,45 @@ const StudentRoster = ({ id }) => {
           </div>
         )}
         {/* Footer Buttons */}
-        <div className="flex justify-end">
-          <BackButton />
+        <div className="flex sm:justify-end flex-wrap gap-2">
+          <Button
+            asChild
+            className="h-8 border border-transparent rounded-md shadow-sm text-sm font-medium cursor-pointer text-white bg-brown dark:bg-dark-brown cursor hover:bg-brown  focus:outline-none"
+          >
+            <Link href={`${id}/send-communication`}>Send Communication</Link>
+          </Button>
+          <Button
+            asChild
+            className="h-8 border border-transparent rounded-md shadow-sm text-sm font-medium cursor-pointer text-white bg-brown dark:bg-dark-brown cursor hover:bg-brown  focus:outline-none"
+          >
+            <Link href={`${id}/edit-score`}>Edit Scores</Link>
+          </Button>
+          {studentData?.data?.students?.find(
+            item => item.is_finalized === 1,
+          ) ? (
+            <Button
+              onClick={() => handleDownloadRoster()}
+              disabled={downloadRosterPending}
+              className="h-8 border border-transparent rounded-md shadow-sm text-sm font-medium cursor-pointer text-white bg-brown dark:bg-dark-brown cursor hover:bg-brown  focus:outline-none disabled:opacity-60"
+            >
+              {downloadRosterPending ? "Downloading..." : "View Roster"}
+            </Button>
+          ) : (
+            <Button
+              onClick={() => finalizeRosterMutation({ course_id: id })}
+              disabled={finalizeRosterPending}
+              className="h-8 border border-transparent rounded-md shadow-sm text-sm font-medium cursor-pointer text-white bg-brown dark:bg-dark-brown cursor hover:bg-brown  focus:outline-none disabled:opacity-60"
+            >
+              {finalizeRosterPending ? "Processing..." : "Finalized Roster"}
+            </Button>
+          )}
+          <Button
+            onClick={() => handleDownloadStudentList()}
+            disabled={downloadStudentListPending}
+            className="h-8 border border-transparent rounded-md shadow-sm text-sm font-medium cursor-pointer text-white bg-brown dark:bg-dark-brown cursor hover:bg-brown  focus:outline-none disabled:opacity-60"
+          >
+            {downloadStudentListPending ? "Downloading..." : "Student List"}
+          </Button>
         </div>
       </div>
 

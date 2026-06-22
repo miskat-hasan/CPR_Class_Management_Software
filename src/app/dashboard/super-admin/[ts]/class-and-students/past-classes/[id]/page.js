@@ -6,8 +6,8 @@ import SectionTitle from "@/components/common/SectionTitle";
 import ClassForm from "@/components/dashboard/class/ClassForm";
 import { getSingleClass, updateClass } from "@/hooks/api/dashboardApi";
 import useAuth from "@/hooks/useAuth";
-import SubSectionTitle from "@/components/common/SubSectionTitle";
 import StudentRoster from "@/components/dashboard/student_roster/StudentRoster";
+import SubSectionTitle from "@/components/common/SubSectionTitle";
 
 export default function EditPastClassPage() {
   const { id, ts } = useParams();
@@ -21,6 +21,7 @@ export default function EditPastClassPage() {
 
   const defaultValues = classData
     ? {
+        certifyingBodyId: String(classData.course?.course_certifying_body_id ?? ""),
         certifyingBody: classData.course?.course_certifying_body ?? "",
         course: String(classData.course_id ?? ""),
         client: String(classData.client_id ?? ""),
@@ -69,40 +70,16 @@ export default function EditPastClassPage() {
 
   return (
     <div className="flex flex-col gap-[10px] lg:gap-[20px]">
-      <SectionTitle title={classData.course?.course_name} />
-      <p className="dark:text-gray -mt-2">
-        {classData.class_times?.map((c, index) => {
-          const dateObj = new Date(`${c.date} ${c.from}`);
-
-          const dateStr = dateObj.toLocaleDateString("en-US", {
-            weekday: "long",
-            month: "long",
-            day: "numeric",
-            year: "numeric",
-          });
-
-          const timeStr = dateObj.toLocaleTimeString("en-US", {
-            hour: "numeric",
-            minute: "2-digit",
-            hour12: true,
-          });
-
-          return (
-            <div key={index}>
-              {dateStr} at {timeStr}
-            </div>
-          );
-        })}
-      </p>
+      <SectionTitle title={classData?.course_name} />
       <StudentRoster id={id} />
-      <SubSectionTitle subtitle="Edit Past Class" />
+        <SubSectionTitle subtitle="Edit Course" />
       <div className="bg-white dark:bg-black p-4 lg:p-6 rounded-[14px] shadow">
         <ClassForm
           defaultValues={defaultValues}
           onSubmit={onSubmit}
           isPending={isPending}
           isEdit={true}
-          isPastClass={true}
+          isPastClass={true} // ← enables signature upload
         />
       </div>
     </div>

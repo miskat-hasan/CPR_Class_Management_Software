@@ -20,6 +20,7 @@ export default function EditUpcomingClassPage() {
 
   const defaultValues = classData
     ? {
+        certifyingBodyId: String(classData.course?.course_certifying_body_id ?? ""),
         certifyingBody: classData.course?.course_certifying_body ?? "",
         course: String(classData.course_id ?? ""),
         client: String(classData.client_id ?? ""),

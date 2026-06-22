@@ -1,3 +1,4 @@
+// src/components/dashboard/courses/course-type/CourseForm.jsx
 "use client";
 
 import { useEffect, useRef } from "react";

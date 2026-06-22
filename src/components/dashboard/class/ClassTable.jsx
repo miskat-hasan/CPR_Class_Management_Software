@@ -24,7 +24,7 @@ export default function ClassTable({
   isLoading,
   links,
   setPage,
-  basePath,
+  basePath, // e.g. "upcoming-classes" or "past-classes"
   onRefetch,
 }) {
   const { ts } = useParams();
@@ -153,19 +153,19 @@ export default function ClassTable({
                       {item.class_id ?? item.id}
                     </td>
                     <td className="px-3 sm:px-6 py-3 text-sm whitespace-nowrap">
-                      {item.instructor_name}
+                      {item?.instructor_name}
                     </td>
                     <td className="px-3 sm:px-6 py-3 text-sm whitespace-nowrap">
-                      {item.date_time?.[0]?.date ?? "—"}
+                      {item.class_times?.[0]?.date ?? "—"}
                     </td>
                     <td className="px-3 sm:px-6 py-3 text-sm truncate max-w-[160px]">
                       {item?.course_name}
                     </td>
                     <td className="px-3 sm:px-6 py-3 text-sm truncate max-w-[140px]">
-                      {item.location_name}
+                      {item?.location_name}
                     </td>
                     <td className="px-3 sm:px-6 py-3 text-sm">
-                      {item.enrollments_count ?? "0"}/{item.max_student}
+                      {item?.enrolled ?? "0"}/{item?.max_student}
                     </td>
                     <td className="px-3 sm:px-6 py-3 text-center">
                       <div className="flex items-center gap-2 justify-center">
@@ -174,11 +174,6 @@ export default function ClassTable({
                         >
                           <CiEdit className="text-gray-600 dark:text-gray text-[16px]" />
                         </TableButton>
-                        {/* <TableButton
-                          href={`/dashboard/super-admin/${ts}/class-and-students/${basePath}/${item.id}/roster`}
-                        >
-                          <GoArrowUpRight className="text-gray-600 dark:text-gray text-[16px]" />
-                        </TableButton> */}
                         <TableButton
                           isLink={false}
                           type="button"

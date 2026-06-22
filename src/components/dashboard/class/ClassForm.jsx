@@ -18,8 +18,6 @@ import {
   getAllLocation,
   getAllCertifyingBody,
 } from "@/hooks/api/dashboardApi";
-import { useParams } from "next/navigation";
-import Link from "next/link";
 
 const RATIO_OPTIONS = [
   { id: "1:1", name: "1:1" },
@@ -48,12 +46,10 @@ export default function ClassForm({
   onSubmit,
   isPending,
   isEdit = false,
-  isPastClass = false, // past class edit shows extra fields
+  isPastClass = false,
 }) {
-  const { id } = useParams();
-
-  const [documents, setDocuments] = useState([]); // new files to upload
-  const [existingDocs, setExistingDocs] = useState([]); // from API response
+  const [documents, setDocuments] = useState([]);
+  const [existingDocs, setExistingDocs] = useState([]);
   const [signatureFile, setSignatureFile] = useState(null);
 
   const form = useForm({
@@ -106,16 +102,21 @@ export default function ClassForm({
 
   // Data fetching — all with type=all
   const { data: certifyingData, isLoading: certifyingLoading } =
-    getAllCertifyingBody();
-  const { data: coursesData, isLoading: coursesLoading } = getAllCourses();
-  const { data: clientData, isLoading: clientLoading } = getAllClient();
-  const { data: locationData, isLoading: locationLoading } = getAllLocation();
+    getAllCertifyingBody({ type: "all" });
+  const { data: coursesData, isLoading: coursesLoading } = getAllCourses({
+    type: "all",
+  });
+  const { data: clientData, isLoading: clientLoading } = getAllClient({
+    type: "all",
+  });
+  const { data: locationData, isLoading: locationLoading } = getAllLocation({
+    type: "all",
+  });
   const { data: instructorData, isLoading: instructorLoading } =
-    getAllInstructor();
+    getAllInstructor({ type: "all" });
 
   // Filter courses by selected certifying body (client-side)
-  const allCourses = coursesData?.data?.data ?? [];
-  console.log(allCourses);
+  const allCourses = coursesData?.data ?? [];
   const filteredCourses = selectedCertifyingBody
     ? allCourses.filter(
         c => c.course_certifying_body === selectedCertifyingBody,
@@ -123,20 +124,23 @@ export default function ClassForm({
     : allCourses;
 
   // Format instructor/client options
-  const instructorOptions = (instructorData?.data?.data ?? []).map(u => ({
+  const instructorOptions = (instructorData?.data ?? []).map(u => ({
     id: u.id,
     name: formatName(u),
   }));
 
-  const clientOptions = (clientData?.data?.data ?? []).map(u => ({
+  const clientOptions = (clientData?.data ?? []).map(u => ({
     id: u.id,
     name: formatName(u),
   }));
 
-  const certifyingOptions = (certifyingData?.data?.data ?? []).map(cb => ({
-    id: cb.name,
-    name: cb.name,
-  }));
+  const certifyingOptions = [
+    ...(certifyingData?.data?.length > 0 ? [{ id: "", name: "— All —" }] : []),
+    ...(certifyingData?.data ?? []).map(cb => ({
+      id: cb.name,
+      name: cb.name,
+    })),
+  ];
 
   const courseOptions = filteredCourses.map(c => ({
     id: c.id,
@@ -161,6 +165,7 @@ export default function ClassForm({
   const handleFormSubmit = data => {
     const formData = new FormData();
 
+    formData.append("course_certifying_body_id", data.certifyingBodyId ?? "");
     formData.append("course_id", data.course);
     formData.append("client_id", data.client ?? "");
     formData.append("location_id", data.location);
@@ -210,27 +215,30 @@ export default function ClassForm({
   return (
     <FormContainer form={form} onSubmit={handleFormSubmit}>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
-        {/* Registration Link */}
-        {isEdit && (
-          <div className="flex flex-col justify-center">
-            <p className="dark:text-gray">
-              Registration Link:{" "}
-              {!isPastClass ? (
-                <Link
-                  target="_blank"
-                  href={`/enroll/${id}`}
-                  className="text-brown"
-                >
-                  {window.location.origin}/enroll/{id}
-                </Link>
-              ) : (
-                <span className="text-sm text-red-600">
+        {/* Close registration status */}
+        {isEdit &&
+          (() => {
+            const days = Number(defaultValues?.closeRegistrationDays ?? 0);
+            const hours = Number(defaultValues?.closeRegistrationHours ?? 0);
+            const firstDate = defaultValues?.classTimes?.[0]?.date;
+            if (!firstDate) return null;
+
+            const classStart = new Date(
+              `${firstDate}T${defaultValues?.classTimes?.[0]?.timeFrom ?? "00:00"}`,
+            );
+            const cutoff = new Date(classStart);
+            cutoff.setDate(cutoff.getDate() - days);
+            cutoff.setHours(cutoff.getHours() - hours);
+            const isClosed = new Date() > cutoff;
+
+            return isClosed ? (
+              <div className="md:col-span-2">
+                <p className="text-sm text-red-500 font-medium">
                   Registration for this class is closed.
-                </span>
-              )}
-            </p>
-          </div>
-        )}
+                </p>
+              </div>
+            ) : null;
+          })()}
 
         {/* Certifying Body — filters courses client-side */}
         <div className="md:col-span-2">
@@ -383,10 +391,21 @@ export default function ClassForm({
         </div>
 
         {/* Price + Hours + Max Students + Ratio */}
-        <FormInput name="price" label="Price" placeholder="e.g. 100" />
-        <FormInput name="totalHours" label="Total Hours" placeholder="e.g. 8" />
+        <FormInput
+          name="price"
+          type="number"
+          label="Price"
+          placeholder="e.g. 100"
+        />
+        <FormInput
+          name="totalHours"
+          type="number"
+          label="Total Hours"
+          placeholder="e.g. 8"
+        />
         <FormInput
           name="maxStudents"
+          type="number"
           label="Max Students"
           placeholder="e.g. 25"
         />
@@ -427,12 +446,13 @@ export default function ClassForm({
             </span>
           </div>
         </div>
+
         {/* Listing */}
         <div className="flex flex-col gap-2">
           <label className="text-sm font-medium text-gray-700 dark:text-gray">
             Listing
           </label>
-          <label className="flex w-fit items-center gap-2 text-sm cursor-pointer dark:text-gray">
+          <label className="flex items-center gap-2 text-sm cursor-pointer dark:text-gray">
             <input
               type="checkbox"
               {...register("listing")}
