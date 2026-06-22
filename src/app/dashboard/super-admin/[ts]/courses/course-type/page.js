@@ -1,3 +1,4 @@
+// src/app/dashboard/super-admin/[ts]/courses/course-type/page.js
 "use client";
 
 import TableSkeleton from "@/components/skeleton/TableSkeleton";

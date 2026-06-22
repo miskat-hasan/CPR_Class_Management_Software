@@ -95,19 +95,19 @@ const superAdminFullMenu = ts => [
     submenu: [
       {
         label: "Upcoming Classes",
-        href: `/dashboard/super-admin/${ts}/class_and_students/upcoming_classes`,
+        href: `/dashboard/super-admin/${ts}/class-and-students/upcoming-classes`,
       },
       {
         label: "Schedule a Class",
-        href: `/dashboard/super-admin/${ts}/class_and_students/schedule_class`,
+        href: `/dashboard/super-admin/${ts}/class-and-students/schedule-class`,
       },
       {
         label: "Past Classes",
-        href: `/dashboard/super-admin/${ts}/class_and_students/past_class`,
+        href: `/dashboard/super-admin/${ts}/class-and-students/past-classes`,
       },
       {
         label: "Student Search",
-        href: `/dashboard/super-admin/${ts}/class_and_students/student_search`,
+        href: `/dashboard/super-admin/${ts}/class-and-students/student-search`,
       },
     ],
   },

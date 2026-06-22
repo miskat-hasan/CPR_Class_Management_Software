@@ -2,7 +2,6 @@
 
 import SubSectionTitle from "@/components/common/SubSectionTitle";
 import TableSkeleton from "@/components/skeleton/TableSkeleton";
-import CustomSelect from "@/components/shared/form/CustomSelect";
 import FormContainer from "@/components/shared/form/FormContainer";
 import FormInput from "@/components/shared/form/FormInput";
 import { Button } from "@/components/ui/button";
@@ -12,7 +11,7 @@ import {
 } from "@/hooks/api/dashboardApi";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 
 const Page = ({ params }) => {
   const { id } = params;
@@ -41,11 +40,8 @@ const Page = ({ params }) => {
   ];
 
   const {
-    control,
-    watch,
     reset,
     register,
-    formState: { errors },
   } = form;
 
   // get student data
@@ -55,7 +51,7 @@ const Page = ({ params }) => {
   useEffect(() => {
     if (studentData) {
       reset({
-        students: studentData.data.students.map((s) => ({
+        students: studentData.data.students.map(s => ({
           id: s.id,
           status: s.status,
           score: s.score,
@@ -66,10 +62,10 @@ const Page = ({ params }) => {
 
   const { mutate, isPending } = useUpdateStudentScore();
 
-  const onSubmit = (data) => {
+  const onSubmit = data => {
     const payload = {
       course_id: Number(id),
-      students: data.students.map((s) => ({
+      students: data.students.map(s => ({
         id: s.id,
         status: s.status,
         score: s.score,
