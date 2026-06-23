@@ -16,7 +16,7 @@ import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 const Page = ({ params }) => {
-  const { id } = params;
+  const { id: studentId } = params;
 
   const router = useRouter();
 
@@ -37,7 +37,7 @@ const Page = ({ params }) => {
   const isBillingSameAsMailing = watch("billing_same_as_mailing");
 
   const { data: studentData, isLoading: studentDataLoading } =
-    useGetStudent(id);
+    useGetStudent(studentId);
 
   const { data: countryData, isLoading: countryDataLoading } = getAllCountry();
 
@@ -88,7 +88,7 @@ const Page = ({ params }) => {
 
   const onSubmit = (data) => {
     const payload = {
-      student_id: Number(id),
+      student_id: Number(studentId),
       // course_id: studentData?.data?.course_id,
 
       class_details_id: studentData?.data?.class_details_id || null,

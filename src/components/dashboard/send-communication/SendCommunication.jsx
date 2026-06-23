@@ -9,6 +9,7 @@ import FormContainer from "@/components/shared/form/FormContainer";
 import { Button } from "@/components/ui/button";
 import TableSkeleton from "@/components/skeleton/TableSkeleton";
 import {
+  getSingleClass,
   useGetStudentByClassId,
   useResendConfirmationEmail,
   useSendCustomEmail,
@@ -70,10 +71,14 @@ const SendCommunication = () => {
 
   // data
   
-  const { data: classData, isLoading } = useGetStudentByClassId(id);
-  const students = classData?.data?.students ?? [];
+  const { data: studentData, isLoading } = useGetStudentByClassId(id);
+  const students = studentData?.data?.students ?? [];
+  
+  const { data: classData, isLoading: classDataLoading } =
+    getSingleClass(id);
+  
   const instructors = classData?.data?.instructors ?? [];
-  const classDetails = classData?.data?.class_details ?? null;
+  const classDetails = classData?.data ?? null;
 
   // mutations
   const { mutate: resendConfirmation, isPending: resendPending } =

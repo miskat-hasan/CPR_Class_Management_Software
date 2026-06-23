@@ -18,6 +18,8 @@ import {
   getAllLocation,
   getAllCertifyingBody,
 } from "@/hooks/api/dashboardApi";
+import Link from "next/link";
+import { useParams } from "next/navigation";
 
 const RATIO_OPTIONS = [
   { id: "1:1", name: "1:1" },
@@ -48,6 +50,7 @@ export default function ClassForm({
   isEdit = false,
   isPastClass = false,
 }) {
+  const { id } = useParams();
   const [documents, setDocuments] = useState([]);
   const [existingDocs, setExistingDocs] = useState([]);
   const [signatureFile, setSignatureFile] = useState(null);
@@ -117,10 +120,9 @@ export default function ClassForm({
 
   // Filter courses by selected certifying body (client-side)
   const allCourses = coursesData?.data ?? [];
+
   const filteredCourses = selectedCertifyingBody
-    ? allCourses.filter(
-        c => c.course_certifying_body === selectedCertifyingBody,
-      )
+    ? allCourses.filter(c => c.certifying_body?.name === selectedCertifyingBody)
     : allCourses;
 
   // Format instructor/client options
@@ -151,6 +153,21 @@ export default function ClassForm({
     id: l.id,
     name: l.name,
   }));
+
+  // converts "10:00 AM" or "02:30 PM" → "10:00" or "14:30"
+  const to24Hour = timeStr => {
+    if (!timeStr) return "00:00";
+    // already 24-hour (no AM/PM)
+    if (!/AM|PM/i.test(timeStr)) return timeStr.trim();
+    const [time, modifier] = timeStr.trim().split(/\s+/);
+    let [hours, minutes] = time.split(":").map(Number);
+    if (modifier.toUpperCase() === "AM") {
+      if (hours === 12) hours = 0;
+    } else {
+      if (hours !== 12) hours += 12;
+    }
+    return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
+  };
 
   const handleDocumentAdd = e => {
     const files = Array.from(e.target.files ?? []);
@@ -224,7 +241,7 @@ export default function ClassForm({
             if (!firstDate) return null;
 
             const classStart = new Date(
-              `${firstDate}T${defaultValues?.classTimes?.[0]?.timeFrom ?? "00:00"}`,
+              `${firstDate}T${to24Hour(defaultValues?.classTimes?.[0]?.from)}`,
             );
             const cutoff = new Date(classStart);
             cutoff.setDate(cutoff.getDate() - days);
@@ -237,7 +254,20 @@ export default function ClassForm({
                   Registration for this class is closed.
                 </p>
               </div>
-            ) : null;
+            ) : (
+              <div className="md:col-span-2">
+                <p className="text-sm font-medium dark:text-gray">
+                  Registration Link:{" "}
+                  <Link
+                    href={window.origin + "/enroll/" + id}
+                    className="underline text-brown"
+                    target="_blank"
+                  >
+                    {window.origin + "/enroll/" + id}
+                  </Link>
+                </p>
+              </div>
+            );
           })()}
 
         {/* Certifying Body — filters courses client-side */}

@@ -780,7 +780,6 @@ export const searchClasses = ({
   endDate,
 } = {}) => {
   const params = new URLSearchParams();
-  if (type) params.append("type", type);
   if (courseId) params.append("course_id", courseId);
   if (instructorId) params.append("instructor_id", instructorId);
   if (locationId) params.append("location_id", locationId);
@@ -789,14 +788,11 @@ export const searchClasses = ({
   if (startDate) params.append("start_date", startDate);
   if (endDate) params.append("end_date", endDate);
 
-  console.log("enabled", !!enabled);
-
   return useClientApi({
     method: "get",
     isPrivate: true,
     key: [
       "search-classes",
-      type,
       courseId,
       instructorId,
       locationId,
@@ -805,7 +801,10 @@ export const searchClasses = ({
       startDate,
       endDate,
     ],
-    endpoint: `/api/class/search?${params.toString()}`,
+    endpoint:
+      type === "upcoming"
+        ? `/api/class/upcoming?${params.toString()}`
+        : `/api/class/past?${params.toString()}`,
     enabled: !!enabled,
   });
 };
@@ -1315,7 +1314,7 @@ export const useUpdateUserData = () => {
 export const getEnrollmentDetails = id => {
   return useClientApi({
     method: "get",
-    isPrivate: true,
+    isPrivate: false,
     endpoint: `/api/show/course/info?id=${id}`,
   });
 };
@@ -1436,5 +1435,79 @@ export const useSendTextMessage = () => {
     method: "post",
     isPrivate: true,
     endpoint: "/api/class/send-text-message",
+  });
+};
+
+// SITE SETTINGS
+export const useGetSiteSettings = group => {
+  const { selectedTrainingSiteId } = useAuth();
+  return useClientApi({
+    method: "get",
+    key: ["get-site-settings", group],
+    isPrivate: true,
+    axiosOptions: { headers: { "X-Site-Id": selectedTrainingSiteId } },
+    endpoint: `/api/settings/index?group=${group}`,
+  });
+};
+
+export const useUpdateSiteSettings = () => {
+  const { selectedTrainingSiteId } = useAuth();
+  return useClientApi({
+    method: "post",
+    isPrivate: true,
+    axiosOptions: { headers: { "X-Site-Id": selectedTrainingSiteId } },
+    endpoint: "/api/settings/update",
+  });
+};
+
+// ── Custom Registration Questions ──
+
+
+// GET /api/registration-questions?page=1&per_page=10
+export const useGetRegistrationQuestions = (page = 1, perPage = 10) => {
+  return useClientApi({
+    method: "get",
+    key: ["get-registration-questions", page, perPage],
+    isPrivate: true,
+    endpoint: `/api/registration-questions?page=${page}&per_page=${perPage}`,
+  });
+};
+ 
+// GET /api/registration-questions/:id
+export const useGetSingleRegistrationQuestion = (id) => {
+  return useClientApi({
+    method: "get",
+    key: ["get-single-registration-question", id],
+    isPrivate: true,
+    endpoint: `/api/registration-questions/${id}`,
+    // hook is only called when editing; id will be null when adding
+    enabled: !!id,
+  });
+};
+ 
+// POST /api/registration-questions
+export const useCreateRegistrationQuestion = () => {
+  return useClientApi({
+    method: "post",
+    isPrivate: true,
+    endpoint: "/api/registration-questions",
+  });
+};
+ 
+// PUT /api/registration-questions/:id
+export const useUpdateRegistrationQuestion = (id) => {
+  return useClientApi({
+    method: "put",
+    isPrivate: true,
+    endpoint: `/api/registration-questions/${id}`,
+  });
+};
+ 
+// DELETE /api/registration-questions/:id
+export const useDeleteRegistrationQuestion = (id) => {
+  return useClientApi({
+    method: "delete",
+    isPrivate: true,
+    endpoint: `/api/registration-questions/${id}`,
   });
 };

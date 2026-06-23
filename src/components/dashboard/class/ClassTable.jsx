@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import { useParams } from "next/navigation";
 import { toast } from "sonner";
 import ConfirmModal from "@/components/common/ConfirmModal";
@@ -16,7 +15,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { deleteClass, bulkDeleteClasses } from "@/hooks/api/dashboardApi";
 import { CiEdit } from "react-icons/ci";
-import { GoArrowUpRight } from "react-icons/go";
 import { HiOutlineTrash } from "react-icons/hi";
 
 export default function ClassTable({
@@ -24,7 +22,7 @@ export default function ClassTable({
   isLoading,
   links,
   setPage,
-  basePath, // e.g. "upcoming-classes" or "past-classes"
+  basePath,
   onRefetch,
 }) {
   const { ts } = useParams();
@@ -37,15 +35,32 @@ export default function ClassTable({
   const { mutate: bulkDeleteMutate, isPending: isBulkDeleting } =
     bulkDeleteClasses();
 
+  // Only classes with no enrolled students can be selected / deleted
+  const deletableIds = (data ?? [])
+    .filter(item => !item?.enrolled || Number(item.enrolled) === 0)
+    .map(item => item.id);
+
   const allIds = (data ?? []).map(item => item.id);
   const allSelected =
-    allIds.length > 0 && allIds.every(id => selected.includes(id));
+    deletableIds.length > 0 && deletableIds.every(id => selected.includes(id));
 
   const toggleAll = () => {
-    setSelected(allSelected ? [] : allIds);
+    if (allSelected) {
+      setSelected([]);
+    } else {
+      // Only add deletable ids; keep any existing selections from other pages
+      const newSelected = [...new Set([...selected, ...deletableIds])];
+      setSelected(newSelected);
+    }
   };
 
   const toggleOne = id => {
+    // Silently ignore if the class has enrolled students
+    const item = (data ?? []).find(i => i.id === id);
+    if (item?.enrolled && Number(item.enrolled) > 0) {
+      toast.error("Cannot select a class that has enrolled students.");
+      return;
+    }
     setSelected(prev =>
       prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id],
     );
@@ -69,8 +84,26 @@ export default function ClassTable({
   };
 
   const handleBulkDelete = () => {
+    
+    const safeIds = selected.filter(id => {
+      const item = (data ?? []).find(i => i.id === id);
+      return !item?.enrolled || Number(item.enrolled) === 0;
+    });
+
+    if (safeIds.length === 0) {
+      toast.error("No deletable classes selected.");
+      setShowBulkModal(false);
+      return;
+    }
+
+    if (safeIds.length < selected.length) {
+      toast.warning(
+        `${selected.length - safeIds.length} class(es) with enrolled students were skipped.`,
+      );
+    }
+
     const formData = new FormData();
-    selected.forEach(id => formData.append("ids[]", id));
+    safeIds.forEach(id => formData.append("ids[]", id));
 
     bulkDeleteMutate(formData, {
       onSuccess: res => {
@@ -85,6 +118,8 @@ export default function ClassTable({
       },
     });
   };
+
+  const hasEnrolled = item => item?.enrolled && Number(item.enrolled) > 0;
 
   return (
     <>
@@ -123,7 +158,8 @@ export default function ClassTable({
                     type="checkbox"
                     checked={allSelected}
                     onChange={toggleAll}
-                    className="accent-brown cursor-pointer"
+                    disabled={deletableIds.length === 0}
+                    className="accent-brown cursor-pointer disabled:cursor-not-allowed disabled:opacity-40"
                   />
                 </th>
                 <th className="px-3 sm:px-6 py-3 whitespace-nowrap">
@@ -146,7 +182,13 @@ export default function ClassTable({
                         type="checkbox"
                         checked={selected.includes(item.id)}
                         onChange={() => toggleOne(item.id)}
-                        className="accent-brown cursor-pointer"
+                        disabled={hasEnrolled(item)}
+                        title={
+                          hasEnrolled(item)
+                            ? "Cannot delete a class with enrolled students"
+                            : undefined
+                        }
+                        className="accent-brown cursor-pointer disabled:cursor-not-allowed disabled:opacity-30"
                       />
                     </td>
                     <td className="px-3 sm:px-6 py-3 text-sm">
@@ -155,8 +197,26 @@ export default function ClassTable({
                     <td className="px-3 sm:px-6 py-3 text-sm whitespace-nowrap">
                       {item?.instructor_name}
                     </td>
-                    <td className="px-3 sm:px-6 py-3 text-sm whitespace-nowrap">
-                      {item.class_times?.[0]?.date ?? "—"}
+                    <td className="px-3 sm:px-6 py-4 text-sm whitespace-nowrap align-top">
+                      {item.date_time && item.date_time.length > 0 ? (
+                        <div className="flex flex-col gap-1.5 max-w-max">
+                          {item.date_time.map((i, index) => (
+                            <div
+                              key={index}
+                              className="inline-flex items-center gap-2 px-2.5 py-1 text-xs font-medium rounded-md bg-slate-50 dark:bg-neutral-900 text-slate-700"
+                            >
+                              <span className="text-slate-500 dark:text-gray">
+                                {i.date}
+                              </span>
+                              <span className="text-red-600 dark:bg-dark bg-red-50 px-1.5 py-0.5 rounded font-normal">
+                                {i.from} - {i.to}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <span className="text-gray-400">—</span>
+                      )}
                     </td>
                     <td className="px-3 sm:px-6 py-3 text-sm truncate max-w-[160px]">
                       {item?.course_name}
@@ -174,13 +234,15 @@ export default function ClassTable({
                         >
                           <CiEdit className="text-gray-600 dark:text-gray text-[16px]" />
                         </TableButton>
-                        <TableButton
-                          isLink={false}
-                          type="button"
-                          onClick={() => setDeleteTarget(item)}
-                        >
-                          <HiOutlineTrash className="text-gray-600 dark:text-gray text-[16px]" />
-                        </TableButton>
+                        {!hasEnrolled(item) && (
+                          <TableButton
+                            isLink={false}
+                            type="button"
+                            onClick={() => setDeleteTarget(item)}
+                          >
+                            <HiOutlineTrash className="text-gray-600 dark:text-gray text-[16px]" />
+                          </TableButton>
+                        )}
                       </div>
                     </td>
                   </TableBodyRow>
@@ -221,8 +283,8 @@ export default function ClassTable({
       {/* Bulk delete */}
       <ConfirmModal
         open={showBulkModal}
-        title={`Delete ${selected.length} classes?`}
-        description="All selected classes will be permanently deleted."
+        title={`Delete ${selected.length} class${selected.length !== 1 ? "es" : ""}?`}
+        description="All selected classes will be permanently deleted. Classes with enrolled students are automatically excluded."
         confirmLabel="Delete All"
         onConfirm={handleBulkDelete}
         onCancel={() => setShowBulkModal(false)}
