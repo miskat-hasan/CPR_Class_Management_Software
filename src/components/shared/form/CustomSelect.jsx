@@ -36,6 +36,7 @@ const CustomSelect = ({
     if (!opt) return "";
     return (
       opt.name ??
+      opt.name ??
       opt.training_center_name ??
       opt.company ??
       opt.course_name ??

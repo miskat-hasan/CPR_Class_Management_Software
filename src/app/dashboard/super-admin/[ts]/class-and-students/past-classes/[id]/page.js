@@ -21,7 +21,9 @@ export default function EditPastClassPage() {
 
   const defaultValues = classData
     ? {
-        certifyingBodyId: String(classData.course?.course_certifying_body_id ?? ""),
+        certifyingBodyId: String(
+          classData.course?.course_certifying_body_id ?? "",
+        ),
         certifyingBody: classData.course?.course_certifying_body ?? "",
         course: String(classData.course_id ?? ""),
         client: String(classData.client_id ?? ""),
@@ -72,7 +74,7 @@ export default function EditPastClassPage() {
     <div className="flex flex-col gap-[10px] lg:gap-[20px]">
       <SectionTitle title={classData?.course_name} />
       <StudentRoster id={id} />
-        <SubSectionTitle subtitle="Edit Course" />
+      <SubSectionTitle subtitle="Course Details" />
       <div className="bg-white dark:bg-black p-4 lg:p-6 rounded-[14px] shadow">
         <ClassForm
           defaultValues={defaultValues}

@@ -40,11 +40,11 @@ const RegistrationSettings = () => {
             label="Site Name"
             placeholder="Site Name Here"
           />
-          <FormInput
+          {/* <FormInput
             name="Schedule Page Format"
             label="Schedule Page Format"
             placeholder="Schedule Page Format Here"
-          />
+          /> */}
 
           <div className="flex flex-col gap-2 my-2 lg:my-4">
             <p className="font-semibold text-[15px] text-gray-700">Options</p>
