@@ -81,7 +81,7 @@ export default function EditPastClassPage() {
           onSubmit={onSubmit}
           isPending={isPending}
           isEdit={true}
-          isPastClass={true} // ← enables signature upload
+          isPastClass={true}
         />
       </div>
     </div>
