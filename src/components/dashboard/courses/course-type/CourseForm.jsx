@@ -162,14 +162,13 @@ export default function CourseForm({
   useEffect(() => {
     if (defaultValues) {
       reset(defaultValues);
-      setTimeout(() => {
-        if (descriptionRef.current && defaultValues.description) {
-          descriptionRef.current?.setContents?.(defaultValues.description);
-        }
-        if (emailBodyRef.current && defaultValues.email_body) {
-          emailBodyRef.current?.setContents?.(defaultValues.email_body);
-        }
-      }, 100);
+
+      if (descriptionRef.current && defaultValues.description) {
+        descriptionRef.current?.setContents?.(defaultValues.description);
+      }
+      if (emailBodyRef.current && defaultValues.email_body) {
+        emailBodyRef.current?.setContents?.(defaultValues.email_body);
+      }
     }
   }, [defaultValues, reset]);
 
@@ -334,15 +333,14 @@ export default function CourseForm({
         </div>
         {isEdit && (
           <div className="flex max-md:flex-col gap-2 font-semibold text-sm text-gray-700 dark:text-gray">
-              Direct Schedule Link:
-              <Link
-                target="_blank"
-                href={`/schedule/${defaultValues?.course_id}`}
-                className="text-brown"
-              >
-                {window.location.origin}/schedule/{defaultValues?.course_id}
-              </Link>
-            
+            Direct Schedule Link:
+            <Link
+              target="_blank"
+              href={`/schedule/${defaultValues?.course_id}`}
+              className="text-brown"
+            >
+              {window.location.origin}/schedule/{defaultValues?.course_id}
+            </Link>
           </div>
         )}
 

@@ -128,7 +128,6 @@ const RegistrationSettingsForm = () => {
     if (settingsData?.data) {
       const d = settingsData.data;
 
-      // Merge options + registration_toggles carefully
       reset({
         ...d,
         options: {
@@ -140,29 +139,33 @@ const RegistrationSettingsForm = () => {
           ...d.registration_toggles,
         },
       });
-      if (customSidebarRef.current) {
-        customSidebarRef.current?.setContents(d?.custom_sidebar_html ?? "");
-      }
 
-      // Set rich-text editors data
-      
-      if (schedulePageTextRef.current) {
-        schedulePageTextRef.current?.setContents(
+      if (schedulePageTextRef.current && d?.schedule_page_text_html) {
+        schedulePageTextRef.current?.setContents?.(
           d?.schedule_page_text_html ?? "",
         );
       }
-      if (termsRef.current) {
-        termsRef.current?.setContents(d?.terms_and_conditions_html ?? "");
+      if (termsRef.current && d?.terms_and_conditions_html) {
+        termsRef.current?.setContents?.(d?.terms_and_conditions_html ?? "");
       }
-      if (textingPrivacyRef.current) {
-        textingPrivacyRef.current?.setContents(d?.texting_privacy_policy ?? "");
+      if (textingPrivacyRef.current && d?.texting_privacy_policy) {
+        textingPrivacyRef.current?.setContents?.(
+          d?.texting_privacy_policy ?? "",
+        );
       }
 
-      if (customSidebarRef.current) {
-        customSidebarRef.current?.setContents(d?.custom_sidebar_html ?? "");
+      if (customSidebarRef.current && d?.custom_sidebar_html) {
+        customSidebarRef.current?.setContents?.(d?.custom_sidebar_html ?? "");
       }
     }
-  }, [settingsData, reset]);
+  }, [
+    settingsData,
+    reset,
+    customSidebarRef.current,
+    schedulePageTextRef.current,
+    termsRef.current,
+    textingPrivacyRef.current,
+  ]);
 
   const onSubmit = data => {
     const payload = {
