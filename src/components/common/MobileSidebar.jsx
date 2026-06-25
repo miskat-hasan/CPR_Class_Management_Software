@@ -49,11 +49,6 @@ const MobileSidebar = ({ onClose, isSidebarOpen }) => {
     }
   }, [pathname, menuItems.length]);
 
-  // Close sidebar on route change
-  useEffect(() => {
-    onClose();
-  }, [pathname]);
-
   const handleSiteChange = val => {
     setSelectedTrainingSiteId(val);
 
@@ -161,6 +156,7 @@ const MobileSidebar = ({ onClose, isSidebarOpen }) => {
                             <li key={sub.label}>
                               <Link
                                 href={sub.href}
+                                onClick={() => onClose()}
                                 className={`flex items-center pl-8 pr-4 py-2.5 text-xs relative ${
                                   active
                                     ? "text-gray-900 dark:text-white font-semibold"
