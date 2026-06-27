@@ -1,4 +1,4 @@
-import StudentSearch from "@/components/common/StudentSearch";
+import StudentSearch from "@/components/dashboard/class-and-students/StudentSearch";
 
 export default function StudentSearchPage() {
   return <StudentSearch />;

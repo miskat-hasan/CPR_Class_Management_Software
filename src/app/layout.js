@@ -23,7 +23,7 @@ export default function RootLayout({ children }) {
           dangerouslySetInnerHTML={{
             __html: `
     try {
-      var theme = localStorage.getItem('theme') ?? 'dark';
+      var theme = localStorage.getItem('theme') ?? 'light';
       document.documentElement.classList.toggle('dark', theme === 'dark');
     } catch(e) {}
   `,
