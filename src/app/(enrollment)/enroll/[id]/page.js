@@ -5,10 +5,10 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useParams } from "next/navigation";
 import { getAllCountry, getEnrollmentDetails } from "@/hooks/api/dashboardApi";
-import EnrollSidebar from "@/components/enroll/EnrollSidebar";
-import StepCourseOptions from "@/components/enroll/StepCourseOptions";
-import StepStudentInfo from "@/components/enroll/StepStudentInfo";
-import StepReviewPayment from "@/components/enroll/StepReviewPayment";
+import EnrollSidebar from "@/components/enrollment/EnrollSidebar";
+import StepCourseOptions from "@/components/enrollment/StepCourseOptions";
+import StepStudentInfo from "@/components/enrollment/StepStudentInfo";
+import StepReviewPayment from "@/components/enrollment/StepReviewPayment";
 
 const Page = () => {
   const { id } = useParams();

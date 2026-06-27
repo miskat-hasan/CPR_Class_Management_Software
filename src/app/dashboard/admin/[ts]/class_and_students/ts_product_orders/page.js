@@ -1,4 +1,4 @@
-import TsProductOrders from "@/components/dashboard/class_and_students/ts_product_orders/TsProductOrders";
+import TsProductOrders from "@/components/dashboard/class-and-students/ts-product-orders/TsProductOrders";
 
 const Page = ({ params }) => {
   const { ts } = params;

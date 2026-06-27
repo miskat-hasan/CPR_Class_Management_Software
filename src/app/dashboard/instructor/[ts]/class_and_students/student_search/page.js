@@ -1,11 +1,11 @@
-import StudentSearch from "@/components/common/StudentSearch"
+import StudentSearch from "@/components/dashboard/class-and-students/StudentSearch";
 
 const Page = () => {
   return (
     <>
       <StudentSearch />
     </>
-  )
-}
+  );
+};
 
-export default Page
+export default Page;
