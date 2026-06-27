@@ -1,6 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { ArrowLeftIcon, ArrowRightIcon } from "lucide-react";
+import { ArrowLeftIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export default function NotFound() {
@@ -17,7 +17,7 @@ export default function NotFound() {
       </p>
 
       <Button
-        onClick={() => router.back()}
+        onClick={() => router.back() ?? router.push("/")}
         className="mt-6 rounded-lg bg-gray px-6 py-3 text-white hover:bg-gray-800 transition cursor-pointer flex items-center gap-2"
       >
         <ArrowLeftIcon size={20}/> Go Back

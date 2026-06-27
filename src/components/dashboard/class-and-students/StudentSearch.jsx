@@ -1,4 +1,3 @@
-// src/components/common/StudentSearch.jsx
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -10,23 +9,24 @@ import { Button } from "@/components/ui/button";
 import { SearchIcon } from "@/components/svg/SvgContainer";
 import { searchStudent } from "@/hooks/api/dashboardApi";
 import TableSkeleton from "@/components/skeleton/TableSkeleton";
+import {
+  Table,
+  TableBodyRow,
+  TableHead,
+} from "@/components/common/TableElement";
 
 const StudentSearch = () => {
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
-  // Filter states
   const [searchBy, setSearchBy] = useState("name");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [classId, setClassId] = useState("");
-
   const [searchTriggered, setSearchTriggered] = useState(false);
 
-  const handleSearch = () => {
-    setSearchTriggered(true);
-  };
+  const handleSearch = () => setSearchTriggered(true);
 
   const { data: studentData, isLoading } = searchStudent(
     page,
@@ -42,16 +42,18 @@ const StudentSearch = () => {
     setSearchTriggered(false);
   }, [studentData, firstName, lastName, email, phone, classId]);
 
+  const students = studentData?.data?.data?.data ?? [];
+  const links = studentData?.data?.data?.links ?? [];
+  const hasSearched = !searchTriggered && studentData !== undefined;
+
   return (
     <div className="flex flex-col gap-[12.5px] lg:gap-[25px]">
-      {/* Header */}
       <div className="flex justify-between">
-        <SectionTitle title={"Student Search Results"} />
+        <SectionTitle title="Student Search Results" />
       </div>
 
       {/* Search Filters */}
-      <div className="px-[16px] py-[16px] lg:px-[32px] lg:py-[32px] bg-white dark:bg-black rounded-[16px] flex flex-wrap lg:flex-nowrap gap-[10px] xl:gap-[24px]">
-        {/* Search By Dropdown */}
+      <div className="px-[16px] py-[16px] lg:px-[32px] lg:py-[32px] bg-white dark:bg-black rounded-[16px] flex flex-wrap lg:flex-nowrap gap-[10px] xl:gap-[24px] items-end">
         <CustomSelect
           id="searchBy"
           label="Search By"
@@ -63,7 +65,7 @@ const StudentSearch = () => {
             { id: "phone", name: "Phone Number" },
             { id: "class_id", name: "Class Id" },
           ]}
-          onChange={(val) => {
+          onChange={val => {
             setSearchBy(val);
             setFirstName("");
             setLastName("");
@@ -71,11 +73,10 @@ const StudentSearch = () => {
             setPhone("");
             setClassId("");
           }}
-          className="w-[200px]"
+          className="max-w-[300px]"
         />
 
-        {/* Dynamic Inputs */}
-        {searchBy === "name" ? (
+        {searchBy === "name" && (
           <>
             <CustomInput
               id="firstName"
@@ -94,7 +95,8 @@ const StudentSearch = () => {
               className="w-[200px]"
             />
           </>
-        ) : searchBy === "email" ? (
+        )}
+        {searchBy === "email" && (
           <CustomInput
             id="email"
             label="Email"
@@ -103,7 +105,8 @@ const StudentSearch = () => {
             onChange={setEmail}
             className="w-[250px]"
           />
-        ) : searchBy === "phone" ? (
+        )}
+        {searchBy === "phone" && (
           <CustomInput
             id="phone"
             label="Phone Number"
@@ -112,7 +115,8 @@ const StudentSearch = () => {
             onChange={setPhone}
             className="w-[250px]"
           />
-        ) : searchBy === "class_id" ? (
+        )}
+        {searchBy === "class_id" && (
           <CustomInput
             id="class_id"
             label="Class ID"
@@ -121,59 +125,53 @@ const StudentSearch = () => {
             onChange={setClassId}
             className="w-[250px]"
           />
-        ) : null}
+        )}
 
-        {/* Search Button */}
-        <div className="flex justify-end items-end">
-          <Button
-            onClick={handleSearch}
-            className="py-[11px] lg:py-[22px] cursor-pointer bg-brown dark:bg-dark-brown flex items-center gap-2"
-            disabled={isLoading}
-          >
-            <SearchIcon />
-            {isLoading ? "Searching..." : "Search"}
-          </Button>
-        </div>
+        <Button
+          onClick={handleSearch}
+          disabled={isLoading}
+          className="py-[11px] lg:py-[22px] cursor-pointer bg-brown dark:bg-dark-brown flex items-center gap-2"
+        >
+          <SearchIcon />
+          {isLoading ? "Searching..." : "Search"}
+        </Button>
       </div>
 
-      {/* Table */}
+      {/* Results Table */}
       <div className="p-[13px] lg:p-[26px] bg-white dark:bg-black rounded-[14px] flex flex-col gap-[12px] lg:gap-[24px]">
         <SubSectionTitle subtitle="All List" />
+
         {isLoading ? (
           <TableSkeleton />
         ) : (
           <div className="overflow-x-auto">
-            <table className="min-w-[850px] w-full text-sm sm:text-base text-left text-gray-700">
-              <thead className="bg-gray-50 text-black capitalize text-[16px] sm:text-[20px] font-semibold">
+            <Table>
+              <TableHead>
                 <tr>
-                  <th className="px-3 sm:px-6 py-3 w-[40px]">SL</th>
+                  <th className="px-3 sm:px-6 py-3 w-[50px]">SL</th>
                   <th className="px-3 sm:px-6 py-3">Name</th>
-                  <th className="px-3 sm:px-6 py-3">Reg Date</th>
+                  <th className="px-3 sm:px-6 py-3 whitespace-nowrap">
+                    Reg Date
+                  </th>
                   <th className="px-3 sm:px-6 py-3">Phone</th>
                   <th className="px-3 sm:px-6 py-3">Class</th>
                   <th className="px-3 sm:px-6 py-3">Status</th>
                 </tr>
-              </thead>
-
+              </TableHead>
               <tbody>
-                {studentData?.data?.data?.data?.length > 0 ? (
-                  studentData?.data?.data?.data?.map((item, index) => (
-                    <tr
-                      key={index}
-                      className="border-b hover:bg-gray-50 transition-all"
-                    >
-                      <td className="px-3 sm:px-6 py-3 text-gray-800">
-                        {index + 1}
+                {students.length > 0 ? (
+                  students.map((item, index) => (
+                    <TableBodyRow key={index}>
+                      <td className="px-3 sm:px-6 py-3">
+                        {(page - 1) * perPage + index + 1}
                       </td>
-                      <td className="px-3 sm:px-6 py-3 text-gray-800 whitespace-nowrap">
-                        <div>
-                          <p className="font-medium">
-                            {item.first_name} {item.last_name}
-                          </p>
-                          <p className="text-xs sm:text-sm text-gray-500 truncate">
-                            {item.email}
-                          </p>
-                        </div>
+                      <td className="px-3 sm:px-6 py-3 whitespace-nowrap">
+                        <p className="font-medium dark:text-white">
+                          {item.first_name} {item.last_name}
+                        </p>
+                        <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 truncate">
+                          {item.email}
+                        </p>
                       </td>
                       <td className="px-3 sm:px-6 py-3 whitespace-nowrap">
                         {item.reg_date}
@@ -186,62 +184,56 @@ const StudentSearch = () => {
                       </td>
                       <td className="px-3 sm:px-6 py-3">
                         <span
-                          className={`px-3 py-1 rounded-full text-xs font-medium ${
+                          className={`px-2.5 py-0.5 rounded-full text-xs font-medium ${
                             item.status === "Complete"
-                              ? "bg-green-100 text-green-700"
-                              : "bg-blue-100 text-blue-700"
+                              ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
+                              : "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400"
                           }`}
                         >
                           {item.status}
                         </span>
                       </td>
-                    </tr>
+                    </TableBodyRow>
                   ))
-                ) : searchTriggered ? (
-                  <tr>
-                    <td
-                      colSpan={7}
-                      className="text-center py-6 text-gray-500 italic"
-                    >
-                      No results found
-                    </td>
-                  </tr>
                 ) : (
                   <tr>
                     <td
-                      colSpan={7}
-                      className="text-center py-6 text-gray-500 italic"
+                      colSpan={6}
+                      className="text-center py-6 text-gray-500 dark:text-gray-400 italic"
                     >
-                      Click Search to find students
+                      {hasSearched
+                        ? "No results found"
+                        : "Click Search to find students"}
                     </td>
                   </tr>
                 )}
               </tbody>
-            </table>
+            </Table>
           </div>
         )}
-        <div className="flex flex-col md:flex-row items-center justify-end mt-3 lg:mt-6 gap-3">
-          {/* Pagination */}
-          <div className="flex items-center gap-2">
-            {studentData?.data?.links?.map((link, index) => (
+
+        {/* Pagination */}
+        {links.length > 0 && (
+          <div className="flex items-center justify-end gap-2 flex-wrap">
+            {links.map((link, index) => (
               <button
                 key={index}
                 disabled={link.url === null || link.page === null}
                 onClick={() => link.page && setPage(link.page)}
-                className={`px-3 py-1 text-sm border rounded-md ${
+                className={`px-3 py-1 text-sm border rounded-md transition-colors ${
                   link.active
-                    ? "border-blue-500 text-blue-600 bg-blue-50"
-                    : "hover:bg-gray-100"
+                    ? "border-brown text-brown bg-brown/10 dark:border-dark-brown dark:text-dark-brown dark:bg-dark-brown/10"
+                    : "border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 dark:text-gray-300"
                 } ${
                   link.url === null || link.page === null
-                    ? "text-gray-400 cursor-not-allowed"
+                    ? "text-gray-300 dark:text-gray-600 cursor-not-allowed"
                     : "cursor-pointer"
                 }`}
                 dangerouslySetInnerHTML={{ __html: link.label }}
               />
             ))}
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
