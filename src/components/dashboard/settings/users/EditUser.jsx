@@ -1,4 +1,4 @@
-// src/components/dashboard/settings/users/AddUser.jsx
+// src/components/dashboard/settings/users/EditUser.jsx
 "use client";
 
 import BackButton from "@/components/common/BackButton";
@@ -12,12 +12,13 @@ import {
   getAllCountry,
   getAllRole,
   getallTrainingsite,
-  useStoreUser,
+  useGetSingleUser,
+  useUpdateUser,
 } from "@/hooks/api/dashboardApi";
 import useAuth from "@/hooks/useAuth";
 import { LucideTrash2 } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { FaPlus } from "react-icons/fa";
 import { toast } from "sonner";
@@ -37,9 +38,9 @@ const ASSIGNABLE_ROLES = {
   Client: [],
 };
 
-const AddUser = () => {
+const EditUser = () => {
   const router = useRouter();
-  const { ts } = useParams();
+  const { ts, id } = useParams();
   const isPrimarySite = String(ts) === "1";
   const { activeRole } = useAuth();
   const authRoleName = activeRole?.role_name;
@@ -71,9 +72,9 @@ const AddUser = () => {
     control,
     formState: { errors },
     watch,
+    reset,
   } = form;
 
-  // Watch all trainingSites rows to detect duplicates live
   const watchedSites = watch("trainingSites");
 
   const { data: countryData, isLoading: countryDataLoading } = getAllCountry();
@@ -81,26 +82,66 @@ const AddUser = () => {
     getallTrainingsite();
   const { data: rolesData, isLoading: rolesLoading } = getAllRole();
 
+  const { data: userData, isLoading: userLoading } = useGetSingleUser(id);
+
   const { fields, append, remove } = useFieldArray({
     control,
     name: "trainingSites",
   });
 
-  const { mutate: storeUserMutation, isPending: storeUserPending } =
-    useStoreUser();
+  const { mutate: updateUserMutation, isPending: updateUserPending } =
+    useUpdateUser();
 
-  // Roles for primary site — exclude Super Admin
   const primarySiteRoles = useMemo(() => {
-    return (rolesData?.data ?? []).filter((r) => r.name !== "Super Admin");
+    return (rolesData?.data ?? []).filter(r => r.name !== "Super Admin");
   }, [rolesData]);
 
-  // Roles for other sites — filtered by auth user's role
   const otherSiteRoles = useMemo(() => {
     const assignable = ASSIGNABLE_ROLES[authRoleName] ?? [];
-    return (rolesData?.data ?? []).filter((r) => assignable.includes(r.name));
+    return (rolesData?.data ?? []).filter(r => assignable.includes(r.name));
   }, [rolesData, authRoleName]);
 
-  // Check if a site+role combo is already used in another row
+  // Pre-populate form once user data is loaded
+  useEffect(() => {
+    const user = userData?.data;
+    if (!user) return;
+
+    const siteRoles =
+      user.user_roles?.length > 0
+        ? user.user_roles.map(ur => ({
+            tsite_id: String(
+              ur?.training_site_id ?? ur?.training_site?.id ?? "",
+            ),
+            role_id: String(ur?.role_id ?? ur?.role?.id ?? ""),
+          }))
+        : [{ tsite_id: "", role_id: "" }];
+
+    const existingRoleIds = (user.user_roles ?? []).map(ur =>
+      String(ur?.role_id ?? ur?.role?.id ?? ""),
+    );
+
+    reset({
+      firstName: user.first_name ?? "",
+      lastName: user.last_name ?? "",
+      username: user.user_name ?? "",
+      mobilePhone: user.mobile_phone ?? "",
+      address1: user.address_line_1 ?? "",
+      address2: user.address_line_2 ?? "",
+      city: user.city ?? "",
+      stateProvince: user.state_province_region ?? "",
+      zipPostalCode: user.zip_postal_code ?? "",
+      country: String(user.country_id ?? ""),
+      printName: user.name_to_print_on_card ?? "",
+      ahaInstructorId: user.aha_instructor_id ?? "",
+      hsiInstructorId: user.hsi_instructor_id ?? "",
+      rclcUsername: user.rclc_username ?? "",
+      emailAddress: user.email ?? "",
+      password: "",
+      trainingSites: siteRoles,
+      roleIds: existingRoleIds,
+    });
+  }, [userData, reset]);
+
   const isDuplicate = (currentIndex, tsiteId, roleId) => {
     if (!tsiteId || !roleId) return false;
     return watchedSites.some(
@@ -111,11 +152,10 @@ const AddUser = () => {
     );
   };
 
-  const onSubmit = (values) => {
-    // Extra duplicate check before submit
+  const onSubmit = values => {
     if (isPrimarySite) {
       const combos = values.trainingSites.map(
-        (ts) => `${ts.tsite_id}-${ts.role_id}`,
+        ts => `${ts.tsite_id}-${ts.role_id}`,
       );
       const hasDuplicates = combos.length !== new Set(combos).size;
       if (hasDuplicates) {
@@ -127,6 +167,7 @@ const AddUser = () => {
     }
 
     const base = {
+      id: Number(id),
       first_name: values.firstName,
       last_name: values.lastName,
       username: values.username,
@@ -142,14 +183,18 @@ const AddUser = () => {
       hsi_instructor_id: values.hsiInstructorId,
       rclc_username: values.rclcUsername,
       email: values.emailAddress,
-      password: values.password,
       active_user: true,
     };
+
+    // Only include password if the user typed something new
+    if (values.password) {
+      base.password = values.password;
+    }
 
     const payload = isPrimarySite
       ? {
           ...base,
-          site_roles: values.trainingSites.map((ts) => ({
+          site_roles: values.trainingSites.map(ts => ({
             training_site_id: Number(ts.tsite_id),
             role_id: Number(ts.role_id),
           })),
@@ -162,12 +207,12 @@ const AddUser = () => {
           ).map(Number),
         };
 
-    storeUserMutation(
+    updateUserMutation(
       { data: payload },
       {
-        onSuccess: (data) => {
+        onSuccess: data => {
           if (data?.status) {
-            toast.success(data?.message || "User added successfully!");
+            toast.success(data?.message || "User updated successfully!");
             router.back();
           }
         },
@@ -175,9 +220,23 @@ const AddUser = () => {
     );
   };
 
+  if (userLoading) {
+    return (
+      <section className="flex flex-col gap-4">
+        <SectionTitle title={"Edit User"} />
+        <div className="p-[26px] bg-white dark:bg-black rounded-[14px] flex items-center justify-center min-h-[200px]">
+          <div className="flex flex-col items-center gap-3 text-gray-400">
+            <div className="w-8 h-8 border-4 border-gray-300 border-t-brown rounded-full animate-spin" />
+            <span className="text-sm">Loading user data…</span>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="flex flex-col gap-4">
-      <SectionTitle title={"Add User"} />
+      <SectionTitle title={"Edit User"} />
       <div className="p-[26px] bg-white dark:bg-black rounded-[14px] flex flex-col gap-[24px]">
         <FormContainer form={form} onSubmit={onSubmit}>
           <div className="grid grid-cols-2 gap-6">
@@ -278,11 +337,10 @@ const AddUser = () => {
             />
             <FormInput
               name="password"
-              label="Password"
-              placeholder="Password"
+              label="Password (leave blank to keep current)"
+              placeholder="New password"
               type="password"
               rules={{
-                required: "Password is required",
                 minLength: { value: 8, message: "Minimum 8 characters" },
               }}
             />
@@ -353,7 +411,6 @@ const AddUser = () => {
                           )}
                         </div>
 
-                        {/* Duplicate warning shown inline under the row */}
                         {duplicate && (
                           <p className="text-xs text-red-500 mt-1.5">
                             This training site and role combination is already
@@ -373,7 +430,6 @@ const AddUser = () => {
                   </div>
                 </>
               ) : (
-                // OTHER SITES — multi-select roles
                 <div className="mt-3">
                   <Controller
                     name="roleIds"
@@ -402,10 +458,10 @@ const AddUser = () => {
             <BackButton />
             <Button
               type="submit"
-              disabled={storeUserPending}
+              disabled={updateUserPending}
               className="px-6 py-2 bg-[#C1121F] text-white rounded-md text-sm font-medium hover:bg-[#a00e1a] disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {storeUserPending ? "Saving..." : "Add User"}
+              {updateUserPending ? "Saving..." : "Update User"}
             </Button>
           </div>
         </FormContainer>
@@ -414,4 +470,4 @@ const AddUser = () => {
   );
 };
 
-export default AddUser;
+export default EditUser;

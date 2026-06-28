@@ -1,9 +1,9 @@
 import { Controller, useForm } from "react-hook-form";
-import FormContainer from "../shared/form/FormContainer";
-import FormInput from "../shared/form/FormInput";
+import FormContainer from "../../shared/form/FormContainer";
+import FormInput from "../../shared/form/FormInput";
 import { getAllCountry, useStoreStudentData } from "@/hooks/api/dashboardApi";
-import CustomSelect from "../shared/form/CustomSelect";
-import { Button } from "../ui/button";
+import CustomSelect from "../../shared/form/CustomSelect";
+import { Button } from "../../ui/button";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -51,11 +51,11 @@ const AddStudentModal = ({ classId, open, onClose }) => {
 
   const { mutate, isPending } = useStoreStudentData();
 
-  const onSubmit = (data) => {
+  const onSubmit = data => {
     mutate(
       { class_details_id: classId, course_id: classId, ...data },
       {
-        onSuccess: (data) => {
+        onSuccess: data => {
           queryClient.invalidateQueries(["get-student-by-class", classId]);
           toast.success(data?.message || "Student added successfully");
           onClose();
@@ -67,10 +67,10 @@ const AddStudentModal = ({ classId, open, onClose }) => {
   return (
     <div
       onClick={onClose}
-      className="w-full h-screen bg-gray/40 absolute top-0 left-0 flex items-center justify-center px-2"
+      className="w-full h-screen bg-gray/40 absolute top-0 left-0 flex items-center justify-center px-2 z-50"
     >
       <div
-        onClick={(e) => e.stopPropagation()}
+        onClick={e => e.stopPropagation()}
         className="bg-white dark:bg-black p-4 lg:p-6 rounded-lg shadow max-w-[600px] w-full"
       >
         <h5 className="text-black text-[20px] font-medium leading-[32.5px] mb-2">
@@ -79,10 +79,26 @@ const AddStudentModal = ({ classId, open, onClose }) => {
         <FormContainer form={form} onSubmit={onSubmit}>
           {/* Grid Layout */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5 lg:gap-3">
-            <FormInput name="first_name" placeholder="First Name" />
-            <FormInput name="last_name" placeholder="Last Name" />
-            <FormInput name="email" placeholder="Email Address" />
-            <FormInput name="primary_phone" placeholder="Mobile Phone" />
+            <FormInput
+              name="first_name"
+              placeholder="First Name"
+              rules={{ required: "First Name is required" }}
+            />
+            <FormInput
+              name="last_name"
+              placeholder="Last Name"
+              rules={{ required: "Last Name is required" }}
+            />
+            <FormInput
+              name="email"
+              placeholder="Email Address"
+              rules={{ required: "Email is required" }}
+            />
+            <FormInput
+              name="primary_phone"
+              placeholder="Mobile Phone"
+              rules={{ required: "Mobile Phone is required" }}
+            />
             <FormInput name="address_1" placeholder="Address 1" />
             <FormInput name="address_2" placeholder="Address 2" />
             <FormInput name="city" placeholder="City" />
@@ -91,7 +107,6 @@ const AddStudentModal = ({ classId, open, onClose }) => {
             <Controller
               name="country_id"
               control={control}
-              rules={{ required: "Country is required" }}
               render={({ field }) => (
                 <CustomSelect
                   {...field}
@@ -99,7 +114,7 @@ const AddStudentModal = ({ classId, open, onClose }) => {
                   placeholder="Country"
                   isLoading={countryDataLoading}
                   options={countryData?.data}
-                  error={errors.country?.message}
+                  error={errors.country_id?.message}
                   className="flex-1"
                 />
               )}
@@ -127,13 +142,13 @@ const AddStudentModal = ({ classId, open, onClose }) => {
               onClick={onClose}
               type="button"
               variant="outline"
-              className={"cursor-pointer"}
+              className={"cursor-pointer dark:text-white"}
             >
               Cancel
             </Button>
             <Button
               type="submit"
-              className="px-6 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium cursor-pointer text-white bg-brown dark:bg-dark-brown cursor hover:bg-brown  focus:outline-none disabled:opacity-60"
+              className="px-6 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium cursor-pointer text-white bg-brown dark:bg-dark-brown cursor hover:bg-brown  focus:outline-none disabled:opacity-60 dark:hover:bg-brown"
               disabled={isPending}
             >
               {isPending ? "Processing ..." : "Add Student"}

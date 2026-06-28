@@ -266,6 +266,34 @@ export const useDeleteUser = () => {
   });
 };
 
+export const useGetSingleUser = id => {
+  const { selectedTrainingSiteId } = useAuth();
+  return useClientApi({
+    method: "get",
+    isPrivate: true,
+    key: ["get-single-user", id],
+    endpoint: `/api/site-users/${id}`,
+    enabled: !!id,
+    axiosOptions: { headers: { "X-Site-Id": selectedTrainingSiteId } },
+  });
+};
+
+export const useUpdateUser = () => {
+  const queryClient = useQueryClient();
+  const { selectedTrainingSiteId } = useAuth();
+  return useClientApi({
+    method: "post",
+    isPrivate: true,
+    endpoint: "/api/site-users/update",
+    axiosOptions: { headers: { "X-Site-Id": selectedTrainingSiteId } },
+    onSuccess: data => {
+      queryClient.invalidateQueries(["get-all-users"]);
+    },
+    onError: err =>
+      toast.error(err?.response?.data?.message || "Something went wrong!"),
+  });
+};
+
 export const getAllRole = () => {
   return useClientApi({
     method: "get",

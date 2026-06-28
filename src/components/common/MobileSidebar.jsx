@@ -55,8 +55,8 @@ const MobileSidebar = ({ onClose, isSidebarOpen }) => {
     const segment = roleSegment[role];
     const isSuperAdminOnMaster = role === "Super Admin" && String(val) === "1";
     const page = isSuperAdminOnMaster
-      ? "class_and_students/upcoming_classes"
-      : "class_and_students/classes";
+      ? "class-and-students/upcoming_classes"
+      : "class-and-students/classes";
 
     router.push(`/dashboard/${segment}/${val}/${page}`);
   };

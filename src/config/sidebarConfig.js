@@ -288,11 +288,11 @@ const superAdminSiteMenu = ts => [
     submenu: [
       {
         label: "Classes",
-        href: `/dashboard/super-admin/${ts}/class_and_students/classes`,
+        href: `/dashboard/super-admin/${ts}/class-and-students/classes`,
       },
       {
         label: "Student Search",
-        href: `/dashboard/super-admin/${ts}/class_and_students/student_search`,
+        href: `/dashboard/super-admin/${ts}/class-and-students/student_search`,
       },
     ],
   },
@@ -339,7 +339,7 @@ const superAdminSiteMenu = ts => [
       },
       {
         label: "Order TC Product",
-        href: `/dashboard/super-admin/${ts}/class_and_students/ts_product_orders`,
+        href: `/dashboard/super-admin/${ts}/class-and-students/ts_product_orders`,
       },
     ],
   },
@@ -435,11 +435,11 @@ const adminMenu = ts => [
     submenu: [
       {
         label: "Classes",
-        href: `/dashboard/admin/${ts}/class_and_students/classes`,
+        href: `/dashboard/admin/${ts}/class-and-students/classes`,
       },
       {
         label: "Student Search",
-        href: `/dashboard/admin/${ts}/class_and_students/student_search`,
+        href: `/dashboard/admin/${ts}/class-and-students/student_search`,
       },
     ],
   },
@@ -486,7 +486,7 @@ const adminMenu = ts => [
       },
       {
         label: "Order TC Product",
-        href: `/dashboard/admin/${ts}/class_and_students/ts_product_orders`,
+        href: `/dashboard/admin/${ts}/class-and-students/ts_product_orders`,
       },
     ],
   },
@@ -582,11 +582,11 @@ const instructorMenu = ts => [
     submenu: [
       {
         label: "Classes",
-        href: `/dashboard/instructor/${ts}/class_and_students/classes`,
+        href: `/dashboard/instructor/${ts}/class-and-students/classes`,
       },
       {
         label: "Student Search",
-        href: `/dashboard/instructor/${ts}/class_and_students/student_search`,
+        href: `/dashboard/instructor/${ts}/class-and-students/student_search`,
       },
     ],
   },
@@ -633,7 +633,7 @@ const instructorMenu = ts => [
       },
       {
         label: "Order TC Product",
-        href: `/dashboard/instructor/${ts}/class_and_students/ts_product_orders`,
+        href: `/dashboard/instructor/${ts}/class-and-students/ts_product_orders`,
       },
     ],
   },
@@ -728,11 +728,11 @@ const assistantMenu = ts => [
     submenu: [
       {
         label: "Classes",
-        href: `/dashboard/instructor-assistant/${ts}/class_and_students/classes`,
+        href: `/dashboard/instructor-assistant/${ts}/class-and-students/classes`,
       },
       {
         label: "Student Search",
-        href: `/dashboard/instructor-assistant/${ts}/class_and_students/student_search`,
+        href: `/dashboard/instructor-assistant/${ts}/class-and-students/student_search`,
       },
     ],
   },
@@ -779,7 +779,7 @@ const assistantMenu = ts => [
       },
       {
         label: "Order TC Product",
-        href: `/dashboard/instructor-assistant/${ts}/class_and_students/ts_product_orders`,
+        href: `/dashboard/instructor-assistant/${ts}/class-and-students/ts_product_orders`,
       },
     ],
   },

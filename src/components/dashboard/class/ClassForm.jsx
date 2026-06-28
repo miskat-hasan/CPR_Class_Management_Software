@@ -33,7 +33,6 @@ const RATIO_OPTIONS = [
   { id: "1:9", name: "1:9" },
 ];
 
-// Format instructor name for display
 const formatName = user => {
   if (!user) return "";
   return (
@@ -41,6 +40,62 @@ const formatName = user => {
     user.name ||
     `User #${user.id}`
   );
+};
+
+// "10:00 AM" → "10:00"  |  "14:30" → "14:30"
+const to24Hour = timeStr => {
+  if (!timeStr) return "00:00";
+  if (!/AM|PM/i.test(timeStr)) return timeStr.trim();
+  const [time, modifier] = timeStr.trim().split(/\s+/);
+  let [hours, minutes] = time.split(":").map(Number);
+  if (modifier.toUpperCase() === "AM") {
+    if (hours === 12) hours = 0;
+  } else {
+    if (hours !== 12) hours += 12;
+  }
+  return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
+};
+
+// "HH:MM" → minutes since midnight
+const timeToMinutes = t => {
+  if (!t) return 0;
+  const [h, m] = t.split(":").map(Number);
+  return (h || 0) * 60 + (m || 0);
+};
+
+// Sum hours across all class time rows
+const computeTotalHours = classTimes => {
+  if (!Array.isArray(classTimes) || classTimes.length === 0) return "";
+  let totalMinutes = 0;
+  for (const row of classTimes) {
+    const from = timeToMinutes(to24Hour(row.timeFrom ?? row.from ?? ""));
+    const to = timeToMinutes(to24Hour(row.timeTo ?? row.to ?? ""));
+    const diff = to - from;
+    if (diff > 0) totalMinutes += diff;
+  }
+  if (totalMinutes === 0) return "";
+  // Return as decimal hours, e.g. 90 min → "1.5"
+  const hours = totalMinutes / 60;
+  return Number.isInteger(hours) ? String(hours) : hours.toFixed(2);
+};
+
+// Last date among all class time rows (YYYY-MM-DD)
+const computeLastDate = classTimes => {
+  if (!Array.isArray(classTimes) || classTimes.length === 0) return "";
+  const dates = classTimes
+    .map(r => r.date)
+    .filter(Boolean)
+    .sort();
+  return dates[dates.length - 1] ?? "";
+};
+
+// Add 2 years to a YYYY-MM-DD string
+const addTwoYears = dateStr => {
+  if (!dateStr) return "";
+  const d = new Date(dateStr);
+  if (isNaN(d)) return "";
+  d.setFullYear(d.getFullYear() + 2);
+  return d.toISOString().slice(0, 10);
 };
 
 export default function ClassForm({
@@ -93,17 +148,28 @@ export default function ClassForm({
   });
 
   const selectedCertifyingBody = watch("certifyingBody");
+  const classTimes = watch("classTimes");
+
+  // ── Auto-compute totalHours, certificateIssued, certificateExpire ──────────
+  useEffect(() => {
+    const totalHours = computeTotalHours(classTimes);
+    const lastDate = computeLastDate(classTimes);
+    const expireDate = addTwoYears(lastDate);
+
+    setValue("totalHours", totalHours, { shouldDirty: false });
+    setValue("certificateIssued", lastDate, { shouldDirty: false });
+    setValue("certificateExpire", expireDate, { shouldDirty: false });
+  }, [JSON.stringify(classTimes), setValue]);
 
   useEffect(() => {
     if (defaultValues) {
       reset(defaultValues);
-      if (defaultValues.existingDocuments) {
+      if (defaultValues.existingDocuments)
         setExistingDocs(defaultValues.existingDocuments);
-      }
     }
   }, [defaultValues, reset]);
 
-  // Data fetching — all with type=all
+  // Data fetching
   const { data: certifyingData, isLoading: certifyingLoading } =
     getAllCertifyingBody({ type: "all" });
   const { data: coursesData, isLoading: coursesLoading } = getAllCourses({
@@ -118,71 +184,40 @@ export default function ClassForm({
   const { data: instructorData, isLoading: instructorLoading } =
     getAllInstructor({ type: "all" });
 
-  // Filter courses by selected certifying body (client-side)
   const allCourses = coursesData?.data ?? [];
-
   const filteredCourses = selectedCertifyingBody
-    ? allCourses.filter(c => c.certifying_body?.name === selectedCertifyingBody)
+    ? allCourses.filter(c => c.certifying_body?.id == selectedCertifyingBody)
     : allCourses;
 
-  // Format instructor/client options
   const instructorOptions = (instructorData?.data ?? []).map(u => ({
     id: u.id,
     name: formatName(u),
   }));
-
   const clientOptions = (clientData?.data ?? []).map(u => ({
     id: u.id,
     name: formatName(u),
   }));
-
-  const certifyingOptions = [
-    ...(certifyingData?.data?.length > 0 ? [{ id: "", name: "— All —" }] : []),
-    ...(certifyingData?.data ?? []).map(cb => ({
-      id: cb.name,
-      name: cb.name,
-    })),
-  ];
-
   const courseOptions = filteredCourses.map(c => ({
     id: c.id,
     name: c.course_name,
   }));
-
   const locationOptions = (locationData?.data?.data ?? []).map(l => ({
     id: l.id,
     name: l.name,
   }));
 
-  // converts "10:00 AM" or "02:30 PM" → "10:00" or "14:30"
-  const to24Hour = timeStr => {
-    if (!timeStr) return "00:00";
-    // already 24-hour (no AM/PM)
-    if (!/AM|PM/i.test(timeStr)) return timeStr.trim();
-    const [time, modifier] = timeStr.trim().split(/\s+/);
-    let [hours, minutes] = time.split(":").map(Number);
-    if (modifier.toUpperCase() === "AM") {
-      if (hours === 12) hours = 0;
-    } else {
-      if (hours !== 12) hours += 12;
-    }
-    return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
-  };
+  const certifyingOptions = [
+    ...(certifyingData?.data?.length > 0 ? [{ id: "", name: "— All —" }] : []),
+    ...(certifyingData?.data ?? []).map(cb => ({ id: cb.id, name: cb.name })),
+  ];
 
   const handleDocumentAdd = e => {
-    const files = Array.from(e.target.files ?? []);
-    setDocuments(prev => [...prev, ...files]);
+    setDocuments(prev => [...prev, ...Array.from(e.target.files ?? [])]);
     e.target.value = "";
-  };
-
-  const handleRemoveNewDoc = index => {
-    setDocuments(prev => prev.filter((_, i) => i !== index));
   };
 
   const handleFormSubmit = data => {
     const formData = new FormData();
-
-    formData.append("course_certifying_body_id", data.certifyingBodyId ?? "");
     formData.append("course_id", data.course);
     formData.append("client_id", data.client ?? "");
     formData.append("location_id", data.location);
@@ -206,33 +241,32 @@ export default function ClassForm({
     formData.append("certificate_issued", data.certificateIssued ?? "");
     formData.append("certificate_expire", data.certificateExpire ?? "");
 
-    // Assistants
     (data.assistants ?? []).forEach(id =>
       formData.append("assistant_ids[]", id),
     );
 
-    // Class times
     (data.classTimes ?? []).forEach((item, i) => {
       formData.append(`class_times[${i}][date]`, item.date);
       formData.append(`class_times[${i}][from]`, item.timeFrom);
       formData.append(`class_times[${i}][to]`, item.timeTo);
     });
 
-    // Documents (multiple)
     documents.forEach(file => formData.append("documents[]", file));
 
-    // Signature (past class only)
-    if (isPastClass && signatureFile) {
+    if (isPastClass && signatureFile)
       formData.append("signature", signatureFile);
-    }
 
     onSubmit(formData);
   };
 
+  // ── Read-only date input style ─────────────────────────────────────────────
+  const readOnlyCls =
+    "w-full border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700 text-gray-500 dark:text-gray-400 rounded-md px-3 py-3 text-sm cursor-not-allowed select-none";
+
   return (
     <FormContainer form={form} onSubmit={handleFormSubmit}>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
-        {/* Close registration status */}
+        {/* Registration status / link */}
         {isEdit &&
           (() => {
             const days = Number(defaultValues?.closeRegistrationDays ?? 0);
@@ -241,7 +275,7 @@ export default function ClassForm({
             if (!firstDate) return null;
 
             const classStart = new Date(
-              `${firstDate}T${to24Hour(defaultValues?.classTimes?.[0]?.from)}`,
+              `${firstDate}T${to24Hour(defaultValues?.classTimes?.[0]?.from ?? defaultValues?.classTimes?.[0]?.timeFrom ?? "")}`,
             );
             const cutoff = new Date(classStart);
             cutoff.setDate(cutoff.getDate() - days);
@@ -259,18 +293,23 @@ export default function ClassForm({
                 <p className="text-sm font-medium dark:text-gray">
                   Registration Link:{" "}
                   <Link
-                    href={window.origin + "/enroll/" + id}
+                    href={
+                      typeof window !== "undefined"
+                        ? `${window.origin}/enroll/${id}`
+                        : "#"
+                    }
                     className="underline text-brown"
                     target="_blank"
                   >
-                    {window.origin + "/enroll/" + id}
+                    {typeof window !== "undefined" &&
+                      `${window.origin}/enroll/${id}`}
                   </Link>
                 </p>
               </div>
             );
           })()}
 
-        {/* Certifying Body — filters courses client-side */}
+        {/* Certifying Body filter */}
         <div className="md:col-span-2">
           <Controller
             name="certifyingBody"
@@ -353,7 +392,7 @@ export default function ClassForm({
           )}
         />
 
-        {/* Assistants — MultiSelect */}
+        {/* Assistants */}
         <div className="md:col-span-2">
           <Controller
             name="assistants"
@@ -420,7 +459,7 @@ export default function ClassForm({
           </button>
         </div>
 
-        {/* Price + Hours + Max Students + Ratio */}
+        {/* Price + Max Students + Ratio */}
         <FormInput
           name="price"
           type="number"
@@ -428,17 +467,12 @@ export default function ClassForm({
           placeholder="e.g. 100"
         />
         <FormInput
-          name="totalHours"
-          type="number"
-          label="Total Hours"
-          placeholder="e.g. 8"
-        />
-        <FormInput
           name="maxStudents"
           type="number"
           label="Max Students"
           placeholder="e.g. 25"
         />
+
         <Controller
           name="studentManikinRatio"
           control={control}
@@ -452,9 +486,25 @@ export default function ClassForm({
           )}
         />
 
+        {/* Total Hours — auto-computed, read-only */}
+        <div className="flex flex-col gap-2.5">
+          <label className="text-sm sm:text-base font-medium text-gray-700 dark:text-gray">
+            Total Hours
+            <span className="ml-1.5 text-xs font-normal text-gray-400 dark:text-gray-500">
+              (auto-calculated)
+            </span>
+          </label>
+          <input
+            readOnly
+            tabIndex={-1}
+            value={watch("totalHours") || "—"}
+            className={readOnlyCls}
+          />
+        </div>
+
         {/* Close Registration */}
-        <div className="flex flex-col gap-1.5">
-          <label className="text-sm font-medium text-gray-700 dark:text-gray">
+        <div className="flex flex-col gap-2">
+          <label className="text-sm sm:text-base font-medium text-gray-700 dark:text-gray">
             Close Registration Early
           </label>
           <div className="flex items-center gap-2 flex-wrap">
@@ -479,7 +529,7 @@ export default function ClassForm({
 
         {/* Listing */}
         <div className="flex flex-col gap-2">
-          <label className="text-sm font-medium text-gray-700 dark:text-gray">
+          <label className="text-sm sm:text-base font-medium text-gray-700 dark:text-gray">
             Listing
           </label>
           <label className="flex items-center gap-2 text-sm cursor-pointer dark:text-gray">
@@ -492,17 +542,36 @@ export default function ClassForm({
           </label>
         </div>
 
-        {/* Certificate dates */}
-        <FormInput
-          name="certificateIssued"
-          label="Certificate Issued On"
-          type="date"
-        />
-        <FormInput
-          name="certificateExpire"
-          label="Certificate Expires On"
-          type="date"
-        />
+        {/* Certificate dates — auto-computed, read-only */}
+        <div className="flex flex-col gap-2">
+          <label className="text-sm sm:text-base font-medium text-gray-700 dark:text-gray">
+            Certificate Issued On
+            <span className="ml-1.5 text-xs font-normal text-gray-400 dark:text-gray-500">
+              (last class date)
+            </span>
+          </label>
+          <input
+            readOnly
+            tabIndex={-1}
+            value={watch("certificateIssued") || "—"}
+            className={readOnlyCls}
+          />
+        </div>
+
+        <div className="flex flex-col gap-2">
+          <label className="text-sm font-medium text-gray-700 dark:text-gray">
+            Certificate Expires On
+            <span className="ml-1.5 text-xs font-normal text-gray-400 dark:text-gray-500">
+              (issued + 2 years)
+            </span>
+          </label>
+          <input
+            readOnly
+            tabIndex={-1}
+            value={watch("certificateExpire") || "—"}
+            className={readOnlyCls}
+          />
+        </div>
 
         {/* Notes */}
         <div className="md:col-span-2">
@@ -515,13 +584,12 @@ export default function ClassForm({
           <FormTextarea name="adminNotes" label="Admin Notes" />
         </div>
 
-        {/* Documents — multiple upload */}
+        {/* Documents */}
         <div className="md:col-span-2 flex flex-col gap-2">
           <label className="text-sm font-medium text-gray-700 dark:text-gray">
             Documents
           </label>
 
-          {/* Existing docs */}
           {existingDocs.length > 0 && (
             <div className="flex flex-col gap-1 mb-2">
               <p className="text-xs text-gray-500 dark:text-gray-400">
@@ -541,7 +609,6 @@ export default function ClassForm({
             </div>
           )}
 
-          {/* New files */}
           {documents.length > 0 && (
             <div className="flex flex-col gap-1 mb-2">
               <p className="text-xs text-gray-500 dark:text-gray-400">
@@ -553,7 +620,12 @@ export default function ClassForm({
                   className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400"
                 >
                   <span className="truncate max-w-xs">{file.name}</span>
-                  <button type="button" onClick={() => handleRemoveNewDoc(i)}>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setDocuments(prev => prev.filter((_, j) => j !== i))
+                    }
+                  >
                     <X
                       size={12}
                       className="hover:text-red-500 cursor-pointer"

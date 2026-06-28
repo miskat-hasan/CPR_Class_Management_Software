@@ -12,8 +12,8 @@ import CustomSelect from "@/components/shared/form/CustomSelect";
 
 const AdminDashboardSidebar = () => {
   const pathname = usePathname();
-      const params = useParams();
-    const trainingSiteId = params.ts;
+  const params = useParams();
+  const trainingSiteId = params.ts;
 
   const form = useForm();
 
@@ -38,19 +38,19 @@ const AdminDashboardSidebar = () => {
       submenu: [
         {
           label: "Classes",
-          href: `/admin/${trainingSiteId}/class_and_students/classes`,
+          href: `/admin/${trainingSiteId}/class-and-students/classes`,
         },
         {
           label: "Student Search",
-          href: `/admin/${trainingSiteId}/class_and_students/student_search`,
+          href: `/admin/${trainingSiteId}/class-and-students/student_search`,
         },
         // {
         //   label: "Student Export",
-        //   href: `/admin/${trainingSiteId}/class_and_students/student_export`,
+        //   href: `/admin/${trainingSiteId}/class-and-students/student_export`,
         // },
         {
           label: "TS Product Orders",
-          href: `/admin/${trainingSiteId}/class_and_students/ts_product_orders`,
+          href: `/admin/${trainingSiteId}/class-and-students/ts_product_orders`,
         },
       ],
     },
@@ -97,28 +97,26 @@ const AdminDashboardSidebar = () => {
     },
   ];
 
-    useEffect(() => {
-      for (const item of menuItems) {
-        if (
-          item.submenu &&
-          item.submenu.some((sub) => pathname.startsWith(sub.href))
-        ) {
-          setOpenMenu(item.label);
-          return;
-        }
+  useEffect(() => {
+    for (const item of menuItems) {
+      if (
+        item.submenu &&
+        item.submenu.some(sub => pathname.startsWith(sub.href))
+      ) {
+        setOpenMenu(item.label);
+        return;
       }
-    }, [pathname, user, trainingSiteId]);
+    }
+  }, [pathname, user, trainingSiteId]);
 
-  const handleSelectChange = (val) => {
+  const handleSelectChange = val => {
     setSelectedTrainingSiteId(val);
 
-    return router.push(
-      `/admin/${val}/class_and_students/classes`,
-    );
+    return router.push(`/admin/${val}/class-and-students/classes`);
   };
 
-  const toggleMenu = (label) => {
-    setOpenMenu((prev) => (prev === label ? null : label));
+  const toggleMenu = label => {
+    setOpenMenu(prev => (prev === label ? null : label));
   };
 
   const { mutateAsync: logoutAsync, isPending: logoutPending } = useLogout();
@@ -159,7 +157,7 @@ const AdminDashboardSidebar = () => {
         {/* Dynamic Menu */}
         <nav className="flex-grow">
           <ul>
-            {menuItems.map((item) => {
+            {menuItems.map(item => {
               const hasSubmenu = item.submenu && item.submenu.length > 0;
               const isOpen = openMenu === item.label;
 
@@ -169,7 +167,9 @@ const AdminDashboardSidebar = () => {
                     <button
                       onClick={() => toggleMenu(item.label)}
                       className={`w-full flex items-center justify-between px-5 py-3 rounded-[10px] transition-colors ${
-                        isOpen ? "bg-brown dark:bg-dark-brown text-white" : "hover:bg-gray-100"
+                        isOpen
+                          ? "bg-brown dark:bg-dark-brown text-white"
+                          : "hover:bg-gray-100"
                       }`}
                     >
                       <span>{item.label}</span>
@@ -197,7 +197,7 @@ const AdminDashboardSidebar = () => {
                       }`}
                     >
                       <ul className="bg-gray-50 rounded-[10px] pt-1">
-                        {item.submenu.map((sub) => {
+                        {item.submenu.map(sub => {
                           const active = pathname === sub.href;
                           return (
                             <li key={sub.label}>
@@ -211,7 +211,9 @@ const AdminDashboardSidebar = () => {
                               >
                                 <span
                                   className={`absolute left-6 h-5 w-1 rounded-full ${
-                                    active ? "bg-brown dark:bg-dark-brown" : "bg-gray-200"
+                                    active
+                                      ? "bg-brown dark:bg-dark-brown"
+                                      : "bg-gray-200"
                                   }`}
                                 ></span>
                                 {sub.label}
