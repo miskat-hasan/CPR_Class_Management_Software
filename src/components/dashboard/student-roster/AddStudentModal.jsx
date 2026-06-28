@@ -79,10 +79,26 @@ const AddStudentModal = ({ classId, open, onClose }) => {
         <FormContainer form={form} onSubmit={onSubmit}>
           {/* Grid Layout */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5 lg:gap-3">
-            <FormInput name="first_name" placeholder="First Name" />
-            <FormInput name="last_name" placeholder="Last Name" />
-            <FormInput name="email" placeholder="Email Address" />
-            <FormInput name="primary_phone" placeholder="Mobile Phone" />
+            <FormInput
+              name="first_name"
+              placeholder="First Name"
+              rules={{ required: "First Name is required" }}
+            />
+            <FormInput
+              name="last_name"
+              placeholder="Last Name"
+              rules={{ required: "Last Name is required" }}
+            />
+            <FormInput
+              name="email"
+              placeholder="Email Address"
+              rules={{ required: "Email is required" }}
+            />
+            <FormInput
+              name="primary_phone"
+              placeholder="Mobile Phone"
+              rules={{ required: "Mobile Phone is required" }}
+            />
             <FormInput name="address_1" placeholder="Address 1" />
             <FormInput name="address_2" placeholder="Address 2" />
             <FormInput name="city" placeholder="City" />
@@ -91,7 +107,6 @@ const AddStudentModal = ({ classId, open, onClose }) => {
             <Controller
               name="country_id"
               control={control}
-              rules={{ required: "Country is required" }}
               render={({ field }) => (
                 <CustomSelect
                   {...field}
@@ -99,7 +114,7 @@ const AddStudentModal = ({ classId, open, onClose }) => {
                   placeholder="Country"
                   isLoading={countryDataLoading}
                   options={countryData?.data}
-                  error={errors.country?.message}
+                  error={errors.country_id?.message}
                   className="flex-1"
                 />
               )}
@@ -133,7 +148,7 @@ const AddStudentModal = ({ classId, open, onClose }) => {
             </Button>
             <Button
               type="submit"
-              className="px-6 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium cursor-pointer text-white bg-brown dark:bg-dark-brown cursor hover:bg-brown  focus:outline-none disabled:opacity-60"
+              className="px-6 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium cursor-pointer text-white bg-brown dark:bg-dark-brown cursor hover:bg-brown  focus:outline-none disabled:opacity-60 dark:hover:bg-brown"
               disabled={isPending}
             >
               {isPending ? "Processing ..." : "Add Student"}

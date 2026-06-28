@@ -36,11 +36,11 @@ const AdminMobileSidebar = ({ onClose, isSidebarOpen }) => {
       submenu: [
         {
           label: "Classes",
-          href: `/admin/${selectedTrainingSiteId}/class_and_students/classes`,
+          href: `/admin/${selectedTrainingSiteId}/class-and-students/classes`,
         },
         {
           label: "Student Search",
-          href: `/admin/${selectedTrainingSiteId}/class_and_students/student_search`,
+          href: `/admin/${selectedTrainingSiteId}/class-and-students/student_search`,
         },
         // {
         //   label: "Student Export",
@@ -99,7 +99,7 @@ const AdminMobileSidebar = ({ onClose, isSidebarOpen }) => {
     for (const item of menuItems) {
       if (
         item.submenu &&
-        item.submenu.some((sub) => pathname.startsWith(sub.href))
+        item.submenu.some(sub => pathname.startsWith(sub.href))
       ) {
         setOpenMenu(item.label);
         return;
@@ -107,14 +107,14 @@ const AdminMobileSidebar = ({ onClose, isSidebarOpen }) => {
     }
   }, [pathname, user]);
 
-  const toggleMenu = (label) => {
-    setOpenMenu((prev) => (prev === label ? null : label));
+  const toggleMenu = label => {
+    setOpenMenu(prev => (prev === label ? null : label));
   };
 
-  const handleSelectChange = (val) => {
+  const handleSelectChange = val => {
     setSelectedTrainingSiteId(val);
 
-    return router.push(`/admin/${val}/class_and_students/classes`);
+    return router.push(`/admin/${val}/class-and-students/classes`);
   };
 
   // logout
@@ -169,7 +169,7 @@ const AdminMobileSidebar = ({ onClose, isSidebarOpen }) => {
         </div>
 
         <ul>
-          {menuItems.map((item) => {
+          {menuItems.map(item => {
             const hasSubmenu = item.submenu && item.submenu.length > 0;
             const isMenuOpen = openMenu === item.label;
 
@@ -180,7 +180,9 @@ const AdminMobileSidebar = ({ onClose, isSidebarOpen }) => {
                     <button
                       onClick={() => toggleMenu(item.label)}
                       className={`flex justify-between items-center w-full px-2 py-2 rounded-lg text-left ${
-                        isMenuOpen ? "bg-brown dark:bg-dark-brown text-white" : "hover:bg-gray-100"
+                        isMenuOpen
+                          ? "bg-brown dark:bg-dark-brown text-white"
+                          : "hover:bg-gray-100"
                       }`}
                     >
                       <span>{item.label}</span>
@@ -195,7 +197,7 @@ const AdminMobileSidebar = ({ onClose, isSidebarOpen }) => {
                         isMenuOpen ? "max-h-96" : "max-h-0"
                       }`}
                     >
-                      {item.submenu.map((subItem) => {
+                      {item.submenu.map(subItem => {
                         const active = pathname === subItem.href;
                         return (
                           <li key={subItem.label}>
