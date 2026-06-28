@@ -1,3 +1,4 @@
+// src/app/dashboard/super-admin/[ts]/class-and-students/past-classes/page.js
 "use client";
 
 import { useState } from "react";

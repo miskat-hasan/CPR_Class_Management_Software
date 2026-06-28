@@ -20,7 +20,7 @@ import {
 import Link from "next/link";
 import { useState } from "react";
 import { CiEdit } from "react-icons/ci";
-import AddStudentModal from "../AddStudentModal";
+import AddStudentModal from "./AddStudentModal";
 
 const StudentRoster = ({ id }) => {
   const [openAddStudentModal, setOpenAddStudentModal] = useState(false);

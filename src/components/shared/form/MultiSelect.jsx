@@ -112,7 +112,7 @@ const MultiSelect = ({
 
       {/* Dropdown */}
       {open && (
-        <div className="relative z-50">
+        <div className="relative">
           <div className="absolute top-0 left-0 w-full bg-white dark:bg-black border border-gray-200 dark:border-gray-700 rounded-md shadow-lg">
             {/* Search */}
             <div className="p-2 border-b border-gray-100 dark:border-gray-700">

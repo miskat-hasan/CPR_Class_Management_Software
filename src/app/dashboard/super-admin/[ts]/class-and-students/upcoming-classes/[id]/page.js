@@ -7,7 +7,7 @@ import ClassForm from "@/components/dashboard/class/ClassForm";
 import { getSingleClass, updateClass } from "@/hooks/api/dashboardApi";
 import useAuth from "@/hooks/useAuth";
 import SubSectionTitle from "@/components/common/SubSectionTitle";
-import StudentRoster from "@/components/dashboard/student_roster/StudentRoster";
+import StudentRoster from "@/components/dashboard/student-roster/StudentRoster";
 
 export default function EditUpcomingClassPage() {
   const { id, ts } = useParams();
