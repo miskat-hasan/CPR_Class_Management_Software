@@ -13,7 +13,7 @@ import {
 import Link from "next/link";
 import { useState } from "react";
 import { CiEdit } from "react-icons/ci";
-import AddStudentModal from "../AddStudentModal";
+import AddStudentModal from "../student-roster/AddStudentModal";
 import SectionTitle from "@/components/common/SectionTitle";
 import { Download, Loader2 } from "lucide-react";
 
@@ -32,7 +32,7 @@ const ClassDetails = ({ id }) => {
     downloadRoster(
       { id },
       {
-        onSuccess: (blob) => {
+        onSuccess: blob => {
           const file = new Blob([blob], {
             type: "application/pdf",
           });
@@ -61,7 +61,7 @@ const ClassDetails = ({ id }) => {
     downloadStudentList(
       { class_details_id: id },
       {
-        onSuccess: (blob) => {
+        onSuccess: blob => {
           const file = new Blob([blob], {
             type: "application/pdf",
           });
@@ -95,7 +95,7 @@ const ClassDetails = ({ id }) => {
           <SubSectionTitle subtitle="Student Lists" />
           <div className="flex sm:justify-end flex-wrap gap-2">
             {studentData?.data?.students?.find(
-              (item) => item.is_finalized === 1,
+              item => item.is_finalized === 1,
             ) && (
               <Button
                 onClick={() => handleDownloadRoster()}
@@ -153,7 +153,7 @@ const ClassDetails = ({ id }) => {
               </thead>
               <tbody>
                 {studentData?.data?.students?.length > 0 ? (
-                  studentData?.data?.students?.map((item) => (
+                  studentData?.data?.students?.map(item => (
                     <tr
                       key={item?.id}
                       className="border-b hover:bg-gray-50 transition-all"

@@ -1,4 +1,4 @@
-import StudentRoster from "@/components/dashboard/student_roster/StudentRoster";
+import StudentRoster from "@/components/dashboard/student-roster/StudentRoster";
 
 const Page = ({ params }) => {
   const { id } = params;

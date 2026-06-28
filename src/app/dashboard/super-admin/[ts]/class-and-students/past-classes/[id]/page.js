@@ -6,7 +6,7 @@ import SectionTitle from "@/components/common/SectionTitle";
 import ClassForm from "@/components/dashboard/class/ClassForm";
 import { getSingleClass, updateClass } from "@/hooks/api/dashboardApi";
 import useAuth from "@/hooks/useAuth";
-import StudentRoster from "@/components/dashboard/student_roster/StudentRoster";
+import StudentRoster from "@/components/dashboard/student-roster/StudentRoster";
 import SubSectionTitle from "@/components/common/SubSectionTitle";
 
 export default function EditPastClassPage() {
@@ -21,10 +21,7 @@ export default function EditPastClassPage() {
 
   const defaultValues = classData
     ? {
-        certifyingBodyId: String(
-          classData.course?.course_certifying_body_id ?? "",
-        ),
-        certifyingBody: classData.course?.course_certifying_body ?? "",
+        certifyingBody: classData.course?.course_certifying_body_id ?? "",
         course: String(classData.course_id ?? ""),
         client: String(classData.client_id ?? ""),
         location: String(classData.location_id ?? ""),

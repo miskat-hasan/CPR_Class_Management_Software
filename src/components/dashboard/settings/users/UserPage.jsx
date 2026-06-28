@@ -73,11 +73,13 @@ const UserPage = () => {
         <div className="flex justify-between">
           <SectionTitle title="Users" />
           <Button
-            onClick={() => router.push("./users/add-user")}
+            asChild
             className="py-[11px] text-[12px] lg:text-base lg:py-[22px] cursor-pointer bg-brown dark:bg-dark-brown flex items-center gap-2"
           >
-            Add User
-            <PlusIcon />
+            <Link href="users/add-user">
+              Add User
+              <PlusIcon />
+            </Link>
           </Button>
         </div>
 

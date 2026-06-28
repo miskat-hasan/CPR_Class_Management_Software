@@ -1,9 +1,9 @@
 import { Controller, useForm } from "react-hook-form";
-import FormContainer from "../shared/form/FormContainer";
-import FormInput from "../shared/form/FormInput";
+import FormContainer from "../../shared/form/FormContainer";
+import FormInput from "../../shared/form/FormInput";
 import { getAllCountry, useStoreStudentData } from "@/hooks/api/dashboardApi";
-import CustomSelect from "../shared/form/CustomSelect";
-import { Button } from "../ui/button";
+import CustomSelect from "../../shared/form/CustomSelect";
+import { Button } from "../../ui/button";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -51,11 +51,11 @@ const AddStudentModal = ({ classId, open, onClose }) => {
 
   const { mutate, isPending } = useStoreStudentData();
 
-  const onSubmit = (data) => {
+  const onSubmit = data => {
     mutate(
       { class_details_id: classId, course_id: classId, ...data },
       {
-        onSuccess: (data) => {
+        onSuccess: data => {
           queryClient.invalidateQueries(["get-student-by-class", classId]);
           toast.success(data?.message || "Student added successfully");
           onClose();
@@ -67,10 +67,10 @@ const AddStudentModal = ({ classId, open, onClose }) => {
   return (
     <div
       onClick={onClose}
-      className="w-full h-screen bg-gray/40 absolute top-0 left-0 flex items-center justify-center px-2"
+      className="w-full h-screen bg-gray/40 absolute top-0 left-0 flex items-center justify-center px-2 z-50"
     >
       <div
-        onClick={(e) => e.stopPropagation()}
+        onClick={e => e.stopPropagation()}
         className="bg-white dark:bg-black p-4 lg:p-6 rounded-lg shadow max-w-[600px] w-full"
       >
         <h5 className="text-black text-[20px] font-medium leading-[32.5px] mb-2">
@@ -127,7 +127,7 @@ const AddStudentModal = ({ classId, open, onClose }) => {
               onClick={onClose}
               type="button"
               variant="outline"
-              className={"cursor-pointer"}
+              className={"cursor-pointer dark:text-white"}
             >
               Cancel
             </Button>

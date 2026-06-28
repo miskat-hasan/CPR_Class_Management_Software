@@ -25,12 +25,6 @@ const RATIO_OPTIONS = [
   { id: "1:1", name: "1:1" },
   { id: "1:2", name: "1:2" },
   { id: "1:3", name: "1:3" },
-  { id: "1:4", name: "1:4" },
-  { id: "1:5", name: "1:5" },
-  { id: "1:6", name: "1:6" },
-  { id: "1:7", name: "1:7" },
-  { id: "1:8", name: "1:8" },
-  { id: "1:9", name: "1:9" },
 ];
 
 // Format instructor name for display
@@ -122,9 +116,13 @@ export default function ClassForm({
   const allCourses = coursesData?.data ?? [];
 
   const filteredCourses = selectedCertifyingBody
-    ? allCourses.filter(c => c.certifying_body?.name === selectedCertifyingBody)
+    ? allCourses.filter(c => c.certifying_body?.id == selectedCertifyingBody)
     : allCourses;
 
+  console.log("allCourses", allCourses);
+  console.log("filteredCourses", filteredCourses);
+
+  console.log("selectedCertifyingBody", selectedCertifyingBody);
   // Format instructor/client options
   const instructorOptions = (instructorData?.data ?? []).map(u => ({
     id: u.id,
@@ -139,7 +137,7 @@ export default function ClassForm({
   const certifyingOptions = [
     ...(certifyingData?.data?.length > 0 ? [{ id: "", name: "— All —" }] : []),
     ...(certifyingData?.data ?? []).map(cb => ({
-      id: cb.name,
+      id: cb.id,
       name: cb.name,
     })),
   ];
@@ -181,8 +179,7 @@ export default function ClassForm({
 
   const handleFormSubmit = data => {
     const formData = new FormData();
-
-    formData.append("course_certifying_body_id", data.certifyingBodyId ?? "");
+    console.log(data);
     formData.append("course_id", data.course);
     formData.append("client_id", data.client ?? "");
     formData.append("location_id", data.location);
