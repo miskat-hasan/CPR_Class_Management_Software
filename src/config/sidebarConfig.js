@@ -272,11 +272,11 @@ const superAdminFullMenu = ts => [
     submenu: [
       {
         label: "Support Request",
-        href: `/dashboard/super-admin/${ts}/help/support_request`,
+        href: `/dashboard/super-admin/${ts}/help/support-request`,
       },
       {
         label: "Whats New",
-        href: `/dashboard/super-admin/${ts}/help/whats_new`,
+        href: `/dashboard/super-admin/${ts}/help/whats-new`,
       },
     ],
   },
@@ -415,15 +415,15 @@ const superAdminSiteMenu = ts => [
     submenu: [
       {
         label: "TS Support Request",
-        href: `/dashboard/super-admin/${ts}/help/support_request`,
+        href: `/dashboard/super-admin/${ts}/help/support-request`,
       },
       {
         label: "TC Support Request",
-        href: `/dashboard/super-admin/${ts}/help/support_request`,
+        href: `/dashboard/super-admin/${ts}/help/support-request`,
       },
       {
         label: "Whats New",
-        href: `/dashboard/super-admin/${ts}/help/whats_new`,
+        href: `/dashboard/super-admin/${ts}/help/whats-new`,
       },
     ],
   },
@@ -562,15 +562,15 @@ const adminMenu = ts => [
     submenu: [
       {
         label: "TS Support Request",
-        href: `/dashboard/admin/${ts}/help/support_request`,
+        href: `/dashboard/admin/${ts}/help/support-request`,
       },
       {
         label: "TC Support Request",
-        href: `/dashboard/admin/${ts}/help/support_request`,
+        href: `/dashboard/admin/${ts}/help/support-request`,
       },
       {
         label: "Whats New",
-        href: `/dashboard/admin/${ts}/help/whats_new`,
+        href: `/dashboard/admin/${ts}/help/whats-new`,
       },
     ],
   },
@@ -708,15 +708,15 @@ const instructorMenu = ts => [
     submenu: [
       {
         label: "TS Support Request",
-        href: `/dashboard/instructor/${ts}/help/support_request`,
+        href: `/dashboard/instructor/${ts}/help/support-request`,
       },
       {
         label: "TC Support Request",
-        href: `/dashboard/instructor/${ts}/help/support_request`,
+        href: `/dashboard/instructor/${ts}/help/support-request`,
       },
       {
         label: "Whats New",
-        href: `/dashboard/instructor/${ts}/help/whats_new`,
+        href: `/dashboard/instructor/${ts}/help/whats-new`,
       },
     ],
   },
@@ -854,15 +854,15 @@ const assistantMenu = ts => [
     submenu: [
       {
         label: "TS Support Request",
-        href: `/dashboard/instructor-assistant/${ts}/help/support_request`,
+        href: `/dashboard/instructor-assistant/${ts}/help/support-request`,
       },
       {
         label: "TC Support Request",
-        href: `/dashboard/instructor-assistant/${ts}/help/support_request`,
+        href: `/dashboard/instructor-assistant/${ts}/help/support-request`,
       },
       {
         label: "Whats New",
-        href: `/dashboard/instructor-assistant/${ts}/help/whats_new`,
+        href: `/dashboard/instructor-assistant/${ts}/help/whats-new`,
       },
     ],
   },

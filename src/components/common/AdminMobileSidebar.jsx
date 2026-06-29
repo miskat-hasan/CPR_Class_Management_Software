@@ -85,11 +85,11 @@ const AdminMobileSidebar = ({ onClose, isSidebarOpen }) => {
         // { label: "Search Help", href: "https://help.enrollware.com/" },
         {
           label: "Support Request",
-          href: `/admin/${selectedTrainingSiteId}/help/support_request`,
+          href: `/admin/${selectedTrainingSiteId}/help/support-request`,
         },
         {
           label: "Whats New",
-          href: `/admin/${selectedTrainingSiteId}/help/whats_new`,
+          href: `/admin/${selectedTrainingSiteId}/help/whats-new`,
         },
       ],
     },

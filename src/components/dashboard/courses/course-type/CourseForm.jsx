@@ -757,8 +757,6 @@
 //   );
 // }
 
-
-
 // src/components/dashboard/courses/course-type/CourseForm.jsx
 "use client";
 
@@ -880,7 +878,7 @@ export default function CourseForm({
   const [emailBodyReady, setEmailBodyReady] = useState(false);
 
   const form = useForm({
-    defaultValues: defaultValues ?? {
+    defaultValues: {
       course_name: "",
       mode: "on-site",
       discipline: "",
@@ -925,6 +923,9 @@ export default function CourseForm({
 
   // Reset form fields (non-editor) when defaultValues arrive
   useEffect(() => {
+    if (!defaultValues) {
+      return;
+    }
     if (defaultValues) {
       reset(defaultValues);
     }
