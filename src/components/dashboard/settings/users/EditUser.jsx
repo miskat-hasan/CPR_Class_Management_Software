@@ -74,41 +74,42 @@ const EditUser = () => {
     watch,
     reset,
   } = form;
-
   const watchedSites = watch("trainingSites");
 
   const { data: countryData, isLoading: countryDataLoading } = getAllCountry();
   const { data: trainingSiteData, isLoading: trainingSiteLoading } =
     getallTrainingsite();
   const { data: rolesData, isLoading: rolesLoading } = getAllRole();
-
   const { data: userData, isLoading: userLoading } = useGetSingleUser(id);
 
   const { fields, append, remove } = useFieldArray({
     control,
     name: "trainingSites",
   });
-
   const { mutate: updateUserMutation, isPending: updateUserPending } =
     useUpdateUser();
 
-  const primarySiteRoles = useMemo(() => {
-    return (rolesData?.data ?? []).filter(r => r.name !== "Super Admin");
-  }, [rolesData]);
+  const primarySiteRoles = useMemo(
+    () => (rolesData?.data ?? []).filter(r => r.name !== "Super Admin"),
+    [rolesData],
+  );
 
   const otherSiteRoles = useMemo(() => {
     const assignable = ASSIGNABLE_ROLES[authRoleName] ?? [];
     return (rolesData?.data ?? []).filter(r => assignable.includes(r.name));
   }, [rolesData, authRoleName]);
 
-  // Pre-populate form once user data is loaded
+  // Pre-populate form — user fields live under data.instructor, roles under data.user_roles
   useEffect(() => {
-    const user = userData?.data;
-    if (!user) return;
+    const raw = userData?.data;
+    if (!raw) return;
+
+    // Actual profile fields are under `.instructor`
+    const user = raw.instructor ?? raw;
 
     const siteRoles =
-      user.user_roles?.length > 0
-        ? user.user_roles.map(ur => ({
+      raw.user_roles?.length > 0
+        ? raw.user_roles.map(ur => ({
             tsite_id: String(
               ur?.training_site_id ?? ur?.training_site?.id ?? "",
             ),
@@ -116,14 +117,14 @@ const EditUser = () => {
           }))
         : [{ tsite_id: "", role_id: "" }];
 
-    const existingRoleIds = (user.user_roles ?? []).map(ur =>
+    const existingRoleIds = (raw.user_roles ?? []).map(ur =>
       String(ur?.role_id ?? ur?.role?.id ?? ""),
     );
 
     reset({
       firstName: user.first_name ?? "",
       lastName: user.last_name ?? "",
-      username: user.user_name ?? "",
+      username: user.username ?? "",
       mobilePhone: user.mobile_phone ?? "",
       address1: user.address_line_1 ?? "",
       address2: user.address_line_2 ?? "",
@@ -157,8 +158,7 @@ const EditUser = () => {
       const combos = values.trainingSites.map(
         ts => `${ts.tsite_id}-${ts.role_id}`,
       );
-      const hasDuplicates = combos.length !== new Set(combos).size;
-      if (hasDuplicates) {
+      if (combos.length !== new Set(combos).size) {
         toast.error(
           "Duplicate training site and role combination found. Please fix before submitting.",
         );
@@ -186,10 +186,7 @@ const EditUser = () => {
       active_user: true,
     };
 
-    // Only include password if the user typed something new
-    if (values.password) {
-      base.password = values.password;
-    }
+    if (values.password) base.password = values.password;
 
     const payload = isPrimarySite
       ? {
@@ -216,6 +213,8 @@ const EditUser = () => {
             router.back();
           }
         },
+        onError: err =>
+          toast.error(err?.response?.data?.message || "Failed to update user."),
       },
     );
   };
@@ -223,7 +222,7 @@ const EditUser = () => {
   if (userLoading) {
     return (
       <section className="flex flex-col gap-4">
-        <SectionTitle title={"Edit User"} />
+        <SectionTitle title="Edit User" />
         <div className="p-[26px] bg-white dark:bg-black rounded-[14px] flex items-center justify-center min-h-[200px]">
           <div className="flex flex-col items-center gap-3 text-gray-400">
             <div className="w-8 h-8 border-4 border-gray-300 border-t-brown rounded-full animate-spin" />
@@ -236,10 +235,10 @@ const EditUser = () => {
 
   return (
     <section className="flex flex-col gap-4">
-      <SectionTitle title={"Edit User"} />
-      <div className="p-[26px] bg-white dark:bg-black rounded-[14px] flex flex-col gap-[24px]">
+      <SectionTitle title="Edit User" />
+      <div className="p-[13px] lg:p-[26px] bg-white dark:bg-black rounded-[14px]">
         <FormContainer form={form} onSubmit={onSubmit}>
-          <div className="grid grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <FormInput
               name="firstName"
               label="First Name"
@@ -277,12 +276,12 @@ const EditUser = () => {
             <FormInput name="city" label="City" placeholder="City" />
             <FormInput
               name="stateProvince"
-              label="State/Province/Region"
+              label="State / Province / Region"
               placeholder="State/Province"
             />
             <FormInput
               name="zipPostalCode"
-              label="Zip/Postal Code"
+              label="Zip / Postal Code"
               placeholder="Zip/Postal code"
             />
 
@@ -293,11 +292,10 @@ const EditUser = () => {
               render={({ field }) => (
                 <CustomSelect
                   {...field}
-                  id="country"
                   label="Country"
                   placeholder="Select country"
                   isLoading={countryDataLoading}
-                  options={countryData?.data}
+                  options={countryData?.data ?? []}
                   error={errors.country?.message}
                 />
               )}
@@ -323,6 +321,7 @@ const EditUser = () => {
               label="RCLC Username (Optional)"
               placeholder="RCLC username"
             />
+
             <FormInput
               name="emailAddress"
               label="Email Address"
@@ -345,9 +344,11 @@ const EditUser = () => {
               }}
             />
 
-            {/* Training Site and Roles */}
-            <div className="col-span-2 bg-neutral-50 border px-2 pt-2 pb-4 rounded-md">
-              <h6 className="text-lg mb-1">Training Site and Roles</h6>
+            {/* Training Site & Roles */}
+            <div className="col-span-1 md:col-span-2 bg-neutral-50 dark:bg-dark border dark:border-gray-700 px-3 pt-3 pb-4 rounded-md">
+              <h6 className="text-base font-semibold mb-2 dark:text-gray">
+                Training Site and Roles
+              </h6>
 
               {isPrimarySite ? (
                 <>
@@ -358,10 +359,12 @@ const EditUser = () => {
                       currentRow?.tsite_id,
                       currentRow?.role_id,
                     );
-
                     return (
-                      <div key={field.id} className="mt-3 border-b pb-3">
-                        <div className="flex items-center gap-4">
+                      <div
+                        key={field.id}
+                        className="mt-3 border-b dark:border-gray-700 pb-3"
+                      >
+                        <div className="flex items-end gap-3">
                           <div className="grid sm:grid-cols-2 gap-4 flex-1">
                             <Controller
                               name={`trainingSites.${index}.tsite_id`}
@@ -373,7 +376,7 @@ const EditUser = () => {
                                   label="Training Site"
                                   placeholder="Select site"
                                   isLoading={trainingSiteLoading}
-                                  options={trainingSiteData?.data}
+                                  options={trainingSiteData?.data ?? []}
                                   error={
                                     errors?.trainingSites?.[index]?.tsite_id
                                       ?.message
@@ -400,17 +403,16 @@ const EditUser = () => {
                               )}
                             />
                           </div>
-
                           {fields.length > 1 && (
-                            <div
+                            <button
+                              type="button"
                               onClick={() => remove(index)}
-                              className="bg-neutral-200 p-2 -mb-6 rounded-md cursor-pointer hover:bg-neutral-300"
+                              className="p-2 bg-neutral-200 dark:bg-gray-700 rounded-md hover:bg-red-100 transition cursor-pointer mb-0.5"
                             >
-                              <LucideTrash2 className="size-4" />
-                            </div>
+                              <LucideTrash2 className="size-4 text-gray-600 dark:text-gray" />
+                            </button>
                           )}
                         </div>
-
                         {duplicate && (
                           <p className="text-xs text-red-500 mt-1.5">
                             This training site and role combination is already
@@ -420,14 +422,13 @@ const EditUser = () => {
                       </div>
                     );
                   })}
-
-                  <div
+                  <button
+                    type="button"
                     onClick={() => append({ tsite_id: "", role_id: "" })}
-                    className="mt-4 px-2 py-1.5 inline-flex items-center gap-1 border rounded-md text-sm bg-neutral-700 text-neutral-100 cursor-pointer hover:bg-neutral-600 shadow-sm"
+                    className="mt-3 px-3 py-1.5 inline-flex items-center gap-1.5 border rounded-md text-sm bg-neutral-700 dark:bg-gray-800 text-neutral-100 cursor-pointer hover:bg-neutral-600 w-fit"
                   >
-                    <FaPlus className="size-3" />
-                    Add more
-                  </div>
+                    <FaPlus className="size-3" /> Add more
+                  </button>
                 </>
               ) : (
                 <div className="mt-3">
@@ -446,7 +447,7 @@ const EditUser = () => {
                       />
                     )}
                   />
-                  <p className="text-xs text-gray-500 mt-1">
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                     These roles will be assigned to training site #{ts}
                   </p>
                 </div>
@@ -454,12 +455,12 @@ const EditUser = () => {
             </div>
           </div>
 
-          <div className="flex items-center justify-end mt-8 gap-4">
+          <div className="flex items-center justify-end mt-6 gap-3">
             <BackButton />
             <Button
               type="submit"
               disabled={updateUserPending}
-              className="px-6 py-2 bg-[#C1121F] text-white rounded-md text-sm font-medium hover:bg-[#a00e1a] disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-6 py-2 text-sm font-medium text-white bg-brown dark:bg-dark-brown hover:bg-brown focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {updateUserPending ? "Saving..." : "Update User"}
             </Button>

@@ -1539,3 +1539,12 @@ export const useDeleteRegistrationQuestion = (id) => {
     endpoint: `/api/registration-questions/${id}`,
   });
 };
+
+// course schedule data (public api)
+export const useGetCourseSchedule = () => {
+  return useClientApi({
+    method: "get",
+    isPrivate: false,
+    endpoint: "/api/public/courses-with-classes",
+  });
+}

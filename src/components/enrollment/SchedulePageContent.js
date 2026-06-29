@@ -1,7 +1,7 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { getEnrollmentDetails } from "@/hooks/api/dashboardApi";
+import { useGetCourseSchedule } from "@/hooks/api/dashboardApi";
 import EnrollSidebar from "@/components/enrollment/EnrollSidebar";
 import Schedule from "@/components/enrollment/Schedule";
 
@@ -9,7 +9,7 @@ export default function SchedulePageContent() {
   const searchParams = useSearchParams();
   const courseId = searchParams.get("course_id");
 
-  const { data, isLoading } = getEnrollmentDetails(courseId);
+  const { data, isLoading } = useGetCourseSchedule(courseId);
 
   const siteSettings = data?.data?.site_settings;
 
