@@ -30,11 +30,11 @@ const UpdateWhatIsNew = ({ id }) => {
 
   const { mutate, isPending } = updateWhatsNew();
 
-  const onSubmit = (data) => {
+  const onSubmit = data => {
     mutate(
       { id: id, ...data },
       {
-        onSuccess: (data) => {
+        onSuccess: data => {
           toast.success(data?.message);
         },
       },
@@ -65,7 +65,7 @@ const UpdateWhatIsNew = ({ id }) => {
               <FormInput name="title" />
               <div className="flex justify-end gap-4 mt-8">
                 <Button variant="outline" asChild>
-                  <Link href="../whats_new">Cancel</Link>
+                  <Link href="../whats-new">Cancel</Link>
                 </Button>
                 <Button
                   type="submit"

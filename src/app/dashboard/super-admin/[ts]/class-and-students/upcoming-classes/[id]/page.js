@@ -68,7 +68,19 @@ export default function EditUpcomingClassPage() {
     });
   };
 
-  if (isLoading) return null;
+  if (isLoading) {
+    return (
+      <section className="flex flex-col gap-4">
+        <SectionTitle title="Edit Class" />
+        <div className="p-[26px] bg-white dark:bg-black rounded-[14px] flex items-center justify-center min-h-[200px]">
+          <div className="flex flex-col items-center gap-3 text-gray-400">
+            <div className="w-8 h-8 border-4 border-gray-300 border-t-brown rounded-full animate-spin" />
+            <span className="text-sm">Loading class data…</span>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <div className="flex flex-col gap-[10px] lg:gap-[20px]">

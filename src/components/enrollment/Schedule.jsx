@@ -1,9 +1,8 @@
-import React from 'react'
+// src/components/enrollment/Schedule.jsx
+import React from "react";
 
-const Schedule = () => {
-  return (
-    <div>Schedule</div>
-  )
-}
+const Schedule = ({ courses }) => {
+  return <div>Schedule</div>;
+};
 
-export default Schedule
+export default Schedule;

@@ -108,6 +108,7 @@ function CourseImageModal({ open, onClose, onSuccess, editItem }) {
           <div className="flex justify-end gap-3 mt-6">
             <Button
               type="button"
+              variant="outline"
               onClick={() => {
                 reset();
                 onClose();

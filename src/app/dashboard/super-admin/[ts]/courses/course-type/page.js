@@ -27,6 +27,20 @@ const Page = () => {
   const { data: coursesTypeData, isLoading: coursesTypeLoading } =
     getAllCourses(page, perPage);
 
+  // if (coursesTypeLoading) {
+  //   return (
+  //     <section className="flex flex-col gap-4">
+  //       <SectionTitle title="Edit User" />
+  //       <div className="p-[26px] bg-white dark:bg-black rounded-[14px] flex items-center justify-center min-h-[200px]">
+  //         <div className="flex flex-col items-center gap-3 text-gray-400">
+  //           <div className="w-8 h-8 border-4 border-gray-300 border-t-brown rounded-full animate-spin" />
+  //           <span className="text-sm">Loading user data…</span>
+  //         </div>
+  //       </div>
+  //     </section>
+  //   );
+  // }
+
   return (
     <section className="flex flex-col gap-[12.5px] lg:gap-[25px] ">
       <div className="flex justify-between">

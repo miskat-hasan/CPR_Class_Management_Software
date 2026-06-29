@@ -45,7 +45,8 @@ export const getallTrainingsite = (token, page = 1, perPage = 10) => {
 export const getSingleTrainingsite = id => {
   return useClientApi({
     method: "get",
-    key: ["get-single-training-site"],
+    key: ["get-single-training-site", id],
+    enabled: !!id,
     isPrivate: true,
     endpoint: `/api/training-site/edit/${id}`,
   });
@@ -103,7 +104,8 @@ export const getSingleLocation = id => {
   return useClientApi({
     method: "get",
     isPrivate: true,
-    key: ["get-single-location"],
+    key: ["get-single-location", id],
+    enabled: !!id,
     endpoint: `/api/locations/${id}`,
   });
 };
@@ -139,7 +141,8 @@ export const storeClient = () => {
 export const getSingleClient = id => {
   return useClientApi({
     method: "get",
-    key: ["get-single-client"],
+    key: ["get-single-client", id],
+    enabled: !!id,
     isPrivate: true,
     endpoint: `/api/clients/${id}`,
   });
@@ -196,6 +199,7 @@ export const getSingleInstructor = id => {
     method: "get",
     key: ["get-single-instructor", id],
     isPrivate: true,
+    enabled: !!id,
     endpoint: `/api/single-instructors?id=${id}`,
   });
 };
@@ -340,7 +344,8 @@ export const updateCertification = () => {
 export const getSingleCertification = id => {
   return useClientApi({
     method: "get",
-    key: ["get-single-certification"],
+    key: ["get-single-certification", id],
+    enabled: !!id,
     isPrivate: true,
     endpoint: `/api/certifications/show?id=${id}`,
   });
@@ -387,7 +392,8 @@ export const getSingleProductAddOns = id => {
   return useClientApi({
     method: "get",
     isPrivate: true,
-    key: ["get-single-product-add-ons"],
+    key: ["get-single-product-add-ons", id],
+    enabled: !!id,
     endpoint: `/api/addon_list/show?id=${id}`,
   });
 };
@@ -424,7 +430,8 @@ export const getSinglePromoCode = id => {
   return useClientApi({
     method: "get",
     isPrivate: true,
-    key: ["get-single-promo-code"],
+    key: ["get-single-promo-code", id],
+    enabled: !!id,
     endpoint: `/api/promo-codes/show?id=${id}`,
   });
 };
@@ -459,7 +466,8 @@ export const getSingleKeyCodeBank = id => {
   return useClientApi({
     method: "get",
     isPrivate: true,
-    key: ["get-single-keycode-bank"],
+    key: ["get-single-keycode-bank", id],
+    enabled: !!id,
     endpoint: `/api/keycode/show?id=${id}`,
   });
 };
@@ -631,8 +639,8 @@ export const getSingleDiscipline = id => {
     method: "get",
     isPrivate: true,
     key: ["get-single-discipline", id],
-    endpoint: `/api/discipline/show?id=${id}`,
     enabled: !!id,
+    endpoint: `/api/discipline/show?id=${id}`,
   });
 };
 
@@ -650,8 +658,9 @@ export const storeCourse = () => {
 export const getSingleCourse = id => {
   return useClientApi({
     method: "get",
-    key: ["get-single-course"],
+    key: ["get-single-course", id],
     isPrivate: true,
+    enabled: !!id,
     endpoint: `/api/courses/show?id=${id}`,
   });
 };
@@ -745,8 +754,8 @@ export const getSingleClass = id => {
     method: "get",
     isPrivate: true,
     key: ["get-single-class", id],
-    endpoint: `/api/class/show?id=${id}`,
     enabled: !!id,
+    endpoint: `/api/class/show?id=${id}`,
   });
 };
 export const updateClass = id => {
@@ -960,8 +969,8 @@ export const getSingleEmailCampaign = id => {
     method: "get",
     isPrivate: true,
     key: ["get-single-email-campaign", id],
-    endpoint: `/api/email-campaigns/${id}`,
     enabled: !!id,
+    endpoint: `/api/email-campaigns/${id}`,
   });
 };
 export const storeEmailCampaign = () => {
@@ -1408,6 +1417,7 @@ export const getSingleWhatsNew = id => {
     method: "get",
     isPrivate: true,
     key: ["get-single-whats-new", id],
+    enabled: !!id,
     endpoint: `/api/whats_new/show?id=${id}`,
   });
 };
@@ -1541,10 +1551,12 @@ export const useDeleteRegistrationQuestion = (id) => {
 };
 
 // course schedule data (public api)
-export const useGetCourseSchedule = () => {
+export const useGetCourseSchedule = (siteId = 1) => {
   return useClientApi({
     method: "get",
     isPrivate: false,
-    endpoint: "/api/public/courses-with-classes",
+    params: { training_site_id: siteId },
+    key: ["get-course-schedule", siteId],
+    endpoint: "/api/courses-with-classes",
   });
 }
