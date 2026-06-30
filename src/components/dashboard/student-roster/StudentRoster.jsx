@@ -143,7 +143,7 @@ const StudentRoster = ({ id }) => {
                       </td>
                       <td className="px-3 sm:px-6 py-3 text-center">
                         <div className="flex items-center justify-center">
-                          <TableButton href={`student/${item.id}`}>
+                          <TableButton href={`${id}/edit-student/${item.id}`}>
                             <CiEdit className="text-gray-600 dark:text-gray text-[16px]" />
                           </TableButton>
                         </div>
@@ -166,6 +166,8 @@ const StudentRoster = ({ id }) => {
         )}
 
         {/* Footer action buttons */}
+        {studentData?.data?.students?.length > 0 && (
+          
         <div className="flex sm:justify-end flex-wrap gap-2">
           <BackButton />
           <Button
@@ -205,6 +207,7 @@ const StudentRoster = ({ id }) => {
             {downloadStudentListPending ? "Downloading..." : "Student List"}
           </Button>
         </div>
+        )}
       </div>
 
       {openAddStudentModal && (

@@ -59,13 +59,13 @@ export default function LoginForm() {
           <FormInput
             name="login"
             label="Email"
-            placeholder="Enter Your Email"
+            placeholder="Enter Your Email or Username"
             rules={{
-              required: "Email is required",
-              pattern: {
-                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                message: "Enter a valid email address",
-              },
+              required: "Email/Username is required",
+              // pattern: {
+              //   value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+              //   message: "Enter a valid email address",
+              // },
             }}
           />
           <FormInput

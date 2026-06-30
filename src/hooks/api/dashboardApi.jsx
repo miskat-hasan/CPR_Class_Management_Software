@@ -763,6 +763,7 @@ export const updateClass = id => {
     method: "post",
     isPrivate: true,
     endpoint: `/api/class/update/${id}`,
+    enabled: !!id,
   });
 };
 export const deleteClass = () => {
@@ -908,6 +909,7 @@ export const useGetStudent = id => {
     isPrivate: true,
     key: ["get-student", id],
     endpoint: `/api/student/show?id=${id}`,
+    enabled: !!id,
   });
 };
 export const useUpdateStudentScore = () => {
