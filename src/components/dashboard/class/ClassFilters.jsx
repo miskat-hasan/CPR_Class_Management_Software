@@ -70,8 +70,10 @@ export default function ClassFilters({ onSearch, onClear, isSearching }) {
   const { data: coursesData, isLoading: coursesLoading } = getAllCourses({
     type: "all",
   });
+  
   const { data: instructorData, isLoading: instructorLoading } =
     getAllInstructor({ type: "all" });
+  
   const { data: locationData, isLoading: locationLoading } = getAllLocation({
     type: "all",
   });

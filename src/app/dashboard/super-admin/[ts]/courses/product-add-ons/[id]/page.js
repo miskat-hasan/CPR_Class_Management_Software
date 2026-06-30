@@ -83,6 +83,19 @@ export default function Page({ params }) {
     );
   };
 
+  if (isLoading) {
+    return (
+      <section className="flex flex-col gap-4">
+        <SectionTitle title="Edit Product Add-on" />
+        <div className="p-[26px] bg-white dark:bg-black rounded-[14px] flex items-center justify-center min-h-[200px]">
+          <div className="flex flex-col items-center gap-3 text-gray-400">
+            <div className="w-8 h-8 border-4 border-gray-300 border-t-brown rounded-full animate-spin" />
+            <span className="text-sm">Loading Product Add-on data…</span>
+          </div>
+        </div>
+      </section>
+    );
+  }
   return (
     <section className="flex flex-col gap-4">
       <SectionTitle title="Edit Product Add-on" />

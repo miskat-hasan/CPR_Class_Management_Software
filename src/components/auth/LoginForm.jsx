@@ -29,7 +29,7 @@ export default function LoginForm() {
   const { mutateAsync: loginMutation, isPending } = useLogin({ setNavigating });
 
   const form = useForm({
-    defaultValues: { email: "", password: "" },
+    defaultValues: { login: "", password: "" },
     mode: "onSubmit",
   });
 
@@ -57,7 +57,7 @@ export default function LoginForm() {
 
         <FormContainer form={form} onSubmit={onSubmit}>
           <FormInput
-            name="email"
+            name="login"
             label="Email"
             placeholder="Enter Your Email"
             rules={{

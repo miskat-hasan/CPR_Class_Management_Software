@@ -1551,12 +1551,29 @@ export const useDeleteRegistrationQuestion = (id) => {
 };
 
 // course schedule data (public api)
-export const useGetCourseSchedule = (siteId = 1) => {
+// ── Replace in src/hooks/api/dashboardApi.js ──
+
+// GET /api/courses-with-classes
+// Supports: training_site_id, search, course_id, location_id,
+//           instructor_id, date, from_time, to_time, page
+export const useGetCourseSchedule = (siteId = 1, filters = {}) => {
+  const params = {
+    training_site_id: siteId,
+    ...(filters.search        ? { search:        filters.search        } : {}),
+    ...(filters.course_id     ? { course_id:     filters.course_id     } : {}),
+    ...(filters.location_id   ? { location_id:   filters.location_id   } : {}),
+    ...(filters.instructor_id ? { instructor_id: filters.instructor_id } : {}),
+    ...(filters.date          ? { date:          filters.date          } : {}),
+    ...(filters.from_time     ? { from_time:     filters.from_time     } : {}),
+    ...(filters.to_time       ? { to_time:       filters.to_time       } : {}),
+    ...(filters.page          ? { page:          filters.page          } : {}),
+  };
+
   return useClientApi({
     method: "get",
     isPrivate: false,
-    params: { training_site_id: siteId },
-    key: ["get-course-schedule", siteId],
+    params,
+    key: ["get-course-schedule", siteId, JSON.stringify(params)],
     endpoint: "/api/courses-with-classes",
   });
-}
+};
