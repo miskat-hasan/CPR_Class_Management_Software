@@ -1,5 +1,7 @@
+// src/app/dashboard/super-admin/[ts]/class-and-students/past-classes/[id]/page.js
 "use client";
 
+import { useMemo } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import SectionTitle from "@/components/common/SectionTitle";
@@ -19,36 +21,39 @@ export default function EditPastClassPage() {
 
   const classData = data?.data;
 
-  const defaultValues = classData
-    ? {
-        certifyingBody: classData.course?.course_certifying_body_id ?? "",
-        course: String(classData.course_id ?? ""),
-        client: String(classData.client_id ?? ""),
-        location: String(classData.location_id ?? ""),
-        instructor: String(classData.instructor_id ?? ""),
-        assistants: (classData.assistants ?? []).map(a => a.id ?? a),
-        price: String(classData.price ?? ""),
-        totalHours: String(classData.total_hours ?? ""),
-        maxStudents: String(classData.max_student ?? ""),
-        studentManikinRatio: classData.ratio ?? "",
-        closeRegistrationDays: String(classData.close_registration_days ?? ""),
-        closeRegistrationHours: String(
-          classData.close_registration_hours ?? "",
-        ),
-        listing: !!classData.listing,
-        publicNotes: classData.public_notes ?? "",
-        internalNotes: classData.internal_notes ?? "",
-        adminNotes: classData.admin_notes ?? "",
-        certificateIssued: classData.certificate_issued ?? "",
-        certificateExpire: classData.certificate_expire ?? "",
-        existingDocuments: classData.documents ?? [],
-        classTimes: (classData.class_times ?? []).map(ct => ({
-          date: ct.date ?? "",
-          timeFrom: ct.from ?? "",
-          timeTo: ct.to ?? "",
-        })),
-      }
-    : null;
+  const defaultValues = useMemo(() => {
+    if (!classData) return null;
+    return {
+      certifyingBodyId: String(
+        classData.course?.course_certifying_body_id ?? "",
+      ),
+      certifyingBody: classData.course?.course_certifying_body ?? "",
+      course: String(classData.course_id ?? ""),
+      client: String(classData.client_id ?? ""),
+      location: String(classData.location_id ?? ""),
+      instructor: String(classData.instructor_id ?? ""),
+      assistants: (classData.assistants ?? []).map(a => a.id ?? a),
+      price: String(classData.price ?? ""),
+      totalHours: String(classData.total_hours ?? ""),
+      maxStudents: String(classData.max_student ?? ""),
+      studentManikinRatio: classData.ratio ?? "",
+      closeRegistrationDays: String(classData.close_registration_days ?? ""),
+      closeRegistrationHours: String(classData.close_registration_hours ?? ""),
+      listing: !!classData.listing,
+      publicNotes: classData.public_notes ?? "",
+      internalNotes: classData.internal_notes ?? "",
+      adminNotes: classData.admin_notes ?? "",
+      certificateIssued: classData.certificate_issued ?? "",
+      certificateExpire: classData.certificate_expire ?? "",
+      existingDocuments: classData.documents ?? [],
+      signature: classData.signature ?? "",
+      classTimes: (classData.class_times ?? []).map(ct => ({
+        date: ct.date ?? "",
+        timeFrom: ct.from ?? "",
+        timeTo: ct.to ?? "",
+      })),
+    };
+  }, [classData]);
 
   const onSubmit = formData => {
     formData.append("training_site_id", selectedTrainingSiteId);

@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { Check, ChevronsUpDown, Loader2 } from "lucide-react";
-import { cn } from "@/lib/utils"; // shadcn utility for merging classes
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
   Command,
