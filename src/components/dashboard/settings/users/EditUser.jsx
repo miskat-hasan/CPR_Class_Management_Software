@@ -87,7 +87,7 @@ const EditUser = () => {
     name: "trainingSites",
   });
   const { mutate: updateUserMutation, isPending: updateUserPending } =
-    useUpdateUser();
+    useUpdateUser(id);
 
   const primarySiteRoles = useMemo(
     () => (rolesData?.data ?? []).filter(r => r.name !== "Super Admin"),
@@ -213,8 +213,7 @@ const EditUser = () => {
             router.back();
           }
         },
-        onError: err =>
-          toast.error(err?.response?.data?.message || "Failed to update user."),
+        
       },
     );
   };

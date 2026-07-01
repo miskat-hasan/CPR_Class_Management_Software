@@ -24,10 +24,7 @@ export default function EditPastClassPage() {
   const defaultValues = useMemo(() => {
     if (!classData) return null;
     return {
-      certifyingBodyId: String(
-        classData.course?.course_certifying_body_id ?? "",
-      ),
-      certifyingBody: classData.course?.course_certifying_body ?? "",
+      certifyingBody: classData.course?.course_certifying_body_id ?? "",
       course: String(classData.course_id ?? ""),
       client: String(classData.client_id ?? ""),
       location: String(classData.location_id ?? ""),

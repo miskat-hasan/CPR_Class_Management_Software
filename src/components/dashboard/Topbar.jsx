@@ -34,8 +34,8 @@ const DashboardTopbar = () => {
         <Link
            href={
             user?.roles?.find((item) => item?.role_name === "Super Admin")
-              ? `/super-admin/${trainingSiteId}/notifications`
-              : `/admin/${trainingSiteId}/notifications`
+              ? `/dashboard/super-admin/${trainingSiteId}/notifications`
+              : `/dashboard/admin/${trainingSiteId}/notifications`
           }
           className="w-[40px] h-[40px] lg:w-[60px] lg:h-[60px] bg-white dark:bg-black rounded-[14px] flex items-center justify-center dark:text-gray"
         >
@@ -46,8 +46,8 @@ const DashboardTopbar = () => {
         <Link
           href={
             user?.roles?.find((item) => item?.role_name === "Super Admin")
-              ? `/super-admin/${trainingSiteId}/manage_profile`
-              : `/admin/${trainingSiteId}/manage_profile`
+              ? `/dashboard/super-admin/${trainingSiteId}/manage-profile`
+              : `/dashboard/admin/${trainingSiteId}/manage-profile`
           }
           className="h-auto lg:h-[60px] bg-white dark:bg-black rounded-[14px] flex items-center p-1 w-auto gap-[11px]"
         >

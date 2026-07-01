@@ -282,19 +282,37 @@ export const useGetSingleUser = id => {
   });
 };
 
-export const useUpdateUser = () => {
+export const useUpdateUser = id => {
   const queryClient = useQueryClient();
   const { selectedTrainingSiteId } = useAuth();
   return useClientApi({
     method: "post",
     isPrivate: true,
-    endpoint: "/api/site-users/update",
+    enabled: !!id,
+    endpoint: `/api/site-users/${id}`,
     axiosOptions: { headers: { "X-Site-Id": selectedTrainingSiteId } },
     onSuccess: data => {
       queryClient.invalidateQueries(["get-all-users"]);
+      queryClient.invalidateQueries(["get-single-user", id]);
     },
     onError: err =>
-      toast.error(err?.response?.data?.message || "Something went wrong!"),
+      toast.error(err?.response?.data?.message || "Failed to update user."),
+  });
+};
+
+export const useUpdateAuthUser = (id) => {
+  const queryClient = useQueryClient();
+  // const { selectedTrainingSiteId } = useAuth();
+  return useClientApi({
+    method: "post",
+    isPrivate: true,
+    endpoint: "/api/users/data/update",
+    // axiosOptions: { headers: { "X-Site-Id": selectedTrainingSiteId } },
+    onSuccess: data => {
+      queryClient.invalidateQueries(["get-single-user", id]);
+    },
+    onError: err =>
+      toast.error(err?.response?.data?.message || "Failed to update user."),
   });
 };
 
@@ -1502,7 +1520,6 @@ export const useUpdateSiteSettings = () => {
 
 // ── Custom Registration Questions ──
 
-
 // GET /api/registration-questions?page=1&per_page=10
 export const useGetRegistrationQuestions = (page = 1, perPage = 10) => {
   return useClientApi({
@@ -1512,9 +1529,9 @@ export const useGetRegistrationQuestions = (page = 1, perPage = 10) => {
     endpoint: `/api/registration-questions?page=${page}&per_page=${perPage}`,
   });
 };
- 
+
 // GET /api/registration-questions/:id
-export const useGetSingleRegistrationQuestion = (id) => {
+export const useGetSingleRegistrationQuestion = id => {
   return useClientApi({
     method: "get",
     key: ["get-single-registration-question", id],
@@ -1524,7 +1541,7 @@ export const useGetSingleRegistrationQuestion = (id) => {
     enabled: !!id,
   });
 };
- 
+
 // POST /api/registration-questions
 export const useCreateRegistrationQuestion = () => {
   return useClientApi({
@@ -1533,18 +1550,18 @@ export const useCreateRegistrationQuestion = () => {
     endpoint: "/api/registration-questions",
   });
 };
- 
+
 // PUT /api/registration-questions/:id
-export const useUpdateRegistrationQuestion = (id) => {
+export const useUpdateRegistrationQuestion = id => {
   return useClientApi({
     method: "put",
     isPrivate: true,
     endpoint: `/api/registration-questions/${id}`,
   });
 };
- 
+
 // DELETE /api/registration-questions/:id
-export const useDeleteRegistrationQuestion = (id) => {
+export const useDeleteRegistrationQuestion = id => {
   return useClientApi({
     method: "delete",
     isPrivate: true,
@@ -1561,14 +1578,14 @@ export const useDeleteRegistrationQuestion = (id) => {
 export const useGetCourseSchedule = (siteId = 1, filters = {}) => {
   const params = {
     training_site_id: siteId,
-    ...(filters.search        ? { search:        filters.search        } : {}),
-    ...(filters.course_id     ? { course_id:     filters.course_id     } : {}),
-    ...(filters.location_id   ? { location_id:   filters.location_id   } : {}),
+    ...(filters.search ? { search: filters.search } : {}),
+    ...(filters.course_id ? { course_id: filters.course_id } : {}),
+    ...(filters.location_id ? { location_id: filters.location_id } : {}),
     ...(filters.instructor_id ? { instructor_id: filters.instructor_id } : {}),
-    ...(filters.date          ? { date:          filters.date          } : {}),
-    ...(filters.from_time     ? { from_time:     filters.from_time     } : {}),
-    ...(filters.to_time       ? { to_time:       filters.to_time       } : {}),
-    ...(filters.page          ? { page:          filters.page          } : {}),
+    ...(filters.date ? { date: filters.date } : {}),
+    ...(filters.from_time ? { from_time: filters.from_time } : {}),
+    ...(filters.to_time ? { to_time: filters.to_time } : {}),
+    ...(filters.page ? { page: filters.page } : {}),
   };
 
   return useClientApi({
