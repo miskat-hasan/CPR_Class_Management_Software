@@ -72,8 +72,6 @@ const AddUser = () => {
     formState: { errors },
     watch,
   } = form;
-
-  // Watch all trainingSites rows to detect duplicates live
   const watchedSites = watch("trainingSites");
 
   const { data: countryData, isLoading: countryDataLoading } = getAllCountry();
@@ -85,22 +83,19 @@ const AddUser = () => {
     control,
     name: "trainingSites",
   });
-
   const { mutate: storeUserMutation, isPending: storeUserPending } =
     useStoreUser();
 
-  // Roles for primary site — exclude Super Admin
-  const primarySiteRoles = useMemo(() => {
-    return (rolesData?.data ?? []).filter((r) => r.name !== "Super Admin");
-  }, [rolesData]);
+  const primarySiteRoles = useMemo(
+    () => (rolesData?.data ?? []).filter(r => r.name !== "Super Admin"),
+    [rolesData],
+  );
 
-  // Roles for other sites — filtered by auth user's role
   const otherSiteRoles = useMemo(() => {
     const assignable = ASSIGNABLE_ROLES[authRoleName] ?? [];
-    return (rolesData?.data ?? []).filter((r) => assignable.includes(r.name));
+    return (rolesData?.data ?? []).filter(r => assignable.includes(r.name));
   }, [rolesData, authRoleName]);
 
-  // Check if a site+role combo is already used in another row
   const isDuplicate = (currentIndex, tsiteId, roleId) => {
     if (!tsiteId || !roleId) return false;
     return watchedSites.some(
@@ -111,14 +106,12 @@ const AddUser = () => {
     );
   };
 
-  const onSubmit = (values) => {
-    // Extra duplicate check before submit
+  const onSubmit = values => {
     if (isPrimarySite) {
       const combos = values.trainingSites.map(
-        (ts) => `${ts.tsite_id}-${ts.role_id}`,
+        ts => `${ts.tsite_id}-${ts.role_id}`,
       );
-      const hasDuplicates = combos.length !== new Set(combos).size;
-      if (hasDuplicates) {
+      if (combos.length !== new Set(combos).size) {
         toast.error(
           "Duplicate training site and role combination found. Please fix before submitting.",
         );
@@ -149,7 +142,7 @@ const AddUser = () => {
     const payload = isPrimarySite
       ? {
           ...base,
-          site_roles: values.trainingSites.map((ts) => ({
+          site_roles: values.trainingSites.map(ts => ({
             training_site_id: Number(ts.tsite_id),
             role_id: Number(ts.role_id),
           })),
@@ -165,22 +158,24 @@ const AddUser = () => {
     storeUserMutation(
       { data: payload },
       {
-        onSuccess: (data) => {
+        onSuccess: data => {
           if (data?.status) {
             toast.success(data?.message || "User added successfully!");
             router.back();
           }
         },
+        onError: err =>
+          toast.error(err?.response?.data?.message || "Failed to add user."),
       },
     );
   };
 
   return (
     <section className="flex flex-col gap-4">
-      <SectionTitle title={"Add User"} />
-      <div className="p-[26px] bg-white dark:bg-black rounded-[14px] flex flex-col gap-[24px]">
+      <SectionTitle title="Add User" />
+      <div className="p-[13px] lg:p-[26px] bg-white dark:bg-black rounded-[14px]">
         <FormContainer form={form} onSubmit={onSubmit}>
-          <div className="grid grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <FormInput
               name="firstName"
               label="First Name"
@@ -218,12 +213,12 @@ const AddUser = () => {
             <FormInput name="city" label="City" placeholder="City" />
             <FormInput
               name="stateProvince"
-              label="State/Province/Region"
+              label="State / Province / Region"
               placeholder="State/Province"
             />
             <FormInput
               name="zipPostalCode"
-              label="Zip/Postal Code"
+              label="Zip / Postal Code"
               placeholder="Zip/Postal code"
             />
 
@@ -234,11 +229,10 @@ const AddUser = () => {
               render={({ field }) => (
                 <CustomSelect
                   {...field}
-                  id="country"
                   label="Country"
                   placeholder="Select country"
                   isLoading={countryDataLoading}
-                  options={countryData?.data}
+                  options={countryData?.data ?? []}
                   error={errors.country?.message}
                 />
               )}
@@ -264,6 +258,7 @@ const AddUser = () => {
               label="RCLC Username (Optional)"
               placeholder="RCLC username"
             />
+
             <FormInput
               name="emailAddress"
               label="Email Address"
@@ -287,9 +282,11 @@ const AddUser = () => {
               }}
             />
 
-            {/* Training Site and Roles */}
-            <div className="col-span-2 bg-neutral-50 border px-2 pt-2 pb-4 rounded-md">
-              <h6 className="text-lg mb-1">Training Site and Roles</h6>
+            {/* Training Site & Roles */}
+            <div className="col-span-1 md:col-span-2 bg-neutral-50 dark:bg-dark border dark:border-gray-700 px-3 pt-3 pb-4 rounded-md">
+              <h6 className="text-base font-semibold mb-2 dark:text-gray">
+                Training Site and Roles
+              </h6>
 
               {isPrimarySite ? (
                 <>
@@ -300,10 +297,12 @@ const AddUser = () => {
                       currentRow?.tsite_id,
                       currentRow?.role_id,
                     );
-
                     return (
-                      <div key={field.id} className="mt-3 border-b pb-3">
-                        <div className="flex items-center gap-4">
+                      <div
+                        key={field.id}
+                        className="mt-3 border-b dark:border-gray-700 pb-3"
+                      >
+                        <div className="flex items-end gap-3">
                           <div className="grid sm:grid-cols-2 gap-4 flex-1">
                             <Controller
                               name={`trainingSites.${index}.tsite_id`}
@@ -315,7 +314,7 @@ const AddUser = () => {
                                   label="Training Site"
                                   placeholder="Select site"
                                   isLoading={trainingSiteLoading}
-                                  options={trainingSiteData?.data}
+                                  options={trainingSiteData?.data ?? []}
                                   error={
                                     errors?.trainingSites?.[index]?.tsite_id
                                       ?.message
@@ -342,18 +341,16 @@ const AddUser = () => {
                               )}
                             />
                           </div>
-
                           {fields.length > 1 && (
-                            <div
+                            <button
+                              type="button"
                               onClick={() => remove(index)}
-                              className="bg-neutral-200 p-2 -mb-6 rounded-md cursor-pointer hover:bg-neutral-300"
+                              className="p-2 bg-neutral-200 dark:bg-gray-700 rounded-md hover:bg-red-100 transition cursor-pointer mb-0.5"
                             >
-                              <LucideTrash2 className="size-4" />
-                            </div>
+                              <LucideTrash2 className="size-4 text-gray-600 dark:text-gray" />
+                            </button>
                           )}
                         </div>
-
-                        {/* Duplicate warning shown inline under the row */}
                         {duplicate && (
                           <p className="text-xs text-red-500 mt-1.5">
                             This training site and role combination is already
@@ -363,17 +360,15 @@ const AddUser = () => {
                       </div>
                     );
                   })}
-
-                  <div
+                  <button
+                    type="button"
                     onClick={() => append({ tsite_id: "", role_id: "" })}
-                    className="mt-4 px-2 py-1.5 inline-flex items-center gap-1 border rounded-md text-sm bg-neutral-700 text-neutral-100 cursor-pointer hover:bg-neutral-600 shadow-sm"
+                    className="mt-3 px-3 py-1.5 inline-flex items-center gap-1.5 border rounded-md text-sm bg-neutral-700 dark:bg-gray-800 text-neutral-100 cursor-pointer hover:bg-neutral-600 w-fit"
                   >
-                    <FaPlus className="size-3" />
-                    Add more
-                  </div>
+                    <FaPlus className="size-3" /> Add more
+                  </button>
                 </>
               ) : (
-                // OTHER SITES — multi-select roles
                 <div className="mt-3">
                   <Controller
                     name="roleIds"
@@ -390,7 +385,7 @@ const AddUser = () => {
                       />
                     )}
                   />
-                  <p className="text-xs text-gray-500 mt-1">
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                     These roles will be assigned to training site #{ts}
                   </p>
                 </div>
@@ -398,12 +393,12 @@ const AddUser = () => {
             </div>
           </div>
 
-          <div className="flex items-center justify-end mt-8 gap-4">
+          <div className="flex items-center justify-end mt-6 gap-3">
             <BackButton />
             <Button
               type="submit"
               disabled={storeUserPending}
-              className="px-6 py-2 bg-[#C1121F] text-white rounded-md text-sm font-medium hover:bg-[#a00e1a] disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-6 py-2 text-sm font-medium text-white bg-brown dark:bg-dark-brown hover:bg-brown focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {storeUserPending ? "Saving..." : "Add User"}
             </Button>

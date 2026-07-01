@@ -91,7 +91,7 @@ const StepCourseOptions = ({ form, classDetails, addonsList, onNext }) => {
         {course?.course_image_url && (
           <div className="shrink-0">
             <img
-              src={course?.course_image_url}
+              src={process.env.NEXT_PUBLIC_SITE_URL +"/" + course?.image?.image}
               alt={course.course_name}
               className="rounded-md w-full md:max-w-[160px] object-cover"
             />

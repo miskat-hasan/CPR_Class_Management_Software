@@ -20,7 +20,7 @@ const WhatIsNew = () => {
       <div className="flex justify-between">
         <SectionTitle title={"What’s New"} />
         <Button
-          onClick={() => router.push("whats_new/add")}
+          onClick={() => router.push("whats-new/add")}
           className="py-[11px] text-[12px] lg:text-base lg:py-[22px] cursor-pointer bg-brown dark:bg-dark-brown flex items-center gap-2"
         >
           Add New
@@ -52,7 +52,7 @@ const WhatIsNew = () => {
               </thead>
 
               <tbody>
-                {whatsNewData?.data?.length > 6  ? (
+                {whatsNewData?.data?.length > 6 ? (
                   whatsNewData?.data?.map((item, index) => (
                     <tr
                       key={item?.id}
@@ -68,7 +68,7 @@ const WhatIsNew = () => {
                         {item?.title}
                       </td>
                       <td className="px-3 py-4 md:px-6 text-center whitespace-nowrap">
-                        <Link href={`whats_new/${item.id}`}>
+                        <Link href={`whats-new/${item.id}`}>
                           <button className="p-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition cursor-pointer">
                             <CiEdit className="text-gray-600 text-[16px]" />
                           </button>

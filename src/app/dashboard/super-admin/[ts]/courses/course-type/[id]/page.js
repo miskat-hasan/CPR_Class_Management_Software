@@ -1,6 +1,6 @@
+// src/app/dashboard/super-admin/[ts]/courses/course-type/[id]/page.jsx
 "use client";
 
-import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import SectionTitle from "@/components/common/SectionTitle";
@@ -92,7 +92,25 @@ export default function EditCoursePage() {
     });
   };
 
-  if (isLoading) return null;
+  console.log({
+    isLoading,
+    courseData,
+    defaultValues,
+  });
+
+  if (isLoading || !defaultValues) {
+    return (
+      <section className="flex flex-col gap-4">
+        <SectionTitle title="Edit Course Type" />
+        <div className="p-[26px] bg-white dark:bg-black rounded-[14px] flex items-center justify-center min-h-[200px]">
+          <div className="flex flex-col items-center gap-3 text-gray-400">
+            <div className="w-8 h-8 border-4 border-gray-300 border-t-brown rounded-full animate-spin" />
+            <span className="text-sm">Loading course data…</span>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="flex flex-col gap-4">
