@@ -239,6 +239,8 @@ const ClassButton = ({ cls }) => {
   return (
     <a
       href={href}
+      target="_blank"
+      rel="noopener noreferrer"
       className={`block border rounded-md px-4 py-3 text-sm transition ${
         isFull
           ? "border-gray-200 dark:border-zinc-700 bg-gray-50 dark:bg-zinc-900 cursor-not-allowed opacity-60 pointer-events-none"

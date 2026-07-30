@@ -9,7 +9,6 @@ import { getAllCountry, storeClient } from "@/hooks/api/dashboardApi";
 import { Controller, useForm } from "react-hook-form";
 import dynamic from "next/dynamic";
 import React, { useRef } from "react";
-import Swal from "sweetalert2";
 import { toast } from "sonner";
 
 const RichTextEditor = dynamic(() => import("@/components/shared/RichEditor"), {

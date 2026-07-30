@@ -82,7 +82,7 @@ const Page = () => {
                       </td>
                       <td className="px-3 sm:px-6 py-3 text-center">
                         <Link
-                          href={`training_sites/${item?.id}`}
+                          href={`training-sites/${item?.id}`}
                           className="p-1.5 sm:p-2 bg-gray-100 rounded-lg inline-block hover:bg-gray-200 transition"
                         >
                           <CiEdit className="text-gray-600 text-[14px] sm:text-[16px]" />

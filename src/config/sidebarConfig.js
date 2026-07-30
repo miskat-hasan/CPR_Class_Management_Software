@@ -116,11 +116,11 @@ const superAdminFullMenu = ts => [
     submenu: [
       {
         label: "Manage Clients",
-        href: `/dashboard/super-admin/${ts}/clients/manage_clients`,
+        href: `/dashboard/super-admin/${ts}/clients/manage-clients`,
       },
       {
         label: "Add Clients",
-        href: `/dashboard/super-admin/${ts}/clients/add_client`,
+        href: `/dashboard/super-admin/${ts}/clients/add-client`,
       },
     ],
   },
@@ -163,11 +163,11 @@ const superAdminFullMenu = ts => [
     submenu: [
       {
         label: "Merchant Track",
-        href: `/dashboard/super-admin/${ts}/credit_card_services/merchant_track`,
+        href: `/dashboard/super-admin/${ts}/credit-card-services/merchant-track`,
       },
       {
         label: "Payment Report",
-        href: `/dashboard/super-admin/${ts}/credit_card_services/payment_report`,
+        href: `/dashboard/super-admin/${ts}/credit-card-services/payment-report`,
       },
     ],
   },
@@ -243,27 +243,27 @@ const superAdminFullMenu = ts => [
     submenu: [
       {
         label: "Activity Reports",
-        href: `/dashboard/super-admin/${ts}/reports/activity_reports`,
+        href: `/dashboard/super-admin/${ts}/reports/activity-reports`,
       },
       {
         label: "Class Report",
-        href: `/dashboard/super-admin/${ts}/reports/class_reports`,
+        href: `/dashboard/super-admin/${ts}/reports/class-reports`,
       },
       {
         label: "Product Add-on Report",
-        href: `/dashboard/super-admin/${ts}/reports/product_addon_report`,
+        href: `/dashboard/super-admin/${ts}/reports/product-addon-report`,
       },
       {
         label: "Promo Code Report",
-        href: `/dashboard/super-admin/${ts}/reports/promo_code_report`,
+        href: `/dashboard/super-admin/${ts}/reports/promo-code-report`,
       },
       {
         label: "Registration Report",
-        href: `/dashboard/super-admin/${ts}/reports/registration_report`,
+        href: `/dashboard/super-admin/${ts}/reports/registration-report`,
       },
       {
         label: "Event Log",
-        href: `/dashboard/super-admin/${ts}/reports/event_log`,
+        href: `/dashboard/super-admin/${ts}/reports/event-log`,
       },
     ],
   },
@@ -292,7 +292,7 @@ const superAdminSiteMenu = ts => [
       },
       {
         label: "Student Search",
-        href: `/dashboard/super-admin/${ts}/class-and-students/student_search`,
+        href: `/dashboard/super-admin/${ts}/class-and-students/student-search`,
       },
     ],
   },
@@ -301,11 +301,11 @@ const superAdminSiteMenu = ts => [
     submenu: [
       {
         label: "Manage Clients",
-        href: `/dashboard/super-admin/${ts}/clients/manage_clients`,
+        href: `/dashboard/super-admin/${ts}/clients/manage-clients`,
       },
       {
         label: "Add Clients",
-        href: `/dashboard/super-admin/${ts}/clients/add_client`,
+        href: `/dashboard/super-admin/${ts}/clients/add-client`,
       },
     ],
   },
@@ -327,19 +327,19 @@ const superAdminSiteMenu = ts => [
     submenu: [
       {
         label: "Training Site Rosters",
-        href: `/dashboard/super-admin/${ts}/training_center/training_site_rosters`,
+        href: `/dashboard/super-admin/${ts}/training-center/training-site-rosters`,
       },
       {
         label: "TS Products",
-        href: `/dashboard/super-admin/${ts}/training_center/tc_products`,
+        href: `/dashboard/super-admin/${ts}/training-center/tc-products`,
       },
       {
         label: "TS Product Orders",
-        href: `/dashboard/super-admin/${ts}/training_center/tc_product_orders`,
+        href: `/dashboard/super-admin/${ts}/training-center/tc-product-orders`,
       },
       {
         label: "Order TC Product",
-        href: `/dashboard/super-admin/${ts}/class-and-students/ts_product_orders`,
+        href: `/dashboard/super-admin/${ts}/class-and-students/ts-product-orders`,
       },
     ],
   },
@@ -386,27 +386,27 @@ const superAdminSiteMenu = ts => [
     submenu: [
       {
         label: "Activity Reports",
-        href: `/dashboard/super-admin/${ts}/reports/activity_reports`,
+        href: `/dashboard/super-admin/${ts}/reports/activity-reports`,
       },
       {
         label: "Class Report",
-        href: `/dashboard/super-admin/${ts}/reports/class_reports`,
+        href: `/dashboard/super-admin/${ts}/reports/class-reports`,
       },
       {
         label: "Product Add-on Report",
-        href: `/dashboard/super-admin/${ts}/reports/product_addon_report`,
+        href: `/dashboard/super-admin/${ts}/reports/product-addon-report`,
       },
       {
         label: "Promo Code Report",
-        href: `/dashboard/super-admin/${ts}/reports/promo_code_report`,
+        href: `/dashboard/super-admin/${ts}/reports/promo-code-report`,
       },
       {
         label: "Registration Report",
-        href: `/dashboard/super-admin/${ts}/reports/registration_report`,
+        href: `/dashboard/super-admin/${ts}/reports/registration-report`,
       },
       {
         label: "Event Log",
-        href: `/dashboard/super-admin/${ts}/reports/event_log`,
+        href: `/dashboard/super-admin/${ts}/reports/event-log`,
       },
     ],
   },
@@ -439,7 +439,7 @@ const adminMenu = ts => [
       },
       {
         label: "Student Search",
-        href: `/dashboard/admin/${ts}/class-and-students/student_search`,
+        href: `/dashboard/admin/${ts}/class-and-students/student-search`,
       },
     ],
   },
@@ -448,11 +448,11 @@ const adminMenu = ts => [
     submenu: [
       {
         label: "Manage Clients",
-        href: `/dashboard/admin/${ts}/clients/manage_clients`,
+        href: `/dashboard/admin/${ts}/clients/manage-clients`,
       },
       {
         label: "Add Clients",
-        href: `/dashboard/admin/${ts}/clients/add_client`,
+        href: `/dashboard/admin/${ts}/clients/add-client`,
       },
     ],
   },
@@ -461,11 +461,11 @@ const adminMenu = ts => [
     submenu: [
       {
         label: "Instructor Records",
-        href: `/dashboard/admin/${ts}/instructors/instructor_records`,
+        href: `/dashboard/admin/${ts}/instructors/instructor-records`,
       },
       {
         label: "Add Instructor",
-        href: `/dashboard/admin/${ts}/instructors/add_instructor`,
+        href: `/dashboard/admin/${ts}/instructors/add-instructor`,
       },
     ],
   },
@@ -474,19 +474,19 @@ const adminMenu = ts => [
     submenu: [
       {
         label: "Training Site Rosters",
-        href: `/dashboard/admin/${ts}/training_center/training_site_rosters`,
+        href: `/dashboard/admin/${ts}/training-center/training-site-rosters`,
       },
       {
         label: "TS Products",
-        href: `/dashboard/admin/${ts}/training_center/tc_products`,
+        href: `/dashboard/admin/${ts}/training-center/tc-products`,
       },
       {
         label: "TS Product Orders",
-        href: `/dashboard/admin/${ts}/training_center/tc_product_orders`,
+        href: `/dashboard/admin/${ts}/training-center/tc-product-orders`,
       },
       {
         label: "Order TC Product",
-        href: `/dashboard/admin/${ts}/class-and-students/ts_product_orders`,
+        href: `/dashboard/admin/${ts}/class-and-students/ts-product-orders`,
       },
     ],
   },
@@ -533,27 +533,27 @@ const adminMenu = ts => [
     submenu: [
       {
         label: "Activity Reports",
-        href: `/dashboard/admin/${ts}/reports/activity_reports`,
+        href: `/dashboard/admin/${ts}/reports/activity-reports`,
       },
       {
         label: "Class Report",
-        href: `/dashboard/admin/${ts}/reports/class_reports`,
+        href: `/dashboard/admin/${ts}/reports/class-reports`,
       },
       {
         label: "Product Add-on Report",
-        href: `/dashboard/admin/${ts}/reports/product_addon_report`,
+        href: `/dashboard/admin/${ts}/reports/product-addon-report`,
       },
       {
         label: "Promo Code Report",
-        href: `/dashboard/admin/${ts}/reports/promo_code_report`,
+        href: `/dashboard/admin/${ts}/reports/promo-code-report`,
       },
       {
         label: "Registration Report",
-        href: `/dashboard/admin/${ts}/reports/registration_report`,
+        href: `/dashboard/admin/${ts}/reports/registration-report`,
       },
       {
         label: "Event Log",
-        href: `/dashboard/admin/${ts}/reports/event_log`,
+        href: `/dashboard/admin/${ts}/reports/event-log`,
       },
     ],
   },
@@ -586,7 +586,7 @@ const instructorMenu = ts => [
       },
       {
         label: "Student Search",
-        href: `/dashboard/instructor/${ts}/class-and-students/student_search`,
+        href: `/dashboard/instructor/${ts}/class-and-students/student-search`,
       },
     ],
   },
@@ -595,11 +595,11 @@ const instructorMenu = ts => [
     submenu: [
       {
         label: "Manage Clients",
-        href: `/dashboard/instructor/${ts}/clients/manage_clients`,
+        href: `/dashboard/instructor/${ts}/clients/manage-clients`,
       },
       {
         label: "Add Clients",
-        href: `/dashboard/instructor/${ts}/clients/add_client`,
+        href: `/dashboard/instructor/${ts}/clients/add-client`,
       },
     ],
   },
@@ -608,11 +608,11 @@ const instructorMenu = ts => [
     submenu: [
       {
         label: "Instructor Records",
-        href: `/dashboard/instructor/${ts}/instructors/instructor_records`,
+        href: `/dashboard/instructor/${ts}/instructors/instructor-records`,
       },
       {
         label: "Add Instructor",
-        href: `/dashboard/instructor/${ts}/instructors/add_instructor`,
+        href: `/dashboard/instructor/${ts}/instructors/add-instructor`,
       },
     ],
   },
@@ -621,19 +621,19 @@ const instructorMenu = ts => [
     submenu: [
       {
         label: "Training Site Rosters",
-        href: `/dashboard/instructor/${ts}/training_center/training_site_rosters`,
+        href: `/dashboard/instructor/${ts}/training-center/training-site-rosters`,
       },
       {
         label: "TS Products",
-        href: `/dashboard/instructor/${ts}/training_center/tc_products`,
+        href: `/dashboard/instructor/${ts}/training-center/tc-products`,
       },
       {
         label: "TS Product Orders",
-        href: `/dashboard/instructor/${ts}/training_center/tc_product_orders`,
+        href: `/dashboard/instructor/${ts}/training-center/tc-product-orders`,
       },
       {
         label: "Order TC Product",
-        href: `/dashboard/instructor/${ts}/class-and-students/ts_product_orders`,
+        href: `/dashboard/instructor/${ts}/class-and-students/ts-product-orders`,
       },
     ],
   },
@@ -679,27 +679,27 @@ const instructorMenu = ts => [
     submenu: [
       {
         label: "Activity Reports",
-        href: `/dashboard/instructor/${ts}/reports/activity_reports`,
+        href: `/dashboard/instructor/${ts}/reports/activity-reports`,
       },
       {
         label: "Class Report",
-        href: `/dashboard/instructor/${ts}/reports/class_reports`,
+        href: `/dashboard/instructor/${ts}/reports/class-reports`,
       },
       {
         label: "Product Add-on Report",
-        href: `/dashboard/instructor/${ts}/reports/product_addon_report`,
+        href: `/dashboard/instructor/${ts}/reports/product-addon-report`,
       },
       {
         label: "Promo Code Report",
-        href: `/dashboard/instructor/${ts}/reports/promo_code_report`,
+        href: `/dashboard/instructor/${ts}/reports/promo-code-report`,
       },
       {
         label: "Registration Report",
-        href: `/dashboard/instructor/${ts}/reports/registration_report`,
+        href: `/dashboard/instructor/${ts}/reports/registration-report`,
       },
       {
         label: "Event Log",
-        href: `/dashboard/instructor/${ts}/reports/event_log`,
+        href: `/dashboard/instructor/${ts}/reports/event-log`,
       },
     ],
   },
@@ -732,7 +732,7 @@ const assistantMenu = ts => [
       },
       {
         label: "Student Search",
-        href: `/dashboard/instructor-assistant/${ts}/class-and-students/student_search`,
+        href: `/dashboard/instructor-assistant/${ts}/class-and-students/student-search`,
       },
     ],
   },
@@ -741,11 +741,11 @@ const assistantMenu = ts => [
     submenu: [
       {
         label: "Manage Clients",
-        href: `/dashboard/instructor-assistant/${ts}/clients/manage_clients`,
+        href: `/dashboard/instructor-assistant/${ts}/clients/manage-clients`,
       },
       {
         label: "Add Clients",
-        href: `/dashboard/instructor-assistant/${ts}/clients/add_client`,
+        href: `/dashboard/instructor-assistant/${ts}/clients/add-client`,
       },
     ],
   },
@@ -754,11 +754,11 @@ const assistantMenu = ts => [
     submenu: [
       {
         label: "Instructor Records",
-        href: `/dashboard/instructor-assistant/${ts}/instructors/instructor_records`,
+        href: `/dashboard/instructor-assistant/${ts}/instructors/instructor-records`,
       },
       {
         label: "Add Instructor",
-        href: `/dashboard/instructor-assistant/${ts}/instructors/add_instructor`,
+        href: `/dashboard/instructor-assistant/${ts}/instructors/add-instructor`,
       },
     ],
   },
@@ -767,19 +767,19 @@ const assistantMenu = ts => [
     submenu: [
       {
         label: "Training Site Rosters",
-        href: `/dashboard/instructor-assistant/${ts}/training_center/training_site_rosters`,
+        href: `/dashboard/instructor-assistant/${ts}/training-center/training-site-rosters`,
       },
       {
         label: "TS Products",
-        href: `/dashboard/instructor-assistant/${ts}/training_center/tc_products`,
+        href: `/dashboard/instructor-assistant/${ts}/training-center/tc-products`,
       },
       {
         label: "TS Product Orders",
-        href: `/dashboard/instructor-assistant/${ts}/training_center/tc_product_orders`,
+        href: `/dashboard/instructor-assistant/${ts}/training-center/tc-product-orders`,
       },
       {
         label: "Order TC Product",
-        href: `/dashboard/instructor-assistant/${ts}/class-and-students/ts_product_orders`,
+        href: `/dashboard/instructor-assistant/${ts}/class-and-students/ts-product-orders`,
       },
     ],
   },
@@ -825,27 +825,27 @@ const assistantMenu = ts => [
     submenu: [
       {
         label: "Activity Reports",
-        href: `/dashboard/instructor-assistant/${ts}/reports/activity_reports`,
+        href: `/dashboard/instructor-assistant/${ts}/reports/activity-reports`,
       },
       {
         label: "Class Report",
-        href: `/dashboard/instructor-assistant/${ts}/reports/class_reports`,
+        href: `/dashboard/instructor-assistant/${ts}/reports/class-reports`,
       },
       {
         label: "Product Add-on Report",
-        href: `/dashboard/instructor-assistant/${ts}/reports/product_addon_report`,
+        href: `/dashboard/instructor-assistant/${ts}/reports/product-addon-report`,
       },
       {
         label: "Promo Code Report",
-        href: `/dashboard/instructor-assistant/${ts}/reports/promo_code_report`,
+        href: `/dashboard/instructor-assistant/${ts}/reports/promo-code-report`,
       },
       {
         label: "Registration Report",
-        href: `/dashboard/instructor-assistant/${ts}/reports/registration_report`,
+        href: `/dashboard/instructor-assistant/${ts}/reports/registration-report`,
       },
       {
         label: "Event Log",
-        href: `/dashboard/instructor-assistant/${ts}/reports/event_log`,
+        href: `/dashboard/instructor-assistant/${ts}/reports/event-log`,
       },
     ],
   },

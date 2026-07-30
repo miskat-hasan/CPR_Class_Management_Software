@@ -26,7 +26,7 @@ const Page = () => {
           asChild
           className="py-[11px] lg:py-[22px] cursor-pointer bg-brown dark:bg-dark-brown flex items-center gap-2"
         >
-          <Link href={"tc_products/add"}>
+          <Link href={"tc-products/add"}>
             Add New Product
             <PlusIcon />
           </Link>
@@ -77,7 +77,7 @@ const Page = () => {
                       <td className="px-3 md:px-6 py-4 text-center whitespace-nowrap">
                         <div className="flex items-center justify-center">
                           <Link
-                            href={`tc_products/${item.id}`}
+                            href={`tc-products/${item.id}`}
                             className="p-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition "
                           >
                             <CiEdit className="text-gray-600 text-[16px]" />

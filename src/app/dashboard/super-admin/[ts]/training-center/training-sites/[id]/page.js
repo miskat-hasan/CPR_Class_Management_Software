@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import FormContainer from "@/components/shared/form/FormContainer";
 import FormInput from "@/components/shared/form/FormInput";
 import CustomSelect from "@/components/shared/form/CustomSelect";
+import BackButton from "@/components/common/BackButton";
 
 const Page = ({ params }) => {
   const { id } = params;
@@ -297,9 +298,7 @@ const Page = ({ params }) => {
 
           {/* ACTIONS */}
           <div className="flex justify-end gap-3 mt-8">
-            {/* <Button type="button" variant="outline">
-              Back
-            </Button> */}
+            <BackButton />
 
             <Button
               type="submit"
