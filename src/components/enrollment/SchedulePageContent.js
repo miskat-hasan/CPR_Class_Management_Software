@@ -36,7 +36,7 @@ export default function SchedulePageContent() {
       {/* ── Main content ── */}
       <div className="flex-1 min-w-0">
         <h1 className="text-xl font-bold text-gray-900 dark:text-white mb-4 pb-2 border-b dark:border-zinc-700">
-          Class Schedule
+          Enrollment
         </h1>
 
         <Schedule

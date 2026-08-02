@@ -19,7 +19,7 @@ const DashboardTopbar = () => {
   const trainingSiteId = params.ts;
 
   const handleSidebar = () => {
-    setIsSidebarOpen((prev) => !prev);
+    setIsSidebarOpen(prev => !prev);
   };
 
   return (
@@ -32,10 +32,14 @@ const DashboardTopbar = () => {
       <div className="flex items-center gap-2.5 py-3">
         <ThemeToggle />
         <Link
-           href={
-            user?.roles?.find((item) => item?.role_name === "Super Admin")
+          href={
+            user?.roles?.find(item => item?.role_name === "Super Admin")
               ? `/dashboard/super-admin/${trainingSiteId}/notifications`
-              : `/dashboard/admin/${trainingSiteId}/notifications`
+              : user?.roles?.find(item => item?.role_name === "Admin")
+                ? `/dashboard/admin/${trainingSiteId}/notifications`
+                : user?.roles?.find(item => item?.role_name === "Instructor")
+                  ? `/dashboard/instructor/${trainingSiteId}/notifications`
+                  : `/dashboard/student/notifications`
           }
           className="w-[40px] h-[40px] lg:w-[60px] lg:h-[60px] bg-white dark:bg-black rounded-[14px] flex items-center justify-center dark:text-gray"
         >
@@ -45,9 +49,13 @@ const DashboardTopbar = () => {
         {/* User Info */}
         <Link
           href={
-            user?.roles?.find((item) => item?.role_name === "Super Admin")
+            user?.roles?.find(item => item?.role_name === "Super Admin")
               ? `/dashboard/super-admin/${trainingSiteId}/manage-profile`
-              : `/dashboard/admin/${trainingSiteId}/manage-profile`
+              : user?.roles?.find(item => item?.role_name === "Admin")
+                ? `/dashboard/admin/${trainingSiteId}/manage-profile`
+                : user?.roles?.find(item => item?.role_name === "Instructor")
+                  ? `/dashboard/instructor/${trainingSiteId}/manage-profile`
+                  : `/dashboard/student/settings/profile`
           }
           className="h-auto lg:h-[60px] bg-white dark:bg-black rounded-[14px] flex items-center p-1 w-auto gap-[11px]"
         >
@@ -94,13 +102,11 @@ const DashboardTopbar = () => {
       </div>
 
       {/* Mobile Sidebar */}
-      {user?.roles?.find((item) => item?.role_name === "Super Admin") && (
+      {user?.roles?.find(item => item?.role_name === "Super Admin") && (
         <MobileSidebar isSidebarOpen={isSidebarOpen} onClose={handleSidebar} />
       )}
 
-      {user?.roles?.find(
-        (item) => item?.role_name !== "Super Admin",
-      ) && (
+      {user?.roles?.find(item => item?.role_name !== "Super Admin") && (
         <AdminMobileSidebar
           isSidebarOpen={isSidebarOpen}
           onClose={handleSidebar}

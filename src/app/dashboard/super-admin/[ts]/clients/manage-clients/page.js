@@ -70,7 +70,7 @@ const Page = () => {
                         {item.contact_date}
                       </td>
                       <td className="px-3 sm:px-6 py-3 text-center">
-                        <Link href={`manage_clients/${item.id}`}>
+                        <Link href={`manage-clients/${item.id}`}>
                           <button className="p-1.5 sm:p-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition cursor-pointer">
                             <CiEdit className="text-gray-600 text-[14px] sm:text-[16px]" />
                           </button>

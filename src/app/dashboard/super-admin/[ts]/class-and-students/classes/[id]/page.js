@@ -18,10 +18,10 @@ import React, { useEffect } from "react";
 import { Controller, useForm, useFieldArray } from "react-hook-form";
 import { FaPlus } from "react-icons/fa";
 import { toast } from "sonner";
-import Swal from "sweetalert2";
 
 const Page = ({ params }) => {
-  const { id } = params;
+  const resolvedParams = React.use(params);
+  const id = resolvedParams?.id;
 
   const form = useForm({
     defaultValues: {
