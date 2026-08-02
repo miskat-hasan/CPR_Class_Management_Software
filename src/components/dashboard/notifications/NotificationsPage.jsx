@@ -3,7 +3,7 @@ import SectionTitle from "@/components/common/SectionTitle";
 import TableSkeleton from "@/components/skeleton/TableSkeleton";
 import { useGetNotifications } from "@/hooks/api/dashboardApi";
 
-const Page = () => {
+const NotificationsPage = () => {
   const { data, isLoading } = useGetNotifications();
 
   return (
@@ -70,4 +70,4 @@ const Page = () => {
   );
 };
 
-export default Page;
+export default NotificationsPage;

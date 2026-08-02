@@ -80,7 +80,7 @@ const Page = () => {
                       <td className="px-3 md:px-6 py-4 text-center whitespace-nowrap">
                         <div className="flex items-center justify-center">
                           <Link
-                            href={`tc_product_orders/${item.id}`}
+                            href={`tc-product-orders/${item.id}`}
                             className="p-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition "
                           >
                             <CiEdit className="text-gray-600 text-[16px]" />

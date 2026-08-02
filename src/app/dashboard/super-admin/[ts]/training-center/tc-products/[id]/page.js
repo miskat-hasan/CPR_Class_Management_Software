@@ -121,7 +121,7 @@ const Page = ({ params }) => {
               asChild={true}
               className="px-6 py-2 bg-transparent border border-gray-300 rounded-md text-sm font-medium text-black hover:bg-gray-50"
             >
-              <Link href={"../tc_products"}>Back</Link>
+              <Link href={"../tc-products"}>Back</Link>
             </Button>
             <Button
               type="submit"

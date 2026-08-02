@@ -16,6 +16,7 @@ import dynamic from "next/dynamic";
 import React, { useEffect, useRef } from "react";
 import Swal from "sweetalert2";
 import { toast } from "sonner";
+import BackButton from "@/components/common/BackButton";
 
 const RichTextEditor = dynamic(() => import("@/components/shared/RichEditor"), {
   ssr: false,
@@ -246,12 +247,7 @@ const Page = ({ params }) => {
 
           <div className="flex items-center justify-end">
             <div className="flex justify-end gap-4 mt-4 lg:mt-8">
-              {/* <Button
-                type="button"
-                className="px-6 py-2 bg-transparent border border-gray-300 rounded-md text-sm font-medium text-black hover:bg-gray-50 focus:outline-none"
-              >
-                Back
-              </Button> */}
+              <BackButton />
               <Button
                 type="submit"
                 className="px-6 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium cursor-pointer text-white bg-brown dark:bg-dark-brown cursor hover:bg-brown  focus:outline-none"

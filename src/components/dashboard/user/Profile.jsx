@@ -34,7 +34,7 @@ const SectionCard = ({ title, children }) => (
 );
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
-const Page = () => {
+const ProfilePage = () => {
   const { user } = useAuth();
 
   const { data, isLoading } = useGetSingleUser(user?.id);
@@ -69,15 +69,12 @@ const Page = () => {
     formState: { errors },
   } = profileForm;
 
-  // Memoized so reset() only fires when the fetched data actually changes,
-  // not on every parent render.
   const profileDefaults = useMemo(() => {
     const u = data?.data?.instructor;
     if (!u) return null;
     return {
       username: u.username ?? "",
       first_name: u.first_name ?? "",
-      middle_name: u.middle_name ?? "",
       last_name: u.last_name ?? "",
       email: u.email ?? "",
       mobile_phone: u.mobile_phone ?? "",
@@ -277,21 +274,25 @@ const Page = () => {
               />
 
               {/* Certifying body IDs */}
-              <FormInput
-                name="aha_instructor_id"
-                label="AHA Instructor ID"
-                error={errors.aha_instructor_id?.message}
-              />
-              <FormInput
-                name="hsi_instructor_id"
-                label="HSI (ASHI) Instructor ID"
-                error={errors.hsi_instructor_id?.message}
-              />
-              <FormInput
-                name="rclc_username"
-                label="RCLC Username"
-                error={errors.rclc_username?.message}
-              />
+              {user?.role == "instructor" && (
+                <>
+                  <FormInput
+                    name="aha_instructor_id"
+                    label="AHA Instructor ID"
+                    error={errors.aha_instructor_id?.message}
+                  />
+                  <FormInput
+                    name="hsi_instructor_id"
+                    label="HSI (ASHI) Instructor ID"
+                    error={errors.hsi_instructor_id?.message}
+                  />
+                  <FormInput
+                    name="rclc_username"
+                    label="RCLC Username"
+                    error={errors.rclc_username?.message}
+                  />
+                </>
+              )}
             </div>
 
             <div className="flex justify-end border-t dark:border-gray-700 pt-4">
@@ -360,4 +361,4 @@ const Page = () => {
   );
 };
 
-export default Page;
+export default ProfilePage;

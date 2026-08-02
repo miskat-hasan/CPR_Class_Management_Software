@@ -108,6 +108,7 @@ export default function Sidebar() {
                           <li key={sub.label}>
                             <Link
                               href={sub.href}
+                              prefetch={true}
                               className={`flex items-center pl-16 pr-6 py-2.5 text-xs relative ${
                                 active
                                   ? "text-gray-900 dark:text-gray font-semibold"
