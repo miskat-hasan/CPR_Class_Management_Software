@@ -29,24 +29,21 @@ const studentMenu = () => [
     label: "Classes",
     submenu: [
       {
-        label: "My Upcoming Classes",
+        label: "Upcoming Classes",
         href: `/dashboard/student/classes/upcoming-classes`,
       },
       {
-        label: "My Past Classes",
+        label: "Past Classes",
         href: `/dashboard/student/classes/past-classes`,
       },
       {
-        label: "Reschedule My Upcoming Classes",
-        href: `/dashboard/student/classes/reschedule-upcoming-classes`,
+        label: "Reschedule",
+        href: `/dashboard/student/classes/reschedule`,
       },
+
       {
-        label: "Reschedule to Another Course",
-        href: `/dashboard/student/classes/reschedule-course`,
-      },
-      {
-        label: "Enroll in New Class",
-        href: `/dashboard/student/classes/enroll-new-class`,
+        label: "Enrollment",
+        href: `/dashboard/student/classes/enrollment`,
       },
     ],
   },
