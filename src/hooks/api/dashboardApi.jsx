@@ -300,7 +300,7 @@ export const useUpdateUser = id => {
   });
 };
 
-export const useUpdateAuthUser = (id) => {
+export const useUpdateAuthUser = id => {
   const queryClient = useQueryClient();
   // const { selectedTrainingSiteId } = useAuth();
   return useClientApi({
@@ -1594,5 +1594,24 @@ export const useGetCourseSchedule = (siteId = 1, filters = {}) => {
     params,
     key: ["get-course-schedule", siteId, JSON.stringify(params)],
     endpoint: "/api/courses-with-classes",
+  });
+};
+
+// student upcoming classes (student dashboard)
+export const getStudentUpcomingClasses = (page = 1, perPage = 10) => {
+  return useClientApi({
+    method: "get",
+    isPrivate: true,
+    key: ["get-student-upcoming-classes", page, perPage],
+    endpoint: `/api/student/upcoming-classes?page=${page}&per_page=${perPage}`,
+  });
+};
+
+export const getStudentPastClasses = (page = 1, perPage = 10) => {
+  return useClientApi({
+    method: "get",
+    isPrivate: true,
+    key: ["get-student-past-classes", page, perPage],
+    endpoint: `/api/student/past-classes?page=${page}&per_page=${perPage}`,
   });
 };

@@ -1,3 +1,4 @@
+// src/app/dashboard/super-admin/[ts]/training-center/tc-product-orders/[id]/page.js
 "use client";
 import SectionTitle from "@/components/common/SectionTitle";
 import CustomSelect from "@/components/shared/form/CustomSelect";
@@ -12,7 +13,6 @@ import Link from "next/link";
 import React, { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
-import Swal from "sweetalert2";
 
 const Page = ({ params }) => {
   const { id } = params;

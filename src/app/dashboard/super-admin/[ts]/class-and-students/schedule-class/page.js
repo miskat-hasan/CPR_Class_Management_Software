@@ -1,7 +1,7 @@
 "use client";
 
 import SectionTitle from "@/components/common/SectionTitle";
-import ClassForm from "@/components/dashboard/class/ClassForm";
+import ClassForm from "@/components/dashboard/class-and-students/ClassForm";
 import { storeClass } from "@/hooks/api/dashboardApi";
 import useAuth from "@/hooks/useAuth";
 import { useParams, useRouter } from "next/navigation";

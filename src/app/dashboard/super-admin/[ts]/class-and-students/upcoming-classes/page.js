@@ -3,8 +3,8 @@
 import { useState } from "react";
 import SectionTitle from "@/components/common/SectionTitle";
 import SubSectionTitle from "@/components/common/SubSectionTitle";
-import ClassFilters from "@/components/dashboard/class/ClassFilters";
-import ClassTable from "@/components/dashboard/class/ClassTable";
+import ClassFilters from "@/components/dashboard/class-and-students/ClassFilters";
+import ClassTable from "@/components/dashboard/class-and-students/ClassTable";
 import { getAllUpcomingClasses, searchClasses } from "@/hooks/api/dashboardApi";
 
 export default function UpcomingClassesPage() {
@@ -20,7 +20,7 @@ export default function UpcomingClassesPage() {
 
   const isSearchActive =
     filters && Object.values(filters).some(value => value !== null);
-  
+
   const { data: searchData, isLoading: searchLoading } = searchClasses({
     enabled: isSearchActive,
     type: "upcoming",
@@ -32,7 +32,6 @@ export default function UpcomingClassesPage() {
     startDate: filters?.start_date,
     endDate: filters?.end_date,
   });
-
 
   const tableData = isSearchActive
     ? searchData?.data?.data

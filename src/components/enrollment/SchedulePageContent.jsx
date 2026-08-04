@@ -9,8 +9,6 @@ import Schedule, { EMPTY_FILTERS, TRAINING_SITE_ID } from "@/components/enrollme
 export default function SchedulePageContent() {
   const searchParams = useSearchParams();
 
-  // Pre-fill filters from URL search params on first render,
-  // e.g. /schedule?course_id=5 or /schedule?instructor_id=3
   const initialFromUrl = {
     ...EMPTY_FILTERS,
     course_id: searchParams.get("course_id") ?? "",
@@ -22,8 +20,6 @@ export default function SchedulePageContent() {
   const [appliedFilters, setAppliedFilters] = useState(initialFromUrl);
   const [page, setPage] = useState(1);
 
-  // SINGLE API call for the whole page — Schedule and the sidebar both read
-  // from this one response, instead of each fetching independently.
   const { data, isLoading } = useGetCourseSchedule(TRAINING_SITE_ID, {
     ...appliedFilters,
     page,
