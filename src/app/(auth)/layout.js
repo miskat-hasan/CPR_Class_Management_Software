@@ -1,5 +1,5 @@
 // src/app/(auth)/layout.js
-import AuthLayout from "@/components/dashboard/layout/AuthLayout";
+import AuthLayout from "@/components/layout/AuthLayout";
 
 export default function DashboardLayout({ children }) {
   return (

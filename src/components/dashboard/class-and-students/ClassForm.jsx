@@ -23,8 +23,8 @@ import { useParams } from "next/navigation";
 
 const RATIO_OPTIONS = [
   { id: "1:1", name: "1:1" },
-  { id: "1:2", name: "1:2" },
-  { id: "1:3", name: "1:3" },
+  { id: "2:1", name: "2:1" },
+  { id: "3:1", name: "3:1" },
 ];
 
 const formatName = user => {
@@ -330,7 +330,6 @@ export default function ClassForm({
               </div>
             );
           })()}
-
         {/* Certifying Body filter */}
         <div className="md:col-span-2">
           <Controller
@@ -347,7 +346,6 @@ export default function ClassForm({
             )}
           />
         </div>
-
         {/* Course */}
         <Controller
           name="course"
@@ -364,7 +362,6 @@ export default function ClassForm({
             />
           )}
         />
-
         {/* Client */}
         <Controller
           name="client"
@@ -379,7 +376,6 @@ export default function ClassForm({
             />
           )}
         />
-
         {/* Location */}
         <Controller
           name="location"
@@ -396,7 +392,6 @@ export default function ClassForm({
             />
           )}
         />
-
         {/* Instructor */}
         <Controller
           name="instructor"
@@ -413,7 +408,6 @@ export default function ClassForm({
             />
           )}
         />
-
         {/* Assistants */}
         <div className="md:col-span-2">
           <Controller
@@ -430,7 +424,6 @@ export default function ClassForm({
             )}
           />
         </div>
-
         {/* Class Times */}
         <div className="md:col-span-2 bg-neutral-50 dark:bg-dark border dark:border-gray-700 px-3 pt-3 pb-4 rounded-md">
           <h6 className="text-base font-semibold mb-2 dark:text-gray">
@@ -480,7 +473,6 @@ export default function ClassForm({
             <FaPlus className="size-3" /> Add more
           </button>
         </div>
-
         {/* Price + Max Students + Ratio */}
         <FormInput
           name="price"
@@ -494,7 +486,6 @@ export default function ClassForm({
           label="Max Students"
           placeholder="e.g. 25"
         />
-
         <Controller
           name="studentManikinRatio"
           control={control}
@@ -507,9 +498,8 @@ export default function ClassForm({
             />
           )}
         />
-
-        {/* Total Hours — auto-computed, read-only */}
-        <div className="flex flex-col gap-2.5">
+        2 1 {/* Total Hours —2a1to-computed, read-only */}3 1
+        <div className="f3e1 flex-col gap-2.5">
           <label className="text-sm sm:text-base font-medium text-gray-700 dark:text-gray">
             Total Hours
             <span className="ml-1.5 text-xs font-normal text-gray-400 dark:text-gray-500">
@@ -523,7 +513,6 @@ export default function ClassForm({
             className={readOnlyCls}
           />
         </div>
-
         {/* Close Registration */}
         <div className="flex flex-col gap-2">
           <label className="text-sm sm:text-base font-medium text-gray-700 dark:text-gray">
@@ -548,7 +537,6 @@ export default function ClassForm({
             </span>
           </div>
         </div>
-
         {/* Listing */}
         <div className="flex flex-col gap-2">
           <label className="text-sm sm:text-base font-medium text-gray-700 dark:text-gray">
@@ -563,7 +551,6 @@ export default function ClassForm({
             Include in the online class catalog
           </label>
         </div>
-
         {/* Certificate dates — auto-computed, read-only */}
         <div className="flex flex-col gap-2">
           <label className="text-sm sm:text-base font-medium text-gray-700 dark:text-gray">
@@ -579,7 +566,6 @@ export default function ClassForm({
             className={readOnlyCls}
           />
         </div>
-
         <div className="flex flex-col gap-2">
           <label className="text-sm font-medium text-gray-700 dark:text-gray">
             Certificate Expires On
@@ -594,7 +580,6 @@ export default function ClassForm({
             className={readOnlyCls}
           />
         </div>
-
         {/* Notes */}
         <div className="md:col-span-2">
           <FormTextarea name="publicNotes" label="Public Notes" />
@@ -605,7 +590,6 @@ export default function ClassForm({
         <div className="md:col-span-2">
           <FormTextarea name="adminNotes" label="Admin Notes" />
         </div>
-
         {/* Documents */}
         <div className="md:col-span-2 flex flex-col gap-2">
           <label className="text-sm font-medium text-gray-700 dark:text-gray">
@@ -677,7 +661,6 @@ export default function ClassForm({
             />
           </label>
         </div>
-
         {/* Instructor Signature — past class only */}
         {isPastClass && (
           <div className="md:col-span-2 flex flex-col gap-2">
@@ -733,7 +716,6 @@ export default function ClassForm({
             )}
           </div>
         )}
-
         {/* Actions */}
         <div className="md:col-span-2 flex justify-end gap-3 mt-3">
           <BackButton />

@@ -1,6 +1,6 @@
 "use client";
 import SectionTitle from "@/components/common/SectionTitle";
-import { SalesDashboard } from "@/components/dashboard/SalesDashboard";
+import { SalesDashboard } from "@/components/dashboard/credit-card-services/SalesDashboard";
 import { useGetDailyVolumeReport } from "@/hooks/api/dashboardApi";
 
 import React from "react";
