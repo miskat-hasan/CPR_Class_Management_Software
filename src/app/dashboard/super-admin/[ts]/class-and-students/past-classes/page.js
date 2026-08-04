@@ -4,8 +4,8 @@
 import { useState } from "react";
 import SectionTitle from "@/components/common/SectionTitle";
 import SubSectionTitle from "@/components/common/SubSectionTitle";
-import ClassFilters from "@/components/dashboard/class/ClassFilters";
-import ClassTable from "@/components/dashboard/class/ClassTable";
+import ClassFilters from "@/components/dashboard/class-and-students/ClassFilters";
+import ClassTable from "@/components/dashboard/class-and-students/ClassTable";
 import { getAllPastClasses, searchClasses } from "@/hooks/api/dashboardApi";
 
 export default function PastClassesPage() {

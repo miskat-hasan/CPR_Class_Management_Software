@@ -5,7 +5,7 @@ import { useMemo } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import SectionTitle from "@/components/common/SectionTitle";
-import ClassForm from "@/components/dashboard/class/ClassForm";
+import ClassForm from "@/components/dashboard/class-and-students/ClassForm";
 import { getSingleClass, updateClass } from "@/hooks/api/dashboardApi";
 import useAuth from "@/hooks/useAuth";
 import SubSectionTitle from "@/components/common/SubSectionTitle";
