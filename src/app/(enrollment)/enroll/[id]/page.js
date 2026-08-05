@@ -4,7 +4,12 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useParams } from "next/navigation";
-import { getAllCountry, getEnrollmentDetails } from "@/hooks/api/dashboardApi";
+import { toast } from "sonner";
+import {
+  getAllCountry,
+  getEnrollmentDetails,
+  useStudentEnrollment,
+} from "@/hooks/api/dashboardApi";
 import EnrollSidebar from "@/components/enrollment/EnrollSidebar";
 import StepCourseOptions from "@/components/enrollment/StepCourseOptions";
 import StepStudentInfo from "@/components/enrollment/StepStudentInfo";
@@ -37,12 +42,6 @@ const Page = () => {
       promo_code: "",
       // registration questions — keyed by question id
       reg_questions: {},
-      // Step 3 — payment
-      name_on_account: "",
-      card_number: "",
-      card_security_code: "",
-      expiry_month: "",
-      expiry_year: "",
     },
   });
 
@@ -53,6 +52,9 @@ const Page = () => {
   const siteSettings = data?.data?.site_settings;
   const addonsList = data?.data?.addons ?? [];
   const registrationQuestions = data?.data?.registration_questions ?? [];
+
+  const { mutate: submitEnrollment, isPending: isSubmitting } =
+    useStudentEnrollment(id);
 
   const handleFinalSubmit = formValues => {
     const formData = new FormData();
@@ -90,13 +92,6 @@ const Page = () => {
       formValues.reschedule_insurance === "yes",
     );
 
-    // Payment
-    formData.append("name_on_account", formValues.name_on_account);
-    formData.append("card_number", formValues.card_number);
-    formData.append("card_security_code", formValues.card_security_code);
-    formData.append("expiry_month", formValues.expiry_month);
-    formData.append("expiry_year", formValues.expiry_year);
-
     // Registration questions
     registrationQuestions.forEach(q => {
       const answer = formValues.reg_questions?.[q.id];
@@ -110,12 +105,17 @@ const Page = () => {
       }
     });
 
-    // Log for now — registration API endpoint to be added later
-    console.log("=== ENROLLMENT SUBMISSION ===");
-    for (const [key, value] of formData.entries()) {
-      console.log(`${key}:`, value);
-    }
-    console.log("Raw form values:", formValues);
+    submitEnrollment(formData, {
+      onSuccess: res => {
+        const paymentUrl = res?.data?.payment_url;
+        if (paymentUrl) {
+          // Hosted payment page — full redirect, not a Next.js route
+          window.location.href = paymentUrl;
+        } else {
+          toast.error("Payment link is missing. Please try again.");
+        }
+      },
+    });
   };
 
   if (isLoading) {
@@ -173,6 +173,7 @@ const Page = () => {
             registrationQuestions={registrationQuestions}
             onBack={() => setStep(2)}
             onSubmit={handleFinalSubmit}
+            isSubmitting={isSubmitting}
           />
         )}
       </div>
