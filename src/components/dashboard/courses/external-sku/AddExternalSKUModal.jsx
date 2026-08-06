@@ -1,3 +1,4 @@
+// src/components/dashboard/courses/external-sku/AddExternalSKUModal.jsx
 "use client";
 
 import { useForm } from "react-hook-form";

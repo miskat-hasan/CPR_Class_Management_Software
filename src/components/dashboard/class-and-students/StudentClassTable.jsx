@@ -1,3 +1,4 @@
+// src/components/dashboard/class-and-students/StudentClassTable.jsx
 "use client";
 
 import { useParams } from "next/navigation";
