@@ -1,4 +1,4 @@
-// src/components/dashboard/student_roster/StudentRoster.jsx
+// src/components/dashboard/student-roster/StudentRoster.jsx
 "use client";
 
 import BackButton from "@/components/common/BackButton";
