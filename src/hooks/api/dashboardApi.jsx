@@ -235,13 +235,60 @@ export const getAllInstructor = ({
 
 // ==================== USERS ====================
 
-export const useGetAllUsers = (page = 1, perPage = 10) => {
+// export const useGetAllUsers = (page = 1, perPage = 10) => {
+//   const { selectedTrainingSiteId } = useAuth();
+//   return useClientApi({
+//     method: "get",
+//     isPrivate: true,
+//     key: ["get-all-users", page, perPage],
+//     endpoint: `/api/site-users?page=${page}&per_page=${perPage}`,
+//     axiosOptions: { headers: { "X-Site-Id": selectedTrainingSiteId } },
+//   });
+// };
+
+// GET /site-users?type=all&role_id[]=2&role_id[]=3&role_id[]=4
+// Admin (2), Instructor (3), Assistant (4) — eligible site coordinators
+export const useGetAllUsers = (
+  type = "all",
+  page = 1,
+  perPage = 10,
+  roleIds,
+) => {
   const { selectedTrainingSiteId } = useAuth();
+
+  const params = new URLSearchParams();
+  params.set("type", type);
+
+  if (type !== "all") {
+    params.set("page", page);
+    params.set("per_page", perPage);
+  }
+
+  roleIds?.forEach(id => params.append("role_id[]", id));
+
   return useClientApi({
     method: "get",
     isPrivate: true,
-    key: ["get-all-users", page, perPage],
-    endpoint: `/api/site-users?page=${page}&per_page=${perPage}`,
+    key: [
+      "get-all-users",
+      type,
+      type !== "all" ? page : null,
+      type !== "all" ? perPage : null,
+      ...(roleIds ?? []),
+    ],
+    endpoint: `/api/site-users?${params.toString()}`,
+    axiosOptions: { headers: { "X-Site-Id": selectedTrainingSiteId } },
+  });
+};
+
+export const storeSiteCoordinator = () => {
+  const { selectedTrainingSiteId } = useAuth();
+
+  return useClientApi({
+    method: "post",
+    isPrivate: true,
+    key: ["store-site-coordinator"],
+    endpoint: "/api/site-coordinators/store",
     axiosOptions: { headers: { "X-Site-Id": selectedTrainingSiteId } },
   });
 };
