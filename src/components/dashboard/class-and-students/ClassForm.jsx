@@ -498,7 +498,7 @@ export default function ClassForm({
             />
           )}
         />
-        2 1 {/* Total Hours —2a1to-computed, read-only */}3 1
+        {/* Total Hours —2a1to-computed, read-only */}
         <div className="f3e1 flex-col gap-2.5">
           <label className="text-sm sm:text-base font-medium text-gray-700 dark:text-gray">
             Total Hours

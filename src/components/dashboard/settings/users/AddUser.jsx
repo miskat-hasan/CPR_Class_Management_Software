@@ -86,8 +86,16 @@ const AddUser = () => {
   const { mutate: storeUserMutation, isPending: storeUserPending } =
     useStoreUser();
 
+  console.log("rolesData", rolesData);
   const primarySiteRoles = useMemo(
-    () => (rolesData?.data ?? []).filter(r => r.name !== "Super Admin"),
+    () =>
+      (rolesData?.data ?? []).filter(
+        r =>
+          r.name !== "Super Admin" &&
+          r.name !== "Client" &&
+          r.name !== "Student" &&
+          r.name !== "Site Administrator",
+      ),
     [rolesData],
   );
 

@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { getAllCourses } from "@/hooks/api/dashboardApi";
 import { PlusIcon } from "@/components/svg/SvgContainer";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { CiEdit } from "react-icons/ci";
 import SectionTitle from "@/components/common/SectionTitle";
@@ -22,24 +21,8 @@ const Page = () => {
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
 
-  const router = useRouter();
-
   const { data: coursesTypeData, isLoading: coursesTypeLoading } =
     getAllCourses(page, perPage);
-
-  // if (coursesTypeLoading) {
-  //   return (
-  //     <section className="flex flex-col gap-4">
-  //       <SectionTitle title="Edit User" />
-  //       <div className="p-[26px] bg-white dark:bg-black rounded-[14px] flex items-center justify-center min-h-[200px]">
-  //         <div className="flex flex-col items-center gap-3 text-gray-400">
-  //           <div className="w-8 h-8 border-4 border-gray-300 border-t-brown rounded-full animate-spin" />
-  //           <span className="text-sm">Loading user data…</span>
-  //         </div>
-  //       </div>
-  //     </section>
-  //   );
-  // }
 
   return (
     <section className="flex flex-col gap-[12.5px] lg:gap-[25px] ">
@@ -57,7 +40,7 @@ const Page = () => {
       </div>
 
       {coursesTypeLoading ? (
-        <TableSkeleton />
+        <TableSkeleton columns={6} />
       ) : (
         <div className="p-[13px] lg:p-[26px] bg-white dark:bg-black rounded-[14px] flex flex-col gap-[12px] lg:gap-[24px]">
           <div className="overflow-x-auto">

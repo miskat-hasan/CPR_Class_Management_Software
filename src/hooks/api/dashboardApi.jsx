@@ -33,7 +33,7 @@ export const createSingleTrainingSite = () => {
   });
 };
 
-export const getallTrainingsite = (token, page = 1, perPage = 10) => {
+export const getallTrainingsite = (page = 1, perPage = 10) => {
   return useClientApi({
     method: "get",
     key: ["get-all-training-site", page, perPage],
@@ -175,10 +175,12 @@ export const getAllClient = ({ type, page = 1, perPage = 10 } = {}) => {
 // ==================== INSTRUCTOR ====================
 
 export const createInstructor = () => {
+  const { selectedTrainingSiteId } = useAuth();
   return useClientApi({
     method: "post",
     isPrivate: true,
     endpoint: "/api/instructors/store",
+    axiosOptions: { headers: { "X-Site-Id": selectedTrainingSiteId } },
     onSuccess: data =>
       toast.success(data?.message || "Instructor Created Successfully"),
     onError: error =>
@@ -1613,5 +1615,27 @@ export const getStudentPastClasses = (page = 1, perPage = 10) => {
     isPrivate: true,
     key: ["get-student-past-classes", page, perPage],
     endpoint: `/api/student/past-classes?page=${page}&per_page=${perPage}`,
+  });
+};
+
+export const getClientUpcomingClasses = (page = 1, perPage = 10) => {
+  const { selectedTrainingSiteId } = useAuth();
+  return useClientApi({
+    method: "get",
+    isPrivate: true,
+    axiosOptions: { headers: { "X-Site-Id": selectedTrainingSiteId } },
+    key: ["client-upcoming", page, perPage],
+    endpoint: `/api/clients/upcoming-classes?page=${page}&per_page=${perPage}`,
+  });
+};
+
+export const getClientPastClasses = (page = 1, perPage = 10) => {
+  const { selectedTrainingSiteId } = useAuth();
+  return useClientApi({
+    method: "get",
+    isPrivate: true,
+    axiosOptions: { headers: { "X-Site-Id": selectedTrainingSiteId } },
+    key: ["client-past", page, perPage],
+    endpoint: `/api/clients/past-classes?page=${page}&per_page=${perPage}`,
   });
 };
