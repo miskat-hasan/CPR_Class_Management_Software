@@ -15,7 +15,7 @@ import {
 export default function ActivityReportPage() {
   /* ---------------- Skeleton ---------------- */
   const Skeleton = ({ className }) => (
-    <div className={`animate-pulse bg-gray-200 rounded-md ${className}`} />
+    <div className={`animate-pulse bg-gray-200 dark:bg-gray-800 rounded-md ${className}`} />
   );
 
   /* ---------------- API ---------------- */
@@ -125,8 +125,8 @@ export default function ActivityReportPage() {
 
         {/* ================= Instructor by Discipline ================= */}
         <div className="bg-white dark:bg-black rounded-lg overflow-hidden">
-          <div className="flex justify-between items-center p-4 border-b">
-            <h2 className="text-lg font-semibold">
+          <div className="flex justify-between items-center p-4 border-b dark:border-gray-800">
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
               Instructor by Discipline
             </h2>
 
@@ -135,7 +135,7 @@ export default function ActivityReportPage() {
                 handleInstructorByDisciplineExcel("instructor-by-discipline")
               }
               disabled={instructorByDisciplinePDFPending}
-              className="text-gray-400 hover:text-gray-600 disabled:opacity-50"
+              className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
             >
               {instructorByDisciplinePDFPending ? (
                 <Loader2 className="animate-spin" />
@@ -146,7 +146,7 @@ export default function ActivityReportPage() {
           </div>
 
           <div className="p-4">
-            <div className="grid grid-cols-2 pb-2 border-b text-sm font-semibold text-gray-500">
+            <div className="grid grid-cols-2 pb-2 border-b dark:border-gray-800 text-sm font-semibold text-gray-500 dark:text-gray-400">
               <span>Discipline</span>
               <span className="text-right">Instructors</span>
             </div>
@@ -163,7 +163,7 @@ export default function ActivityReportPage() {
                     (item, index) => (
                       <div
                         key={index}
-                        className="grid grid-cols-2 py-2 border-b last:border-0"
+                        className="grid grid-cols-2 py-2 border-b dark:border-gray-800 last:border-0 text-gray-800 dark:text-gray-200"
                       >
                         <span>{item?.name}</span>
                         <span className="text-right">
@@ -178,15 +178,15 @@ export default function ActivityReportPage() {
 
         {/* ================= Classes & Students ================= */}
         <div className="bg-white dark:bg-black rounded-lg overflow-hidden">
-          <div className="flex justify-between items-center p-4 border-b">
-            <h2 className="text-lg font-semibold">
+          <div className="flex justify-between items-center p-4 border-b dark:border-gray-800">
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
               Classes and Students
             </h2>
 
             <button
               onClick={() => handleClassByStudentPDF("Class-by-student")}
               disabled={classByStudentPDFDownloadPending}
-              className="text-gray-400 hover:text-gray-600 disabled:opacity-50"
+              className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
             >
               {classByStudentPDFDownloadPending ? (
                 <Loader2 className="animate-spin" />
@@ -197,7 +197,7 @@ export default function ActivityReportPage() {
           </div>
 
           <div className="p-4">
-            <div className="grid grid-cols-3 pb-2 border-b text-sm font-semibold text-gray-500">
+            <div className="grid grid-cols-3 pb-2 border-b dark:border-gray-800 text-sm font-semibold text-gray-500 dark:text-gray-400">
               <span>Course Type</span>
               <span className="text-center">Classes</span>
               <span className="text-right">Students</span>
@@ -215,7 +215,7 @@ export default function ActivityReportPage() {
                 : classAndStudentReport?.data?.map((item, index) => (
                     <div
                       key={index}
-                      className="grid grid-cols-3 py-2 border-b last:border-0"
+                      className="grid grid-cols-3 py-2 border-b dark:border-gray-800 last:border-0 text-gray-800 dark:text-gray-200"
                     >
                       <span>{item?.course_type}</span>
                       <span className="text-center">
@@ -232,8 +232,8 @@ export default function ActivityReportPage() {
 
         {/* ================= Discipline Report ================= */}
         <div className="bg-white dark:bg-black rounded-lg overflow-hidden">
-          <div className="flex justify-between items-center p-4 border-b">
-            <h2 className="text-lg font-semibold">
+          <div className="flex justify-between items-center p-4 border-b dark:border-gray-800">
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
               Classes and Students by Discipline
             </h2>
 
@@ -242,7 +242,7 @@ export default function ActivityReportPage() {
                 handleExportStudentDiscipline("student-by-discipline")
               }
               disabled={exportStudentDisciplinePending}
-              className="text-gray-400 hover:text-gray-600 disabled:opacity-50"
+              className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
             >
               {exportStudentDisciplinePending ? (
                 <Loader2 className="animate-spin" />
@@ -253,7 +253,7 @@ export default function ActivityReportPage() {
           </div>
 
           <div className="p-4">
-            <div className="grid grid-cols-3 pb-2 border-b text-sm font-semibold text-gray-500">
+            <div className="grid grid-cols-3 pb-2 border-b dark:border-gray-800 text-sm font-semibold text-gray-500 dark:text-gray-400">
               <span>Discipline</span>
               <span className="text-center">Classes</span>
               <span className="text-right">Students</span>
@@ -272,7 +272,7 @@ export default function ActivityReportPage() {
                     (item, index) => (
                       <div
                         key={index}
-                        className="grid grid-cols-3 py-2 border-b last:border-0"
+                        className="grid grid-cols-3 py-2 border-b dark:border-gray-800 last:border-0 text-gray-800 dark:text-gray-200"
                       >
                         <span>{item?.discipline}</span>
                         <span className="text-center">

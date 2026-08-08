@@ -22,8 +22,8 @@ const Page = () => {
         {eventLogDataLoading? (<TableSkeleton />): (
 
         <div className="overflow-x-auto">
-          <table className="min-w-[700px] w-full text-sm text-left text-gray-700">
-            <thead className="bg-gray-50 text-black capitalize text-[16px] sm:text-[20px] font-semibold">
+          <table className="min-w-[700px] w-full text-sm text-left text-gray-700 dark:text-gray-300">
+            <thead className="bg-gray-50 dark:bg-gray-900 text-black dark:text-white capitalize text-[16px] sm:text-[20px] font-semibold">
               <tr>
                 <th className="px-3 sm:px-6 py-3 w-[40px] whitespace-nowrap">
                   User
@@ -43,12 +43,12 @@ const Page = () => {
                 eventLogData?.data?.data?.map((item, index) => (
                   <tr
                     key={index}
-                    className="border-b hover:bg-gray-50 transition-all"
+                    className="border-b dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-900 transition-all cursor-pointer"
                   >
-                    <td className="px-3 sm:px-6 py-4 text-gray-800 whitespace-nowrap">
+                    <td className="px-3 sm:px-6 py-4 text-gray-800 dark:text-gray-200 whitespace-nowrap">
                       <div>
                         <p className="font-medium">{item.user}</p>
-                        <p className="text-xs text-gray-500">
+                        <p className="text-xs text-gray-500 dark:text-gray-400">
                           User ID: {item.id || "-"}
                         </p>
                       </div>
@@ -108,13 +108,13 @@ const Page = () => {
                 key={index}
                 disabled={link.url === null || link.page === null}
                 onClick={() => link.page && setPage(link.page)}
-                className={`px-3 py-1 text-sm border rounded-md ${
+                className={`px-3 py-1 text-sm border dark:border-gray-700 rounded-md ${
                   link.active
-                    ? "border-blue-500 text-blue-600 bg-blue-50"
-                    : "hover:bg-gray-100"
+                    ? "border-blue-500 text-blue-600 bg-blue-50 dark:border-blue-800 dark:text-blue-400 dark:bg-blue-900/50"
+                    : "hover:bg-gray-100 dark:hover:bg-gray-800"
                 } ${
                   link.url === null || link.page === null
-                    ? "text-gray-400 cursor-not-allowed"
+                    ? "text-gray-400 dark:text-gray-600 cursor-not-allowed"
                     : "cursor-pointer"
                 }`}
                 dangerouslySetInnerHTML={{ __html: link.label }}

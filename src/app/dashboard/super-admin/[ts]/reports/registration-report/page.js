@@ -82,8 +82,8 @@ const Page = () => {
           <TableSkeleton />
         ) : (
           <div className="overflow-x-auto">
-            <table className="min-w-[650px] w-full text-sm text-left text-gray-700">
-              <thead className="bg-gray-50 text-black capitalize text-[16px] sm:text-[20px] font-semibold">
+            <table className="min-w-[650px] w-full text-sm text-left text-gray-700 dark:text-gray-300">
+              <thead className="bg-gray-50 dark:bg-gray-900 text-black dark:text-white capitalize text-[16px] sm:text-[20px] font-semibold">
                 <tr>
                   <th className="px-3 sm:px-6 py-3 whitespace-nowrap">
                     Student Name
@@ -110,15 +110,15 @@ const Page = () => {
                   data?.data?.registrations?.map((item) => (
                     <tr
                       key={item.id}
-                      className="border-b hover:bg-gray-50 transition-all"
+                      className="border-b dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-900 transition-all cursor-pointer"
                     >
-                      <td className="px-3 sm:px-6 py-4 text-gray-800 whitespace-nowrap">
+                      <td className="px-3 sm:px-6 py-4 text-gray-800 dark:text-gray-200 whitespace-nowrap">
                         {item.student_name}
                       </td>
-                      <td className="px-3 sm:px-6 py-4 text-gray-800 whitespace-nowrap">
+                      <td className="px-3 sm:px-6 py-4 text-gray-800 dark:text-gray-200 whitespace-nowrap">
                         {item.date}
                       </td>
-                      <td className="px-3 sm:px-6 py-4 text-gray-800 whitespace-nowrap">
+                      <td className="px-3 sm:px-6 py-4 text-gray-800 dark:text-gray-200 whitespace-nowrap">
                         {item.class_time}
                       </td>
                       <td className="px-3 sm:px-6 py-4 truncate max-w-[200px]">
@@ -127,7 +127,7 @@ const Page = () => {
                       <td className="px-3 sm:px-6 py-4 truncate max-w-[200px]">
                         {item.status}
                       </td>
-                      <td className="px-3 sm:px-6 py-4 text-gray-600 whitespace-nowrap">
+                      <td className="px-3 sm:px-6 py-4 text-gray-600 dark:text-gray-400 whitespace-nowrap">
                         {item.due_amount}
                       </td>
                     </tr>

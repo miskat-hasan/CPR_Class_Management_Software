@@ -81,8 +81,8 @@ const Page = () => {
           <TableSkeleton />
         ) : (
           <div className="overflow-x-auto">
-            <table className="min-w-[700px] w-full text-sm text-left text-gray-700">
-              <thead className="bg-gray-50 text-black capitalize text-[14px] sm:text-[18px] font-semibold">
+            <table className="min-w-[700px] w-full text-sm text-left text-gray-700 dark:text-gray-300">
+              <thead className="bg-gray-50 dark:bg-gray-900 text-black dark:text-white capitalize text-[14px] sm:text-[18px] font-semibold">
                 <tr>
                   <th className="px-3 sm:px-6 py-3 whitespace-nowrap">
                     Student
@@ -106,12 +106,12 @@ const Page = () => {
                   data?.data?.map((item) => (
                     <tr
                       key={item.id}
-                      className="border-b hover:bg-gray-50 transition-all"
+                      className="border-b dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-900 transition-all cursor-pointer"
                     >
-                      <td className="px-3 sm:px-6 py-4 text-gray-800 whitespace-nowrap">
+                      <td className="px-3 sm:px-6 py-4 text-gray-800 dark:text-gray-200 whitespace-nowrap">
                         {item.student}
                       </td>
-                      <td className="px-3 sm:px-6 py-4 text-gray-800 whitespace-nowrap">
+                      <td className="px-3 sm:px-6 py-4 text-gray-800 dark:text-gray-200 whitespace-nowrap">
                         {item.reg_date}
                       </td>
                       <td className="px-3 sm:px-6 py-4 truncate max-w-[180px]">
@@ -120,7 +120,7 @@ const Page = () => {
                       <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
                         {item.promo_code}
                       </td>
-                      <td className="px-3 sm:px-6 py-4 text-gray-600 whitespace-nowrap">
+                      <td className="px-3 sm:px-6 py-4 text-gray-600 dark:text-gray-400 whitespace-nowrap">
                         {item.status}
                       </td>
                     </tr>
