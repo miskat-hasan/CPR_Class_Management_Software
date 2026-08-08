@@ -76,7 +76,7 @@ const AddUser = () => {
 
   const { data: countryData, isLoading: countryDataLoading } = getAllCountry();
   const { data: trainingSiteData, isLoading: trainingSiteLoading } =
-    getallTrainingsite();
+    getallTrainingsite({ type: "all" });
   const { data: rolesData, isLoading: rolesLoading } = getAllRole();
 
   const { fields, append, remove } = useFieldArray({

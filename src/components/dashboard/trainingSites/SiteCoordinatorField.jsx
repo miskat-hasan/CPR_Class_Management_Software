@@ -1,13 +1,13 @@
 // src/components/dashboard/trainingSites/SiteCoordinatorField.jsx
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CustomSelect from "@/components/shared/form/CustomSelect";
 import { useGetAllUsers } from "@/hooks/api/dashboardApi";
 import SiteCoordinatorModal from "./SiteCoordinatorModal";
 import { X } from "lucide-react";
 
-// Controlled by the parent form: value/onChange manage `site_coordinator_id`,
+// Controlled by the parent form: value/onChange manage `user_id`,
 // selectedLabel is the display text for the currently selected coordinator (if any)
 const SiteCoordinatorField = ({
   value,
@@ -17,13 +17,19 @@ const SiteCoordinatorField = ({
 }) => {
   const [panelOpen, setPanelOpen] = useState(Boolean(value));
 
+  // `value` can arrive asynchronously (edit mode fetches the training site,
+  // then calls reset() once it resolves) — open the panel whenever a real
+  // coordinator id shows up, not just on first mount.
+  useEffect(() => {
+    if (value) setPanelOpen(true);
+  }, [value]);
+
   const { data: candidates, isLoading } = useGetAllUsers(
     "all",
-    null,
-    null,
+    1,
+    10,
     [2, 3, 4, 7],
   );
-
   const options = (candidates?.data ?? []).map(u => ({
     id: u.id,
     name: `${u.name} (${u.email})`,

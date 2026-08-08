@@ -5,7 +5,6 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import dynamic from "next/dynamic";
 import BackButton from "@/components/common/BackButton";
-import SectionTitle from "@/components/common/SectionTitle";
 import FormContainer from "@/components/shared/form/FormContainer";
 import FormInput from "@/components/shared/form/FormInput";
 import CustomSelect from "@/components/shared/form/CustomSelect";
@@ -44,7 +43,7 @@ const DEFAULT_VALUES = {
   allow_bid: false,
   restrict_product: false,
   restrict_view: false,
-  site_coordinator_id: "",
+  user_id: "",
 };
 
 const TrainingSiteForm = ({
@@ -105,7 +104,7 @@ const TrainingSiteForm = ({
       city: data.city,
       state_province: data.stateProvince,
       postal_code: data.zipPostalCode,
-      country_id: Number(data.country),
+      country: String(data.country),
       training_site_id: data.trainingsiteid || null,
       price_level: Number(data.price_level),
       sales_tax_rate: Number(data.sales_tax_rate) || 0,
@@ -119,8 +118,8 @@ const TrainingSiteForm = ({
       restrict_instructors_to_only_view_classes_they_teach: Boolean(
         data.restrict_view,
       ),
-      site_coordinator_id: data.site_coordinator_id
-        ? Number(data.site_coordinator_id)
+      user_id: data.user_id
+        ? Number(data.user_id)
         : null,
     };
 
@@ -302,7 +301,7 @@ const TrainingSiteForm = ({
           </div>
 
           <Controller
-            name="site_coordinator_id"
+            name="user_id"
             control={control}
             render={({ field }) => (
               <SiteCoordinatorField

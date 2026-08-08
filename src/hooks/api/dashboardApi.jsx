@@ -33,12 +33,17 @@ export const createSingleTrainingSite = () => {
   });
 };
 
-export const getallTrainingsite = (page = 1, perPage = 10) => {
+export const getallTrainingsite = ({ page = 1, perPage = 10, type }) => {
+  const endpoint =
+    type === "all"
+      ? "/api/training-sites?type=all"
+      : `/api/training-sites?page=${page}&per_page=${perPage}`;
+
   return useClientApi({
     method: "get",
-    key: ["get-all-training-site", page, perPage],
+    key: ["get-all-training-site", type ?? "paginated", page, perPage],
     isPrivate: true,
-    endpoint: `/api/training-sites?page=${page}&per_page=${perPage}`,
+    endpoint,
   });
 };
 
@@ -48,7 +53,7 @@ export const getSingleTrainingsite = id => {
     key: ["get-single-training-site", id],
     enabled: !!id,
     isPrivate: true,
-    endpoint: `/api/training-site/edit/${id}`,
+    endpoint: `/api/training-site/${id}/edit`,
   });
 };
 
@@ -56,7 +61,7 @@ export const updateTrainingSite = id => {
   return useClientApi({
     method: "post",
     isPrivate: true,
-    endpoint: `/api/training-site/update/${id}`,
+    endpoint: `/api/training-site/${id}/update`,
     onSuccess: data =>
       toast.success(data?.message || "Training Site Updated Successfully"),
     onError: error =>
@@ -82,7 +87,7 @@ export const storeLocation = () => {
     method: "post",
     isPrivate: true,
     endpoint: "/api/locations/store",
-    axiosOptions: { headers: { "X-Site-Id": selectedTrainingSiteId } },
+    headers: { "X-Site-Id": selectedTrainingSiteId },
     onSuccess: data => {
       toast.success(data?.message || "Location stored successfully");
       queryClient.invalidateQueries(["get-all-locations"]);
@@ -123,7 +128,7 @@ export const getAllLocation = ({ type, page = 1, perPage = 10 } = {}) => {
     method: "get",
     key: ["get-all-location", type ?? page, perPage],
     isPrivate: true,
-    axiosOptions: { headers: { "X-Site-Id": selectedTrainingSiteId } },
+    headers: { "X-Site-Id": selectedTrainingSiteId },
     endpoint,
   });
 };
@@ -167,7 +172,7 @@ export const getAllClient = ({ type, page = 1, perPage = 10 } = {}) => {
     method: "get",
     key: ["get-all-clients", type ?? page, perPage],
     isPrivate: true,
-    axiosOptions: { headers: { "X-Site-Id": selectedTrainingSiteId } },
+    headers: { "X-Site-Id": selectedTrainingSiteId },
     endpoint,
   });
 };
@@ -180,7 +185,7 @@ export const createInstructor = () => {
     method: "post",
     isPrivate: true,
     endpoint: "/api/instructors/store",
-    axiosOptions: { headers: { "X-Site-Id": selectedTrainingSiteId } },
+    headers: { "X-Site-Id": selectedTrainingSiteId },
     onSuccess: data =>
       toast.success(data?.message || "Instructor Created Successfully"),
     onError: error =>
@@ -228,7 +233,7 @@ export const getAllInstructor = ({
     method: "get",
     key: ["get-all-instructor", type ?? page, perPage, search],
     isPrivate: true,
-    axiosOptions: { headers: { "X-Site-Id": selectedTrainingSiteId } },
+    headers: { "X-Site-Id": selectedTrainingSiteId },
     endpoint,
   });
 };
@@ -242,7 +247,7 @@ export const getAllInstructor = ({
 //     isPrivate: true,
 //     key: ["get-all-users", page, perPage],
 //     endpoint: `/api/site-users?page=${page}&per_page=${perPage}`,
-//     axiosOptions: { headers: { "X-Site-Id": selectedTrainingSiteId } },
+//     headers: { "X-Site-Id": selectedTrainingSiteId },
 //   });
 // };
 
@@ -277,19 +282,17 @@ export const useGetAllUsers = (
       ...(roleIds ?? []),
     ],
     endpoint: `/api/site-users?${params.toString()}`,
-    axiosOptions: { headers: { "X-Site-Id": selectedTrainingSiteId } },
+    headers: { "X-Site-Id": selectedTrainingSiteId },
   });
 };
 
 export const storeSiteCoordinator = () => {
-  const { selectedTrainingSiteId } = useAuth();
-
   return useClientApi({
     method: "post",
     isPrivate: true,
     key: ["store-site-coordinator"],
     endpoint: "/api/site-coordinators/store",
-    axiosOptions: { headers: { "X-Site-Id": selectedTrainingSiteId } },
+    headers: { "X-Site-Id": null },
   });
 };
 
@@ -299,7 +302,7 @@ export const useStoreUser = () => {
     method: "post",
     isPrivate: true,
     endpoint: "/api/site-users/store",
-    axiosOptions: { headers: { "X-Site-Id": selectedTrainingSiteId } },
+    headers: { "X-Site-Id": selectedTrainingSiteId },
     onError: err =>
       toast.error(err?.response?.data?.message || "Something went wrong!"),
   });
@@ -327,7 +330,7 @@ export const useGetSingleUser = id => {
     key: ["get-single-user", id],
     endpoint: `/api/site-users/${id}`,
     enabled: !!id,
-    axiosOptions: { headers: { "X-Site-Id": selectedTrainingSiteId } },
+    headers: { "X-Site-Id": selectedTrainingSiteId },
   });
 };
 
@@ -339,7 +342,7 @@ export const useUpdateUser = id => {
     isPrivate: true,
     enabled: !!id,
     endpoint: `/api/site-users/${id}`,
-    axiosOptions: { headers: { "X-Site-Id": selectedTrainingSiteId } },
+    headers: { "X-Site-Id": selectedTrainingSiteId },
     onSuccess: data => {
       queryClient.invalidateQueries(["get-all-users"]);
       queryClient.invalidateQueries(["get-single-user", id]);
@@ -356,7 +359,7 @@ export const useUpdateAuthUser = id => {
     method: "post",
     isPrivate: true,
     endpoint: "/api/users/data/update",
-    // axiosOptions: { headers: { "X-Site-Id": selectedTrainingSiteId } },
+    // headers: { "X-Site-Id": selectedTrainingSiteId },
     onSuccess: data => {
       queryClient.invalidateQueries(["get-single-user", id]);
     },
@@ -472,14 +475,17 @@ export const updateProductAddOns = () => {
   });
 };
 export const getAllProductAddOns = ({ type, page = 1, perPage = 10 } = {}) => {
+  const { selectedTrainingSiteId } = useAuth();
   const endpoint =
     type === "all"
       ? "/api/addon_list/index?type=all"
       : `/api/addon_list/index?page=${page}&per_page=${perPage}`;
+  
   return useClientApi({
     method: "get",
     isPrivate: true,
     key: ["get-all-product-add-ons", type ?? page, perPage],
+    headers: { "X-Site-Id": selectedTrainingSiteId },
     endpoint,
   });
 };
@@ -526,7 +532,7 @@ export const addKeyCodeBank = () => {
     method: "post",
     isPrivate: true,
     endpoint: "/api/keycode/store",
-    axiosOptions: { headers: { "X-Site-Id": selectedTrainingSiteId } },
+    headers: { "X-Site-Id": selectedTrainingSiteId },
   });
 };
 export const getSingleKeyCodeBank = id => {
@@ -647,7 +653,7 @@ export const getAllCertifyingBody = ({ type, page = 1, perPage = 10 } = {}) => {
     method: "get",
     isPrivate: true,
     key: ["get-all-certifying-body", type ?? page, perPage],
-    axiosOptions: { headers: { "X-Site-Id": selectedTrainingSiteId } },
+    headers: { "X-Site-Id": selectedTrainingSiteId },
     endpoint,
   });
 };
@@ -719,7 +725,7 @@ export const storeCourse = () => {
     method: "post",
     isPrivate: true,
     endpoint: "/api/courses/store",
-    axiosOptions: { headers: { "X-Site-Id": selectedTrainingSiteId } },
+    headers: { "X-Site-Id": selectedTrainingSiteId },
   });
 };
 export const getSingleCourse = id => {
@@ -737,7 +743,7 @@ export const updateCourse = id => {
     method: "put",
     isPrivate: true,
     endpoint: `/api/courses/${id}`,
-    axiosOptions: { headers: { "X-Site-Id": selectedTrainingSiteId } },
+    headers: { "X-Site-Id": selectedTrainingSiteId },
   });
 };
 export const getAllCourses = ({ type, page = 1, perPage = 10 } = {}) => {
@@ -749,7 +755,7 @@ export const getAllCourses = ({ type, page = 1, perPage = 10 } = {}) => {
   return useClientApi({
     method: "get",
     key: ["get-all-course", type ?? page, perPage],
-    axiosOptions: { headers: { "X-Site-Id": selectedTrainingSiteId } },
+    headers: { "X-Site-Id": selectedTrainingSiteId },
     isPrivate: true,
     endpoint,
   });
@@ -848,11 +854,13 @@ export const bulkDeleteClasses = () => {
   });
 };
 export const getAllUpcomingClasses = (page = 1, perPage = 10) => {
+  const { selectedTrainingSiteId } = useAuth();
   return useClientApi({
     method: "get",
     isPrivate: true,
     key: ["get-all-upcoming-class", page, perPage],
     endpoint: `/api/class/upcoming?page=${page}&per_page=${perPage}`,
+    headers: { "X-Site-Id": selectedTrainingSiteId },
   });
 };
 export const getAllPastClasses = (page = 1, perPage = 10) => {
@@ -1007,7 +1015,7 @@ export const useDownloadStudentListPDF = () => {
     method: "post",
     isPrivate: true,
     endpoint: "/api/student/export-pdf",
-    axiosOptions: { responseType: "blob" },
+    responseType: "blob",
     onError: err =>
       toast.error(err?.response?.data?.message || "Something went wrong!"),
   });
@@ -1017,7 +1025,7 @@ export const useDownloadRoster = id => {
     method: "post",
     isPrivate: true,
     endpoint: `/api/student/${id}`,
-    axiosOptions: { responseType: "blob" },
+    responseType: "blob",
     onError: err =>
       toast.error(err?.response?.data?.message || "Something went wrong!"),
   });
@@ -1211,7 +1219,7 @@ export const useExportInstructorByDisciplinePDF = () => {
     method: "post",
     isPrivate: true,
     endpoint: "/api/reports/export-Instructors-by-discipline",
-    axiosOptions: { responseType: "blob" },
+    responseType: "blob",
     onError: err =>
       toast.error(err?.response?.data?.message || "Something went wrong!"),
   });
@@ -1221,7 +1229,7 @@ export const useExportClassByStudentPDF = () => {
     method: "post",
     isPrivate: true,
     endpoint: "/api/reports/export-classess-by-student",
-    axiosOptions: { responseType: "blob" },
+    responseType: "blob",
     onError: err =>
       toast.error(err?.response?.data?.message || "Something went wrong!"),
   });
@@ -1231,7 +1239,7 @@ export const useExportStudentDiscipline = () => {
     method: "post",
     isPrivate: true,
     endpoint: "/api/reports/export-students-discipline",
-    axiosOptions: { responseType: "blob" },
+    responseType: "blob",
     onError: err =>
       toast.error(err?.response?.data?.message || "Something went wrong!"),
   });
@@ -1470,7 +1478,7 @@ export const downloadCertificationFile = () => {
     key: ["download-certification-file"],
     isPrivate: true,
     endpoint: "/api/certificates/download",
-    axiosOptions: { responseType: "blob" },
+    responseType: "blob",
   });
 };
 export const getWhatsNew = () => {
@@ -1552,7 +1560,7 @@ export const useGetSiteSettings = group => {
     method: "get",
     key: ["get-site-settings", group],
     isPrivate: true,
-    axiosOptions: { headers: { "X-Site-Id": selectedTrainingSiteId } },
+    headers: { "X-Site-Id": selectedTrainingSiteId },
     endpoint: `/api/settings/index?group=${group}`,
   });
 };
@@ -1562,7 +1570,7 @@ export const useUpdateSiteSettings = () => {
   return useClientApi({
     method: "post",
     isPrivate: true,
-    axiosOptions: { headers: { "X-Site-Id": selectedTrainingSiteId } },
+    headers: { "X-Site-Id": selectedTrainingSiteId },
     endpoint: "/api/settings/update",
   });
 };
@@ -1670,7 +1678,7 @@ export const getClientUpcomingClasses = (page = 1, perPage = 10) => {
   return useClientApi({
     method: "get",
     isPrivate: true,
-    axiosOptions: { headers: { "X-Site-Id": selectedTrainingSiteId } },
+    headers: { "X-Site-Id": selectedTrainingSiteId },
     key: ["client-upcoming", page, perPage],
     endpoint: `/api/clients/upcoming-classes?page=${page}&per_page=${perPage}`,
   });
@@ -1681,7 +1689,7 @@ export const getClientPastClasses = (page = 1, perPage = 10) => {
   return useClientApi({
     method: "get",
     isPrivate: true,
-    axiosOptions: { headers: { "X-Site-Id": selectedTrainingSiteId } },
+    headers: { "X-Site-Id": selectedTrainingSiteId },
     key: ["client-past", page, perPage],
     endpoint: `/api/clients/past-classes?page=${page}&per_page=${perPage}`,
   });

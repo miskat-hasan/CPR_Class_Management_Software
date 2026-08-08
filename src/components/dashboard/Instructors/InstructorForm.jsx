@@ -59,7 +59,7 @@ const InstructorForm = ({ mode = "add", instructorId }) => {
 
   const { data: countryData, isLoading: countryDataLoading } = getAllCountry();
   const { data: trainingSiteData, isLoading: trainingSiteLoading } =
-    getallTrainingsite();
+    getallTrainingsite({ type: "all" });
   const { data: instructorData, isLoading: instructorLoading } =
     getSingleInstructor(isEdit ? instructorId : undefined);
 

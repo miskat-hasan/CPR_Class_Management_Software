@@ -21,7 +21,7 @@ const Page = () => {
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
 
-  const { data, isLoading } = getallTrainingsite(page, perPage);
+  const { data, isLoading } = getallTrainingsite({page, perPage});
 
   return (
     <div className="flex flex-col gap-[12.5px] lg:gap-[25px]">
@@ -63,18 +63,18 @@ const Page = () => {
               <tbody>
                 {data?.data?.data?.length > 0 ? (
                   data.data.data.map(item => (
-                    <TableBodyRow key={item.id}>
+                    <TableBodyRow key={item?.id}>
                       <td className="px-3 md:px-6 py-4 whitespace-nowrap">
-                        {item.training_center_name}
+                        {item?.training_center_name}
                       </td>
                       <td className="px-3 md:px-6 py-4 whitespace-nowrap">
-                        {item.site_coordinator?.name ?? "--"}
+                        {item?.user?.name ?? "--"}
                       </td>
                       <td className="px-3 md:px-6 py-4 truncate max-w-[150px] sm:max-w-[250px]">
-                        {item.site_coordinator?.email ?? "--"}
+                        {item?.user?.email ?? "--"}
                       </td>
                       <td className="px-3 md:px-6 py-4 whitespace-nowrap">
-                        {item.price_level}
+                        {item?.price_level}
                       </td>
                       <td className="px-3 md:px-6 py-4 text-center whitespace-nowrap">
                         <div className="flex items-center justify-center">
