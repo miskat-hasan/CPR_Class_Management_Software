@@ -45,11 +45,11 @@ const Page = ({ params }) => {
     restrict_view: Boolean(
       d.settings?.restrict_instructors_to_only_view_classes_they_teach,
     ),
-    site_coordinator_id: d.site_coordinator?.id ?? "",
+    user_id: d.user?.id ?? "",
   };
 
-  const coordinatorLabelInitial = d?.site_coordinator
-    ? `${d.site_coordinator.name} (${d.site_coordinator.email})`
+  const coordinatorLabelInitial = d?.user
+    ? `${d.user.name} (${d.user.email})`
     : "";
 
   const onSubmit = async payload => {
