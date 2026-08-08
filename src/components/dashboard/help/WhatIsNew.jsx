@@ -36,8 +36,8 @@ const WhatIsNew = () => {
           <TableSkeleton />
         ) : (
           <div className="overflow-x-auto">
-            <table className="min-w-full text-sm text-left text-gray-700">
-              <thead className="bg-gray-50 text-black capitalize text-[16px] md:text-[20px] font-semibold">
+            <table className="min-w-full text-sm text-left text-gray-700 dark:text-gray-300">
+              <thead className="bg-gray-50 dark:bg-gray-900 text-black dark:text-white capitalize text-[16px] md:text-[20px] font-semibold">
                 <tr>
                   <th className="px-3 py-3 md:px-6 w-[150px] md:w-[200px] whitespace-nowrap">
                     Date
@@ -56,21 +56,21 @@ const WhatIsNew = () => {
                   whatsNewData?.data?.map((item, index) => (
                     <tr
                       key={item?.id}
-                      className="border-b hover:bg-gray-50 transition-all"
+                      className="border-b dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-900 transition-all"
                     >
-                      <td className="px-3 py-3 md:px-6 text-gray-800 whitespace-nowrap">
+                      <td className="px-3 py-3 md:px-6 text-gray-800 dark:text-gray-200 whitespace-nowrap">
                         {new Date(item?.created_at).toLocaleDateString(
                           "en-US",
                           { day: "2-digit", month: "short", year: "numeric" },
                         )}
                       </td>
-                      <td className="px-3 py-3 md:px-6 text-gray-800">
+                      <td className="px-3 py-3 md:px-6 text-gray-800 dark:text-gray-200">
                         {item?.title}
                       </td>
                       <td className="px-3 py-4 md:px-6 text-center whitespace-nowrap">
                         <Link href={`whats-new/${item.id}`}>
-                          <button className="p-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition cursor-pointer">
-                            <CiEdit className="text-gray-600 text-[16px]" />
+                          <button className="p-2 bg-gray-100 dark:bg-gray-800 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition cursor-pointer">
+                            <CiEdit className="text-gray-600 dark:text-gray-400 text-[16px]" />
                           </button>
                         </Link>
                       </td>

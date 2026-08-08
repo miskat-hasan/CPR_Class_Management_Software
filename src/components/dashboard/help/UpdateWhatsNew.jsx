@@ -47,14 +47,14 @@ const UpdateWhatIsNew = ({ id }) => {
         <div className="px-1.5 py-3 min-[374px]:p-[13px] lg:p-[26px] bg-white dark:bg-black rounded-[14px] flex flex-col gap-[24px] animate-pulse">
           <div className="flex flex-col gap-3 lg:gap-6">
             {/* Label Skeleton */}
-            <div className="h-4 w-24 bg-gray-200 rounded mb-2"></div>
+            <div className="h-4 w-24 bg-gray-200 dark:bg-gray-800 rounded mb-2"></div>
             {/* Input Skeleton */}
-            <div className="h-12 w-full bg-gray-100 rounded-lg"></div>
+            <div className="h-12 w-full bg-gray-100 dark:bg-gray-900 rounded-lg"></div>
 
             {/* Buttons Skeleton */}
             <div className="flex justify-end gap-4 mt-8">
-              <div className="h-10 w-24 bg-gray-200 rounded-md"></div>
-              <div className="h-10 w-40 bg-gray-200 rounded-md"></div>
+              <div className="h-10 w-24 bg-gray-200 dark:bg-gray-800 rounded-md"></div>
+              <div className="h-10 w-40 bg-gray-200 dark:bg-gray-800 rounded-md"></div>
             </div>
           </div>
         </div>

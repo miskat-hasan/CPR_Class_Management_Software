@@ -51,7 +51,7 @@ const SupportRequest = () => {
       <div className="bg-white dark:bg-black rounded-[14px] p-4 lg:p-8 shadow-sm">
         <p className="text-gray-500">
           Have an issue or an enhancement request? You can send an emai to{" "}
-          <b className="text-black">Training@codebluecprservices.com</b> or fill
+          <b className="text-black dark:text-white">Training@codebluecprservices.com</b> or fill
           out the form below We will be in touch as soon as possible.
         </p>
       </div>
