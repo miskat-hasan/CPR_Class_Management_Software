@@ -3,10 +3,15 @@ import SectionTitle from "@/components/common/SectionTitle";
 import NotFound from "@/components/shared/NotFound";
 import { getWhatsNew } from "@/hooks/api/dashboardApi";
 import TableSkeleton from "@/components/skeleton/TableSkeleton";
+import {
+  Table,
+  TableHead,
+  TableBodyRow,
+  TableButton,
+} from "@/components/common/TableElement";
 import { Button } from "@/components/ui/button";
 import { PlusIcon } from "@/components/svg/SvgContainer";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { CiEdit } from "react-icons/ci";
 
 const WhatIsNew = () => {
@@ -17,11 +22,11 @@ const WhatIsNew = () => {
   return (
     <div className="flex flex-col gap-[12.5px] lg:gap-[25px]">
       {/* Header */}
-      <div className="flex justify-between">
+      <div className="flex justify-between items-center">
         <SectionTitle title={"What’s New"} />
         <Button
           onClick={() => router.push("whats-new/add")}
-          className="py-[11px] text-[12px] lg:text-base lg:py-[22px] cursor-pointer bg-brown dark:bg-dark-brown flex items-center gap-2"
+          className="py-[11px] text-[12px] lg:text-base lg:py-[22px] cursor-pointer bg-brown dark:bg-dark-brown hover:bg-brown flex items-center gap-2 text-white"
         >
           Add New
           <PlusIcon />
@@ -30,14 +35,12 @@ const WhatIsNew = () => {
 
       {/* Table */}
       <div className="p-[13px] lg:p-[26px] bg-white dark:bg-black rounded-[14px] flex flex-col gap-[12px] lg:gap-[24px]">
-        <div className="flex items-center justify-between"></div>
-
         {whatsNewDataLoading ? (
           <TableSkeleton />
         ) : (
           <div className="overflow-x-auto">
-            <table className="min-w-full text-sm text-left text-gray-700 dark:text-gray-300">
-              <thead className="bg-gray-50 dark:bg-gray-900 text-black dark:text-white capitalize text-[16px] md:text-[20px] font-semibold">
+            <Table>
+              <TableHead>
                 <tr>
                   <th className="px-3 py-3 md:px-6 w-[150px] md:w-[200px] whitespace-nowrap">
                     Date
@@ -49,15 +52,12 @@ const WhatIsNew = () => {
                     Action
                   </th>
                 </tr>
-              </thead>
+              </TableHead>
 
               <tbody>
-                {whatsNewData?.data?.length > 6 ? (
-                  whatsNewData?.data?.map((item, index) => (
-                    <tr
-                      key={item?.id}
-                      className="border-b dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-900 transition-all"
-                    >
+                {whatsNewData?.data?.length > 0 ? (
+                  whatsNewData?.data?.map((item) => (
+                    <TableBodyRow key={item?.id}>
                       <td className="px-3 py-3 md:px-6 text-gray-800 dark:text-gray-200 whitespace-nowrap">
                         {new Date(item?.created_at).toLocaleDateString(
                           "en-US",
@@ -68,18 +68,16 @@ const WhatIsNew = () => {
                         {item?.title}
                       </td>
                       <td className="px-3 py-4 md:px-6 text-center whitespace-nowrap">
-                        <Link href={`whats-new/${item.id}`}>
-                          <button className="p-2 bg-gray-100 dark:bg-gray-800 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition cursor-pointer">
-                            <CiEdit className="text-gray-600 dark:text-gray-400 text-[16px]" />
-                          </button>
-                        </Link>
+                        <TableButton href={`whats-new/${item.id}`}>
+                          <CiEdit className="text-gray-600 dark:text-gray text-[16px]" />
+                        </TableButton>
                       </td>
-                    </tr>
+                    </TableBodyRow>
                   ))
                 ) : (
                   <tr>
                     <td
-                      colSpan="2"
+                      colSpan="3"
                       className="text-center py-3 lg:py-6 text-gray-500 italic"
                     >
                       <NotFound title="No Record Found" />
@@ -87,30 +85,9 @@ const WhatIsNew = () => {
                   </tr>
                 )}
               </tbody>
-            </table>
+            </Table>
           </div>
         )}
-
-        {/* Footer controls */}
-        {/* <div className="flex flex-col md:flex-row items-center justify-between mt-3 lg:mt-6 gap-3">
-          <div className="flex items-center gap-2">
-            <button className="px-3 py-1 text-sm text-gray-500 border rounded-md hover:bg-gray-100">
-              Previous
-            </button>
-            <button className="px-3 py-1 text-sm border border-blue-500 rounded-md text-blue-600">
-              1
-            </button>
-            <button className="px-3 py-1 text-sm border rounded-md hover:bg-gray-100">
-              2
-            </button>
-            <button className="px-3 py-1 text-sm border rounded-md hover:bg-gray-100">
-              3
-            </button>
-            <button className="px-3 py-1 text-sm text-gray-500 border rounded-md hover:bg-gray-100">
-              Next
-            </button>
-          </div>
-        </div> */}
       </div>
     </div>
   );

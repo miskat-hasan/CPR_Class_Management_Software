@@ -94,7 +94,7 @@ const FilterBar = ({ filters, onChange, onClear, onApply, courses }) => {
   ];
   const locationOptions = [
     ...ALL_OPTION,
-    ...(locationData?.data?.data ?? []).map(l => ({
+    ...(locationData?.data ?? []).map(l => ({
       id: String(l.id),
       name: l.name,
     })),

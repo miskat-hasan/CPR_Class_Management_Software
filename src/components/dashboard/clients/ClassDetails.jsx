@@ -3,6 +3,12 @@
 import BackButton from "@/components/common/BackButton";
 import SubSectionTitle from "@/components/common/SubSectionTitle";
 import TableSkeleton from "@/components/skeleton/TableSkeleton";
+import {
+  Table,
+  TableHead,
+  TableBodyRow,
+  TableButton,
+} from "@/components/common/TableElement";
 import { Button } from "@/components/ui/button";
 
 import {
@@ -140,8 +146,8 @@ const ClassDetails = ({ id }) => {
           <TableSkeleton />
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full  text-sm sm:text-base text-left text-gray-700 min-w-[800px]">
-              <thead className="bg-gray-50 text-black capitalize text-[16px] sm:text-[18px] font-semibold">
+            <Table>
+              <TableHead>
                 <tr>
                   <th className="px-3 sm:px-6 py-3">Student</th>
                   <th className="px-3 sm:px-6 py-3">Status</th>
@@ -150,56 +156,48 @@ const ClassDetails = ({ id }) => {
                   <th className="px-3 sm:px-6 py-3">Phone</th>
                   <th className="px-3 sm:px-6 py-3">Due</th>
                 </tr>
-              </thead>
+              </TableHead>
               <tbody>
                 {studentData?.data?.students?.length > 0 ? (
                   studentData?.data?.students?.map(item => (
-                    <tr
-                      key={item?.id}
-                      className="border-b hover:bg-gray-50 transition-all"
-                    >
+                    <TableBodyRow key={item?.id}>
                       <td className="px-3 sm:px-6 py-3 whitespace-nowrap">
-                        <p className="font-medium">
+                        <p className="font-medium dark:text-white">
                           {item?.first_name} {item?.last_name}
                         </p>
-                        <p className="text-sm text-neutral-600">
+                        <p className="text-sm text-neutral-600 dark:text-neutral-400">
                           {item?.email}
                         </p>
                       </td>
-                      <td className="px-3 sm:px-6 py-3 text-gray-800 whitespace-nowrap">
+                      <td className="px-3 sm:px-6 py-3 whitespace-nowrap dark:text-gray-300">
                         {item?.status}
                       </td>
-
-                      <td className="px-3 sm:px-6 py-3 truncate max-w-[160px] sm:max-w-[220px]">
+                      <td className="px-3 sm:px-6 py-3 dark:text-gray-300">
+                        {item?.score ?? "—"}
+                      </td>
+                      <td className="px-3 sm:px-6 py-3 truncate max-w-[160px] sm:max-w-[220px] dark:text-gray-300">
                         {item?.code}
                       </td>
-                      <td className="px-3 sm:px-6 py-3 text-gray-600 text-nowrap">
+                      <td className="px-3 sm:px-6 py-3 text-nowrap dark:text-gray-300">
                         {item?.primary_phone}
                       </td>
-                      <td className="px-3 sm:px-6 py-3 text-gray-600">
+                      <td className="px-3 sm:px-6 py-3 dark:text-gray-300">
                         ${item?.payable_amount}
                       </td>
-                      <td className="px-3 sm:px-6 py-3 text-center space-x-2">
-                        <Link href={`student/${item.id}`}>
-                          <button className="p-1.5 sm:p-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition cursor-pointer">
-                            <CiEdit className="text-gray-600 text-[14px] sm:text-[16px]" />
-                          </button>
-                        </Link>
-                      </td>
-                    </tr>
+                    </TableBodyRow>
                   ))
                 ) : (
                   <tr>
                     <td
-                      colSpan="7"
-                      className="text-center py-6 text-gray-500 italic"
+                      colSpan="6"
+                      className="text-center py-6 text-gray-500 dark:text-gray-400 italic"
                     >
                       No results found
                     </td>
                   </tr>
                 )}
               </tbody>
-            </table>
+            </Table>
           </div>
         )}
         {/* Footer Buttons */}

@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import useAuth from "@/hooks/useAuth";
 import SidebarSkeleton from "@/components/skeleton/SidebarSkeleton";
+import PaymentOnboardingGuard from "@/components/layout/PaymentOnboardingGuard";
 
 export default function DashboardGuard({ children }) {
   const router = useRouter();
@@ -40,5 +41,5 @@ export default function DashboardGuard({ children }) {
     );
   }
 
-  return <>{children}</>;
+  return <PaymentOnboardingGuard>{children}</PaymentOnboardingGuard>;
 }

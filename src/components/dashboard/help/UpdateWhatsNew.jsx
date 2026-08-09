@@ -1,4 +1,5 @@
 "use client";
+import BackButton from "@/components/common/BackButton";
 import SectionTitle from "@/components/common/SectionTitle";
 import FormContainer from "@/components/shared/form/FormContainer";
 import FormInput from "@/components/shared/form/FormInput";
@@ -64,9 +65,7 @@ const UpdateWhatIsNew = ({ id }) => {
             <div className="flex flex-col gap-3 lg:gap-6">
               <FormInput name="title" />
               <div className="flex justify-end gap-4 mt-8">
-                <Button variant="outline" asChild>
-                  <Link href="../whats-new">Cancel</Link>
-                </Button>
+                <BackButton />
                 <Button
                   type="submit"
                   disabled={isPending}

@@ -9,6 +9,7 @@ import {
   TableBodyRow,
   TableButton,
   TableHead,
+  TableFooter,
 } from "@/components/common/TableElement";
 import FormContainer from "@/components/shared/form/FormContainer";
 import FormInput from "@/components/shared/form/FormInput";
@@ -257,27 +258,7 @@ const UserPage = () => {
           )}
 
           {/* Pagination */}
-          {usersData?.data?.links?.length > 0 && (
-            <div className="flex items-center justify-end gap-2 flex-wrap">
-              {usersData.data.links.map((link, index) => (
-                <button
-                  key={index}
-                  disabled={link.url === null || link.page === null}
-                  onClick={() => link.page && setPage(link.page)}
-                  className={`px-3 py-1 text-sm border rounded-md transition ${
-                    link.active
-                      ? "border-brown text-brown bg-brown/10 dark:border-dark-brown dark:text-dark-brown dark:bg-dark-brown/10"
-                      : "border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 dark:text-gray-300"
-                  } ${
-                    link.url === null || link.page === null
-                      ? "text-gray-300 dark:text-gray-600 cursor-not-allowed"
-                      : "cursor-pointer"
-                  }`}
-                  dangerouslySetInnerHTML={{ __html: link.label }}
-                />
-              ))}
-            </div>
-          )}
+          <TableFooter Links={usersData?.data?.links} setPage={setPage} />
         </div>
       </section>
 

@@ -653,7 +653,7 @@ export const getAllCertifyingBody = ({ type, page = 1, perPage = 10 } = {}) => {
     method: "get",
     isPrivate: true,
     key: ["get-all-certifying-body", type ?? page, perPage],
-    headers: { "X-Site-Id": selectedTrainingSiteId },
+    headers: { "X-Site-Id": 1 },
     endpoint,
   });
 };
@@ -1692,5 +1692,27 @@ export const getClientPastClasses = (page = 1, perPage = 10) => {
     headers: { "X-Site-Id": selectedTrainingSiteId },
     key: ["client-past", page, perPage],
     endpoint: `/api/clients/past-classes?page=${page}&per_page=${perPage}`,
+  });
+};
+
+// ==================== PAYMENT ONBOARDING ====================
+
+export const useCheckPaymentStatus = (userId, siteId) => {
+  return useClientApi({
+    method: "get",
+    key: ["payment-status", userId, siteId],
+    isPrivate: true,
+    endpoint: `/api/payment-onboarding/check-status/${userId}/${siteId}`,
+    enabled: !!userId && !!siteId,
+  });
+};
+
+export const useCreatePaymentOnboarding = () => {
+  return useClientApi({
+    method: "post",
+    isPrivate: true,
+    endpoint: "/api/payment-onboarding/create-url",
+    onError: error =>
+      toast.error(error?.response?.data?.message || "Failed to initiate payment onboarding."),
   });
 };

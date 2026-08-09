@@ -36,7 +36,7 @@ export default function Sidebar() {
         return;
       }
     }
-  }, [pathname, menuItems.length]);
+  }, [pathname, menuItems?.length]);
 
   const handleSiteChange = (val) => {
     const isSuperAdminOnMaster = role === "Super Admin" && String(val) === "1";

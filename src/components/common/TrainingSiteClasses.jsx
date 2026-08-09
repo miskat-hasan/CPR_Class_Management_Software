@@ -2,9 +2,14 @@
 import SectionTitle from "@/components/common/SectionTitle";
 import SubSectionTitle from "@/components/common/SubSectionTitle";
 import TableSkeleton from "@/components/skeleton/TableSkeleton";
+import {
+  Table,
+  TableHead,
+  TableBodyRow,
+  TableButton,
+} from "@/components/common/TableElement";
 import { getAllClasses } from "@/hooks/api/dashboardApi";
 import useAuth from "@/hooks/useAuth";
-import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { CiEdit } from "react-icons/ci";
 import { GoArrowUpRight } from "react-icons/go";
@@ -56,8 +61,8 @@ const TrainingSiteClasses = () => {
           <TableSkeleton />
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full  text-sm sm:text-base text-left text-gray-700 min-w-[800px]">
-              <thead className="bg-gray-50 text-black capitalize text-[16px] sm:text-[18px] font-semibold">
+            <Table>
+              <TableHead>
                 <tr>
                   <th className="px-3 sm:px-6 py-3">Date/Time</th>
                   <th className="px-3 sm:px-6 py-3">Course</th>
@@ -66,59 +71,52 @@ const TrainingSiteClasses = () => {
                   <th className="px-3 sm:px-6 py-3">Students</th>
                   <th className="px-3 sm:px-6 py-3 text-center">Action</th>
                 </tr>
-              </thead>
+              </TableHead>
               <tbody>
                 {classData?.data?.data?.length > 0 ? (
                   classData?.data?.data?.map((item) => (
-                    <tr
-                      key={item?.id}
-                      className="border-b hover:bg-gray-50 transition-all"
-                    >
-                      <td className="px-3 sm:px-6 py-3 whitespace-nowrap">
+                    <TableBodyRow key={item?.id}>
+                      <td className="px-3 sm:px-6 py-3 whitespace-nowrap dark:text-gray-200">
                         {item?.class_times?.[0]?.date}
                       </td>
-                      <td className="px-3 sm:px-6 py-3 text-gray-800 whitespace-nowrap">
+                      <td className="px-3 sm:px-6 py-3 text-gray-800 dark:text-gray-200 whitespace-nowrap font-medium">
                         {item?.course?.course_name}
                       </td>
 
-                      <td className="px-3 sm:px-6 py-3 truncate max-w-[160px] sm:max-w-[220px]">
+                      <td className="px-3 sm:px-6 py-3 truncate max-w-[160px] sm:max-w-[220px] dark:text-gray-300">
                         {item?.instructor?.first_name}{" "}
                         {item?.instructor?.last_name}
                       </td>
-                      <td className="px-3 sm:px-6 py-3 truncate max-w-[160px] sm:max-w-[220px]">
+                      <td className="px-3 sm:px-6 py-3 truncate max-w-[160px] sm:max-w-[220px] dark:text-gray-300">
                         {item?.location_name}
                       </td>
-                      <td className="px-3 sm:px-6 py-3 text-gray-600">
+                      <td className="px-3 sm:px-6 py-3 text-gray-600 dark:text-gray-400">
                         {item?.enrollments_count ?? "0"}/{item?.max_student}
                       </td>
-                      <td className="px-3 sm:px-6 py-3 text-center space-x-2">
+                      <td className="px-3 sm:px-6 py-3 text-center">
                         <div className="flex items-center flex-nowrap gap-2 justify-center">
-                          <Link href={`classes/${item.id}`}>
-                            <button className="p-1.5 sm:p-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition cursor-pointer">
-                              <CiEdit className="text-gray-600 text-[14px] sm:text-[16px]" />
-                            </button>
-                          </Link>
-                          <Link href={`classes/roster/${item.id}`}>
-                            <button className="p-1.5 sm:p-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition cursor-pointer">
-                              <GoArrowUpRight className="text-gray-600 text-[14px] sm:text-[16px]" />
-                            </button>
-                          </Link>
+                          <TableButton href={`classes/${item.id}`}>
+                            <CiEdit className="text-gray-600 dark:text-gray text-[16px]" />
+                          </TableButton>
+                          <TableButton href={`classes/roster/${item.id}`}>
+                            <GoArrowUpRight className="text-gray-600 dark:text-gray text-[16px]" />
+                          </TableButton>
                         </div>
                       </td>
-                    </tr>
+                    </TableBodyRow>
                   ))
                 ) : (
                   <tr>
                     <td
-                      colSpan="7"
-                      className="text-center py-6 text-gray-500 italic"
+                      colSpan="6"
+                      className="text-center py-6 text-gray-500 dark:text-gray-400 italic"
                     >
                       No results found
                     </td>
                   </tr>
                 )}
               </tbody>
-            </table>
+            </Table>
           </div>
         )}
       </div>

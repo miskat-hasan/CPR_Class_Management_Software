@@ -67,13 +67,13 @@ const AddStudentModal = ({ classId, open, onClose }) => {
   return (
     <div
       onClick={onClose}
-      className="w-full h-screen bg-gray/40 absolute top-0 left-0 flex items-center justify-center px-2 z-50"
+      className="w-full h-screen bg-black/50 fixed top-0 left-0 flex items-center justify-center px-2 z-50"
     >
       <div
         onClick={e => e.stopPropagation()}
         className="bg-white dark:bg-black p-4 lg:p-6 rounded-lg shadow max-w-[600px] w-full"
       >
-        <h5 className="text-black text-[20px] font-medium leading-[32.5px] mb-2">
+        <h5 className="text-black dark:text-white text-[20px] font-medium leading-[32.5px] mb-2">
           Add Student
         </h5>
         <FormContainer form={form} onSubmit={onSubmit}>
