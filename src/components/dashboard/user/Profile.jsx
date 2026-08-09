@@ -1,3 +1,4 @@
+// src/components/dashboard/user/Profile.jsx
 "use client";
 
 import { useEffect, useMemo } from "react";
@@ -10,7 +11,6 @@ import { Button } from "@/components/ui/button";
 import {
   getAllCountry,
   useChangePassword,
-  useGetSingleUser,
   useUpdateAuthUser,
 } from "@/hooks/api/dashboardApi";
 import useAuth from "@/hooks/useAuth";
@@ -35,12 +35,17 @@ const SectionCard = ({ title, children }) => (
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 const ProfilePage = () => {
-  const { user } = useAuth();
+  // useAuth already holds the logged-in user's full record (roles, user_details, etc.) —
+  // this is "my profile", so there's no separate lookup-by-id fetch needed.
+  const { user, isLoading: authLoading } = useAuth();
 
-  const { data, isLoading } = useGetSingleUser(user?.id);
   const { data: countryData, isLoading: countryLoading } = getAllCountry();
-
   const countryOptions = countryData?.data ?? [];
+
+  // Role comes back as an array on the user record, not a flat string.
+  const isInstructor = user?.roles?.some(
+    r => r.role_name?.toLowerCase() === "instructor",
+  );
 
   // ── Profile form ──
   const profileForm = useForm({
@@ -70,26 +75,29 @@ const ProfilePage = () => {
   } = profileForm;
 
   const profileDefaults = useMemo(() => {
-    const u = data?.data?.instructor;
-    if (!u) return null;
+    // Profile fields live under user_details, not directly on the user record —
+    // and never pull `password` out of here, it's a hash, not form content.
+    const d = user?.user_details;
+    if (!d) return null;
+
     return {
-      username: u.username ?? "",
-      first_name: u.first_name ?? "",
-      last_name: u.last_name ?? "",
-      email: u.email ?? "",
-      mobile_phone: u.mobile_phone ?? "",
-      address_line_1: u.address_line_1 ?? "",
-      address_line_2: u.address_line_2 ?? "",
-      city: u.city ?? "",
-      state_province_region: u.state_province_region ?? "",
-      zip_postal_code: u.zip_postal_code ?? "",
-      country_id: u.country_id ?? "",
-      name_to_print_on_card: u.name_to_print_on_card ?? "",
-      aha_instructor_id: u.aha_instructor_id ?? "",
-      hsi_instructor_id: u.hsi_instructor_id ?? "",
-      rclc_username: u.rclc_username ?? "",
+      username: d.username ?? "",
+      first_name: d.first_name ?? "",
+      last_name: d.last_name ?? "",
+      email: d.email ?? "",
+      mobile_phone: d.mobile_phone ?? "",
+      address_line_1: d.address_line_1 ?? "",
+      address_line_2: d.address_line_2 ?? "",
+      city: d.city ?? "",
+      state_province_region: d.state_province_region ?? "",
+      zip_postal_code: d.zip_postal_code ?? "",
+      country_id: d.country_id ?? "",
+      name_to_print_on_card: d.name_to_print_on_card ?? "",
+      aha_instructor_id: d.aha_instructor_id ?? "",
+      hsi_instructor_id: d.hsi_instructor_id ?? "",
+      rclc_username: d.rclc_username ?? "",
     };
-  }, [data]);
+  }, [user]);
 
   useEffect(() => {
     if (profileDefaults) profileReset(profileDefaults);
@@ -102,6 +110,8 @@ const ProfilePage = () => {
     updateMutation(formData, {
       onSuccess: res =>
         toast.success(res?.message || "Profile updated successfully"),
+      onError: err =>
+        toast.error(err?.response?.data?.message || "Something went wrong!"),
     });
   };
 
@@ -135,7 +145,7 @@ const ProfilePage = () => {
   };
 
   // ── Loading skeleton ──
-  if (isLoading || countryLoading) {
+  if (authLoading || countryLoading) {
     return (
       <section className="flex flex-col gap-4">
         <SectionTitle title="My Account" />
@@ -190,29 +200,29 @@ const ProfilePage = () => {
                 rules={{ required: "Last name is required" }}
                 error={errors.last_name?.message}
               />
+                <FormInput
+                  name="username"
+                  label="Username"
+                  rules={{ required: "Username is required" }}
+                  error={errors.username?.message}
+                />
+                <FormInput
+                  name="email"
+                  label="Email Address"
+                  type="email"
+                  rules={{
+                    required: "Email is required",
+                    pattern: {
+                      value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                      message: "Invalid email address",
+                    },
+                  }}
+                  error={errors.email?.message}
+                />
               <FormInput
                 name="name_to_print_on_card"
                 label="Name to Print on Card"
                 error={errors.name_to_print_on_card?.message}
-              />
-              <FormInput
-                name="username"
-                label="Username"
-                rules={{ required: "Username is required" }}
-                error={errors.username?.message}
-              />
-              <FormInput
-                name="email"
-                label="Email Address"
-                type="email"
-                rules={{
-                  required: "Email is required",
-                  pattern: {
-                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                    message: "Invalid email address",
-                  },
-                }}
-                error={errors.email?.message}
               />
               <FormInput
                 name="mobile_phone"
@@ -273,8 +283,8 @@ const ProfilePage = () => {
                 )}
               />
 
-              {/* Certifying body IDs */}
-              {user?.role == "instructor" && (
+              {/* Certifying body IDs — instructor accounts only */}
+              {isInstructor && (
                 <>
                   <FormInput
                     name="aha_instructor_id"

@@ -786,19 +786,19 @@ const instructorMenu = ts => [
     submenu: [
       {
         label: "Upcoming Classes",
-        href: `/dashboard/super-admin/${ts}/class-and-students/upcoming-classes`,
+        href: `/dashboard/instructor/${ts}/class-and-students/upcoming-classes`,
       },
       {
         label: "Schedule a Class",
-        href: `/dashboard/super-admin/${ts}/class-and-students/schedule-class`,
+        href: `/dashboard/instructor/${ts}/class-and-students/schedule-class`,
       },
       {
         label: "Past Classes",
-        href: `/dashboard/super-admin/${ts}/class-and-students/past-classes`,
+        href: `/dashboard/instructor/${ts}/class-and-students/past-classes`,
       },
       {
         label: "Student Search",
-        href: `/dashboard/super-admin/${ts}/class-and-students/student-search`,
+        href: `/dashboard/instructor/${ts}/class-and-students/student-search`,
       },
     ],
   },

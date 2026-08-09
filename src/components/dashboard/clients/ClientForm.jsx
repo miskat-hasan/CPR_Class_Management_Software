@@ -32,6 +32,8 @@ const DEFAULT_VALUES = {
   city: "",
   stateProvince: "",
   zipPostalCode: "",
+  username: "",
+  password: "",
   ccConfirmationsTo: "",
 };
 
@@ -98,6 +100,14 @@ const ClientForm = ({
     formData.append("city", data.city);
     formData.append("state", data.stateProvince);
     formData.append("zip", data.zipPostalCode);
+    formData.append("username", data.username);
+
+    // Only send a password on create, or if the user actually typed a new
+    // one on edit — the API never returns the existing hash to prefill with.
+    if (!isEdit || data.password) {
+      formData.append("password", data.password);
+    }
+
     formData.append("cc_confirmations_to", data.ccConfirmationsTo);
     formData.append("shared_notes", sharedNotes);
     formData.append("internal_notes", internalNotes);
@@ -193,6 +203,16 @@ const ClientForm = ({
                 className="flex-1"
               />
             )}
+          />
+          <FormInput name="username" label="Username" placeholder="Username" />
+
+          <FormInput
+            name="password"
+            label={
+              isEdit ? "Password (leave blank to keep current)" : "Password"
+            }
+            placeholder="Password"
+            type="password"
           />
         </div>
 
