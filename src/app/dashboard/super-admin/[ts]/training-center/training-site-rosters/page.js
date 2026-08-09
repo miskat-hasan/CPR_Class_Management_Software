@@ -1,6 +1,11 @@
 "use client";
 import SectionTitle from "@/components/common/SectionTitle";
 import TableSkeleton from "@/components/skeleton/TableSkeleton";
+import {
+  Table,
+  TableHead,
+  TableBodyRow,
+} from "@/components/common/TableElement";
 import { useGetAllRosters } from "@/hooks/api/dashboardApi";
 
 const Page = () => {
@@ -16,54 +21,50 @@ const Page = () => {
           <TableSkeleton />
         ) : (
           <div className="overflow-x-auto">
-            <table className="min-w-[600px] w-full text-sm sm:text-base text-left text-gray-700">
-              <thead className="bg-gray-50 text-black capitalize text-[14px] sm:text-[20px] font-semibold">
+            <Table>
+              <TableHead>
                 <tr>
-                  <th className="px-3 sm:px-6 py-3 w-[40px]">Finalized</th>
+                  <th className="px-3 sm:px-6 py-3 whitespace-nowrap">Finalized</th>
                   <th className="px-3 sm:px-6 py-3">Training Site</th>
                   <th className="px-3 sm:px-6 py-3">Class</th>
                   <th className="px-3 sm:px-6 py-3">Instructor</th>
                   <th className="px-3 sm:px-6 py-3 text-center">Student</th>
-                  {/* <th className="px-3 sm:px-6 py-3 text-center">Action</th> */}
                 </tr>
-              </thead>
+              </TableHead>
 
               <tbody>
                 {data?.data?.length > 0 ? (
                   data?.data?.map((item) => (
-                    <tr
-                      key={item.id}
-                      className="border-b hover:bg-gray-50 transition-all"
-                    >
-                      <td className="px-3 sm:px-6 py-3 text-gray-800 whitespace-nowrap">
-                        {item?.finalized_at.split(" ")[0]}
+                    <TableBodyRow key={item.id}>
+                      <td className="px-3 sm:px-6 py-3 text-gray-800 dark:text-gray-200 whitespace-nowrap">
+                        {item?.finalized_at?.split(" ")?.[0] ?? "—"}
                       </td>
-                      <td className="px-3 sm:px-6 py-3 text-gray-800">
+                      <td className="px-3 sm:px-6 py-3 text-gray-800 dark:text-gray-200 font-medium">
                         {item.training_site}
                       </td>
-                      <td className="px-3 sm:px-6 py-3">
+                      <td className="px-3 sm:px-6 py-3 dark:text-gray-300">
                         {item?.course_name}
                       </td>
-                      <td className="px-3 sm:px-6 py-3">
+                      <td className="px-3 sm:px-6 py-3 dark:text-gray-300">
                         {item?.instructor_name}
                       </td>
-                      <td className="px-3 sm:px-6 py-3 text-gray-600 whitespace-nowrap text-center">
+                      <td className="px-3 sm:px-6 py-3 text-gray-600 dark:text-gray-400 whitespace-nowrap text-center">
                         {item?.enrolled_students}
                       </td>
-                    </tr>
+                    </TableBodyRow>
                   ))
                 ) : (
                   <tr>
                     <td
-                      colSpan="6"
-                      className="text-center py-3 sm:py-6 text-gray-500 italic"
+                      colSpan="5"
+                      className="text-center py-3 sm:py-6 text-gray-500 dark:text-gray-400 italic"
                     >
                       No results found
                     </td>
                   </tr>
                 )}
               </tbody>
-            </table>
+            </Table>
           </div>
         )}
       </div>

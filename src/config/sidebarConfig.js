@@ -567,13 +567,17 @@ const coordinatorMenu = ts => [
         label: "Test Messaging",
         href: `/dashboard/site-coordinator/${ts}/settings/text-messaging`,
       },
-      {
-        label: "Card Settings",
-        href: `/dashboard/site-coordinator/${ts}/settings/cards-settings`,
-      },
+      // {
+      //   label: "Card Settings",
+      //   href: `/dashboard/site-coordinator/${ts}/settings/cards-settings`,
+      // },
       {
         label: "Site Settings",
         href: `/dashboard/site-coordinator/${ts}/settings/site-settings`,
+      },
+      {
+        label: "Payment Account",
+        href: `/dashboard/site-coordinator/${ts}/settings/payment-account`,
       },
     ],
   },

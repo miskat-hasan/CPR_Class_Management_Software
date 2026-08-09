@@ -5,7 +5,13 @@ import React, { useState } from "react";
 import { CiEdit } from "react-icons/ci";
 import { useGetTCProductOrder } from "@/hooks/api/dashboardApi";
 import TableSkeleton from "@/components/skeleton/TableSkeleton";
-import Link from "next/link";
+import {
+  Table,
+  TableHead,
+  TableBodyRow,
+  TableButton,
+  TableFooter,
+} from "@/components/common/TableElement";
 
 const Page = () => {
   const [page, setPage] = useState(1);
@@ -15,7 +21,7 @@ const Page = () => {
     useGetTCProductOrder(page, perPage);
 
   return (
-    <section className="flex flex-col gap-[12.5px] lg:gap-[25px] ">
+    <section className="flex flex-col gap-[12.5px] lg:gap-[25px]">
       <SectionTitle title={"TC Product Orders"} />
 
       {tcProductOrderLoading ? (
@@ -23,8 +29,8 @@ const Page = () => {
       ) : (
         <div className="p-[13px] lg:p-[26px] bg-white dark:bg-black rounded-[14px] flex flex-col gap-[12px] lg:gap-[24px]">
           <div className="overflow-x-auto">
-            <table className="min-w-full text-sm text-left text-gray-700">
-              <thead className="bg-gray-50 text-black text-[14px] md:text-[16px] font-semibold">
+            <Table>
+              <TableHead>
                 <tr>
                   <th className="px-3 md:px-6 py-3 whitespace-nowrap">Date</th>
                   <th className="px-3 md:px-6 py-3 whitespace-nowrap">
@@ -44,87 +50,65 @@ const Page = () => {
                     Action
                   </th>
                 </tr>
-              </thead>
+              </TableHead>
 
               <tbody>
                 {tcProductOrderData?.data?.data?.length > 0 ? (
-                  tcProductOrderData?.data?.data?.map((item, index) => (
-                    <tr
-                      key={item?.id}
-                      className="border-b hover:bg-gray-50 transition-all"
-                    >
-                      <td className="px-3 md:px-6 py-4 whitespace-nowrap">
+                  tcProductOrderData?.data?.data?.map((item) => (
+                    <TableBodyRow key={item?.id}>
+                      <td className="px-3 md:px-6 py-4 whitespace-nowrap dark:text-gray-200">
                         {new Date(item?.created_at).toLocaleString()}
                       </td>
                       <td className="px-3 md:px-6 py-4 whitespace-nowrap">
-                        <p>{item?.training_site?.training_center_name}</p>
-                        <p className="text-xs">{item?.associated_class}</p>
+                        <p className="font-medium dark:text-gray-200">{item?.training_site?.training_center_name}</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">{item?.associated_class}</p>
                       </td>
                       <td className="px-3 md:px-6 py-4 whitespace-nowrap">
-                        <p className="font-medium">
+                        <p className="font-medium dark:text-gray-200">
                           {item?.first_name} {item?.last_name}
                         </p>
-                        <p className="text-[13px] text-gray-500">
+                        <p className="text-[13px] text-gray-500 dark:text-gray-400">
                           {item?.email}
                         </p>
                       </td>
-                      <td className="px-3 md:px-6 py-4 whitespace-nowrap">
+                      <td className="px-3 md:px-6 py-4 whitespace-nowrap dark:text-gray-200">
                         {item?.status}
                       </td>
-                      <td className="px-3 md:px-6 py-4 whitespace-nowrap">
+                      <td className="px-3 md:px-6 py-4 whitespace-nowrap dark:text-gray-200">
                         {item?.is_paid ? "Yes" : "No"}
                       </td>
-                      <td className="px-3 md:px-6 py-4 whitespace-nowrap">
+                      <td className="px-3 md:px-6 py-4 whitespace-nowrap dark:text-gray-200">
                         ${item?.total_amount}
                       </td>
                       <td className="px-3 md:px-6 py-4 text-center whitespace-nowrap">
                         <div className="flex items-center justify-center">
-                          <Link
-                            href={`tc-product-orders/${item.id}`}
-                            className="p-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition "
-                          >
-                            <CiEdit className="text-gray-600 text-[16px]" />
-                          </Link>
+                          <TableButton href={`tc-product-orders/${item.id}`}>
+                            <CiEdit className="text-gray-600 dark:text-gray text-[16px]" />
+                          </TableButton>
                         </div>
                       </td>
-                    </tr>
+                    </TableBodyRow>
                   ))
                 ) : (
                   <tr>
                     <td
-                      colSpan="5"
-                      className="text-center py-6 text-gray-500 italic"
+                      colSpan="7"
+                      className="text-center py-6 text-gray-500 dark:text-gray-400 italic"
                     >
                       No results found
                     </td>
                   </tr>
                 )}
               </tbody>
-            </table>
+            </Table>
           </div>
 
-          <div className="flex flex-col md:flex-row items-center justify-end mt-3 lg:mt-6 gap-3">
-            {/* Pagination */}
-            <div className="flex items-center gap-2">
-              {tcProductOrderData?.data?.links?.map((link, index) => (
-                <button
-                  key={index}
-                  disabled={link.url === null || link.page === null}
-                  onClick={() => link.page && setPage(link.page)}
-                  className={`px-3 py-1 text-sm border rounded-md ${
-                    link.active
-                      ? "border-blue-500 text-blue-600 bg-blue-50"
-                      : "hover:bg-gray-100"
-                  } ${
-                    link.url === null || link.page === null
-                      ? "text-gray-400 cursor-not-allowed"
-                      : "cursor-pointer"
-                  }`}
-                  dangerouslySetInnerHTML={{ __html: link.label }}
-                />
-              ))}
-            </div>
-          </div>
+          <TableFooter
+            Links={tcProductOrderData?.data?.links}
+            setPage={setPage}
+            perPage={perPage}
+            setPerPage={setPerPage}
+          />
         </div>
       )}
     </section>
