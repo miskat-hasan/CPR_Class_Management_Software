@@ -480,7 +480,7 @@ export const getAllProductAddOns = ({ type, page = 1, perPage = 10 } = {}) => {
     type === "all"
       ? "/api/addon_list/index?type=all"
       : `/api/addon_list/index?page=${page}&per_page=${perPage}`;
-  
+
   return useClientApi({
     method: "get",
     isPrivate: true,
@@ -1707,12 +1707,10 @@ export const useCheckPaymentStatus = (userId, siteId) => {
   });
 };
 
-export const useCreatePaymentOnboarding = () => {
+export const useSavePaymentCredentials = () => {
   return useClientApi({
     method: "post",
     isPrivate: true,
-    endpoint: "/api/payment-onboarding/create-url",
-    onError: error =>
-      toast.error(error?.response?.data?.message || "Failed to initiate payment onboarding."),
+    endpoint: "/api/payment-onboarding/save-credentials",
   });
-};
+};  

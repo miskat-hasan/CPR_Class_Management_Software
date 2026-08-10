@@ -80,7 +80,7 @@ export default function Sidebar() {
 
         <nav>
           <ul className="flex flex-col">
-            {menuItems.map((item) => {
+            {menuItems?.map((item) => {
               const isOpen = openMenu === item.label;
               return (
                 <li key={item.label} className="text-sm font-semibold">
@@ -102,10 +102,10 @@ export default function Sidebar() {
                     className={`overflow-hidden transition-all ${isOpen ? "max-h-screen" : "max-h-0"}`}
                   >
                     <ul className="bg-gray-50 dark:bg-[#1B1D1E] rounded-[10px] pt-1">
-                      {item.submenu.map((sub) => {
+                      {item?.submenu?.map((sub) => {
                         const active = pathname === sub.href;
                         return (
-                          <li key={sub.label}>
+                          <li key={sub?.label}>
                             <Link
                               href={sub.href}
                               prefetch={true}
