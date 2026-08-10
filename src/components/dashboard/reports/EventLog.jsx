@@ -43,7 +43,7 @@ const EventLog = () => {
             <tbody>
               {eventLogData?.data?.data?.length > 0 ? (
                 eventLogData?.data?.data?.map((item, index) => (
-                  <TableBodyRow key={index} className="cursor-pointer">
+                  <TableBodyRow key={index}>
                     <td className="px-3 sm:px-6 py-4 text-gray-800 dark:text-gray-200 whitespace-nowrap">
                       <div>
                         <p className="font-medium">{item.user}</p>

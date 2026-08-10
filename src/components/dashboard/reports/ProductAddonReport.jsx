@@ -96,7 +96,7 @@ const ProductAddonReport = () => {
                 {productAddOnsReport?.data?.items_report?.length > 0 ? (
                   productAddOnsReport?.data?.items_report?.map(
                     (item, index) => (
-                      <TableBodyRow key={item?.product_id} className="cursor-pointer">
+                      <TableBodyRow key={item?.product_id}>
                         <td className="px-3 sm:px-6 py-4 text-gray-800 dark:text-gray-200 whitespace-nowrap">
                           {item.code}
                         </td>
@@ -128,7 +128,7 @@ const ProductAddonReport = () => {
               </tbody>
             </Table>
             {productAddOnsReport?.data?.total_sell_sum && (
-              <div className="flex items-center gap-4 justify-end mt-3 mx-3">
+              <div className="flex items-center dark:text-gray-200 text-gray-800 gap-4 justify-end mt-3 mx-3">
                 <div>Total: </div>
                 <div>{productAddOnsReport?.data?.total_sell_sum}</div>
               </div>

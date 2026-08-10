@@ -105,7 +105,7 @@ const PromoCodeReport = () => {
               <tbody>
                 {data?.data?.length > 0 ? (
                   data?.data?.map((item) => (
-                    <TableBodyRow key={item.id} className="cursor-pointer">
+                    <TableBodyRow key={item.id}>
                       <td className="px-3 sm:px-6 py-4 text-gray-800 dark:text-gray-200 whitespace-nowrap">
                         {item.student}
                       </td>
