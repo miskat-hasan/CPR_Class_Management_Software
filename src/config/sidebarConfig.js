@@ -232,6 +232,10 @@ const superAdminFullMenu = ts => [
         href: `/dashboard/super-admin/${ts}/settings/cards-settings`,
       },
       {
+        label: "Payment Account",
+        href: `/dashboard/super-admin/${ts}/settings/payment-account`,
+      },
+      {
         label: "Site Settings",
         href: `/dashboard/super-admin/${ts}/settings/site-settings`,
       },
@@ -546,7 +550,10 @@ const coordinatorMenu = ts => [
   {
     label: "Settings",
     submenu: [
-      { label: "Users", href: `/dashboard/site-coordinator/${ts}/settings/users` },
+      {
+        label: "Users",
+        href: `/dashboard/site-coordinator/${ts}/settings/users`,
+      },
       {
         label: "Certificates",
         href: `/dashboard/site-coordinator/${ts}/settings/certificates`,
@@ -572,12 +579,12 @@ const coordinatorMenu = ts => [
       //   href: `/dashboard/site-coordinator/${ts}/settings/cards-settings`,
       // },
       {
-        label: "Site Settings",
-        href: `/dashboard/site-coordinator/${ts}/settings/site-settings`,
-      },
-      {
         label: "Payment Account",
         href: `/dashboard/site-coordinator/${ts}/settings/payment-account`,
+      },
+      {
+        label: "Site Settings",
+        href: `/dashboard/site-coordinator/${ts}/settings/site-settings`,
       },
     ],
   },

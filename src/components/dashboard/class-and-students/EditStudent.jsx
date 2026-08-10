@@ -1,3 +1,4 @@
+// src/components/dashboard/class-and-students/EditStudent.jsx
 "use client";
 
 import BackButton from "@/components/common/BackButton";
@@ -16,6 +17,15 @@ import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 
+const STATUS_OPTIONS = [
+  { id: "Pending", name: "Pending" },
+  { id: "Complete", name: "Completed" },
+  { id: "Incomplete", name: "Incomplete" },
+  { id: "Remediate", name: "Remediate" },
+  { id: "No Show", name: "No Show" },
+  { id: "Waitlisted", name: "Waitlisted" },
+];
+
 const EditStudentPage = () => {
   const { id: studentId } = useParams();
 
@@ -24,6 +34,8 @@ const EditStudentPage = () => {
   const form = useForm({
     defaultValues: {
       billing_same_as_mailing: true,
+      username: "",
+      password: "",
     },
   });
 
@@ -36,6 +48,7 @@ const EditStudentPage = () => {
   } = form;
 
   const isBillingSameAsMailing = watch("billing_same_as_mailing");
+  const emailValue = watch("email");
 
   const { data: studentData, isLoading: studentDataLoading } =
     useGetStudent(studentId);
@@ -54,6 +67,8 @@ const EditStudentPage = () => {
         confirm_email: student.confirm_email || student.email || "",
         primary_phone: student.primary_phone || "",
         alternate_phone: student.alternate_phone || "",
+        username: student.username || "",
+        password: "",
 
         // mailing address
         address_1: student.address_1 || "",
@@ -78,7 +93,6 @@ const EditStudentPage = () => {
         // other fields from update payload
         promo_code: student.promo_code || "",
         score: student.score || "",
-        // type: student.type || "",
         code: student.code || "",
         status: student.status || "Pending",
       });
@@ -106,9 +120,10 @@ const EditStudentPage = () => {
 
       promo_code: data.promo_code || null,
       score: data.score || null,
-      type: data.type || null,
       code: data.code || null,
       status: data.status || "Pending",
+
+      username: data.username,
 
       billing_same_as_mailing: data.billing_same_as_mailing === true,
 
@@ -124,13 +139,23 @@ const EditStudentPage = () => {
           }),
     };
 
+    // Only send a password if the admin actually typed a new one —
+    // same pattern as Instructor/Client edit forms.
+    if (data.password) {
+      payload.password = data.password;
+    }
+
     mutate(payload, {
       onSuccess: response => {
         toast.success(response?.message || "Student updated successfully");
         router.back();
       },
       onError: err => {
-        toast.error(err?.message || "Failed to update student");
+        toast.error(
+          err?.response?.data?.message ||
+            err?.message ||
+            "Failed to update student",
+        );
       },
     });
   };
@@ -166,21 +191,34 @@ const EditStudentPage = () => {
             name="first_name"
             label="First Name"
             placeholder="First Name"
+            rules={{ required: "First name is required" }}
           />
           <FormInput
             name="last_name"
             label="Last Name"
             placeholder="Last Name"
+            rules={{ required: "Last name is required" }}
           />
           <FormInput
             name="email"
             label="Email Address"
             placeholder="Email Address"
+            rules={{
+              required: "Email is required",
+              pattern: {
+                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                message: "Enter a valid email",
+              },
+            }}
           />
           <FormInput
             name="confirm_email"
             label="Confirm Email Address"
             placeholder="Confirm Email Address"
+            rules={{
+              required: "Please confirm the email",
+              validate: value => value === emailValue || "Emails do not match",
+            }}
           />
           <FormInput
             name="primary_phone"
@@ -191,6 +229,21 @@ const EditStudentPage = () => {
             name="alternate_phone"
             label="Alternate Phone"
             placeholder="Alternate Phone"
+          />
+          <FormInput
+            name="username"
+            label="Username"
+            placeholder="Username"
+            rules={{ required: "Username is required" }}
+          />
+          <FormInput
+            name="password"
+            label="Password (leave blank to keep current)"
+            placeholder="Password"
+            type="password"
+            rules={{
+              minLength: { value: 8, message: "Minimum 8 characters" },
+            }}
           />
         </div>
 
@@ -279,7 +332,6 @@ const EditStudentPage = () => {
           </>
         )}
 
-        {/* Optional / additional fields — show if you want admin to edit them */}
         <h6 className="text-xl font-medium mb-1 mt-3 text-gray-900 dark:text-zinc-100">
           Status & Scores
         </h6>
@@ -293,18 +345,13 @@ const EditStudentPage = () => {
           <Controller
             name="status"
             control={control}
-            // rules={{ required: "Country is required" }}
             render={({ field }) => (
               <CustomSelect
                 {...field}
                 id="status"
                 label="Status"
                 placeholder="Status"
-                // isLoading={countryDataLoading}
-                options={[
-                  { id: "1", name: "Pending" },
-                  { id: "2", name: "Complete" },
-                ]}
+                options={STATUS_OPTIONS}
                 error={errors.status?.message}
                 className="flex-1"
               />

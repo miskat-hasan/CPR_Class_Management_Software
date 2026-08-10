@@ -132,6 +132,8 @@ export default function Sidebar() {
             <button
               onClick={() => logout()}
               disabled={logoutPending}
+              type="button"
+              key="logout"
               className="text-sm font-semibold mt-10 px-5 py-2.5 bg-brown dark:bg-dark-brown rounded-[10px] text-white cursor-pointer mb-4 hover:bg-black dark:hover:bg-brown transition duration-300 disabled:bg-gray-400 disabled:cursor-not-allowed"
             >
               {logoutPending ? "Logging out..." : "Log Out"}
