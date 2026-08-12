@@ -31,6 +31,8 @@ const Page = () => {
       confirm_email_address: "",
       mobile_phone: "",
       alternate_phone: "",
+      username: "",
+      password: "",
       address_1: "",
       address_2: "",
       city: "",
@@ -66,6 +68,8 @@ const Page = () => {
     formData.append("confirm_email", formValues.confirm_email_address);
     formData.append("primary_phone", formValues.mobile_phone);
     formData.append("alternate_phone", formValues.alternate_phone ?? "");
+    formData.append("username", formValues.username);
+    formData.append("password", formValues.password);
     formData.append("address_1", formValues.address_1);
     formData.append("address_2", formValues.address_2 ?? "");
     formData.append("city", formValues.city);

@@ -1,7 +1,7 @@
 const page = () => {
   return (
-    <div>
-      asdf
+    <div className="">
+      coming soon
     </div>
   )
 }

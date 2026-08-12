@@ -136,10 +136,12 @@ export const getAllLocation = ({ type, page = 1, perPage = 10 } = {}) => {
 // ==================== CLIENT ====================
 
 export const storeClient = () => {
+  const { selectedTrainingSiteId } = useAuth();
   return useClientApi({
     method: "post",
     isPrivate: true,
     endpoint: "/api/clients/store",
+    headers: { "X-Site-Id": selectedTrainingSiteId },
   });
 };
 
