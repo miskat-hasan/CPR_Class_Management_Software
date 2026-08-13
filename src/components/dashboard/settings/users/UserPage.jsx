@@ -39,7 +39,8 @@ const UserPage = () => {
 
   const { data: usersData, isLoading } = useGetAllUsers({
     page,
-    per_page: perPage,
+    perPage,
+    roleIds: [1, 2, 3, 4, 7],
     ...(enableSearch && searchValue ? { search: searchValue } : {}),
   });
 

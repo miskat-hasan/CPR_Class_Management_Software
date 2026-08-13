@@ -1,9 +1,5 @@
 const page = () => {
-  return (
-    <div>
-      asdf
-    </div>
-  )
-}
+  return <div className="">coming soon</div>;
+};
 
-export default page
+export default page;

@@ -1,3 +1,4 @@
+// src/Provider/AuthProvider/AuthProvider.jsx
 "use client";
 import { useGetUserData } from "@/hooks/api/authApi";
 import { useGetUserTrainingSiteData } from "@/hooks/api/dashboardApi";

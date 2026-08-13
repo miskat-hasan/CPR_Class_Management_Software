@@ -50,14 +50,14 @@ export const TableButton = ({
   const Comp = isLink ? Link : "button";
   return (
     <Comp {...props}>
-      <button
+      <div
         className={cn(
           "p-1.5 sm:p-2 bg-gray-100 dark:bg-transparent dark:border dark:border-[#6b6c6d] dark:hover:bg-[#292b2c] rounded-lg hover:bg-gray-200 transition cursor-pointer",
           className,
         )}
       >
         {children}
-      </button>
+      </div>
     </Comp>
   );
 };

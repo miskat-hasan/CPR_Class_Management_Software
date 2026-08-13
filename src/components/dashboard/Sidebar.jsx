@@ -1,3 +1,4 @@
+// src/components/dashboard/Sidebar.jsx
 "use client";
 
 import { useParams, usePathname, useRouter } from "next/navigation";
@@ -17,8 +18,14 @@ export default function Sidebar() {
   const router = useRouter();
   const { ts } = useParams();
 
-  const { user, loading, activeRole, accessibleSites, allSitesLoading } =
-    useAuth();
+  const {
+    user,
+    loading,
+    activeRole,
+    accessibleSites,
+    allSitesLoading,
+    setActiveRole,
+  } = useAuth();
 
   const { mutateAsync: logout, isPending: logoutPending } = useLogout();
 
@@ -31,28 +38,39 @@ export default function Sidebar() {
   useEffect(() => {
     if (!menuItems.length) return;
     for (const item of menuItems) {
-      if (item.submenu?.some((sub) => pathname.startsWith(sub.href))) {
+      if (item.submenu?.some(sub => pathname.startsWith(sub.href))) {
         setOpenMenu(item.label);
         return;
       }
     }
   }, [pathname, menuItems?.length]);
 
-  const handleSiteChange = (val) => {
+  const handleSiteChange = val => {
     const isSuperAdminOnMaster = role === "Super Admin" && String(val) === "1";
     const segment = roleSegment[role];
     const page = isSuperAdminOnMaster
       ? "class-and-students/upcoming-classes"
       : "class-and-students/classes";
 
+    // Find the full site record so activeRole picks up that site's own
+    // is_authorize_connected / needs_payment_setup / training_site_name too —
+    // not just the id, which would leave those fields stale from the old site.
+    const matchedSite = accessibleSites.find(
+      sr => String(sr.training_site_id ?? sr.id) === String(val),
+    );
+
+    if (matchedSite) {
+      setActiveRole({ ...activeRole, ...matchedSite });
+    }
+
     router.push(`/dashboard/${segment}/${val}/${page}`);
   };
 
   if (loading || !user) return <SidebarSkeleton />;
 
-  const siteOptions = accessibleSites.map((sr) => ({
-    id: sr.id,
-    name: sr.training_center_name,
+  const siteOptions = accessibleSites.map(sr => ({
+    id: sr.training_site_id ?? sr.id,
+    name: sr.training_center_name ?? sr.training_site_name,
   }));
 
   return (
@@ -63,7 +81,7 @@ export default function Sidebar() {
       </div>
 
       <div className="flex flex-col gap-2">
-        {!["Client", "Student"].includes(role) && (
+        {["Super Admin"].includes(role) && (
           <CustomSelect
             value={ts}
             options={siteOptions}
@@ -80,16 +98,18 @@ export default function Sidebar() {
 
         <nav>
           <ul className="flex flex-col">
-            {menuItems.map((item) => {
+            {menuItems?.map(item => {
               const isOpen = openMenu === item.label;
               return (
                 <li key={item.label} className="text-sm font-semibold">
                   <button
                     onClick={() =>
-                      setOpenMenu((p) => (p === item.label ? null : item.label))
+                      setOpenMenu(p => (p === item.label ? null : item.label))
                     }
                     className={`w-full flex items-center justify-between cursor-pointer px-5 py-3 rounded-[10px] transition-colors ${
-                      isOpen ? "bg-brown dark:bg-dark-brown text-white" : "text-dark dark:text-gray hover:bg-gray-100 dark:hover:bg-dark"
+                      isOpen
+                        ? "bg-brown dark:bg-dark-brown text-white"
+                        : "text-dark dark:text-gray hover:bg-gray-100 dark:hover:bg-dark"
                     }`}
                   >
                     <span>{item.label}</span>
@@ -102,10 +122,10 @@ export default function Sidebar() {
                     className={`overflow-hidden transition-all ${isOpen ? "max-h-screen" : "max-h-0"}`}
                   >
                     <ul className="bg-gray-50 dark:bg-[#1B1D1E] rounded-[10px] pt-1">
-                      {item.submenu.map((sub) => {
+                      {item?.submenu?.map(sub => {
                         const active = pathname === sub.href;
                         return (
-                          <li key={sub.label}>
+                          <li key={sub?.label}>
                             <Link
                               href={sub.href}
                               prefetch={true}
@@ -132,6 +152,8 @@ export default function Sidebar() {
             <button
               onClick={() => logout()}
               disabled={logoutPending}
+              type="button"
+              key="logout"
               className="text-sm font-semibold mt-10 px-5 py-2.5 bg-brown dark:bg-dark-brown rounded-[10px] text-white cursor-pointer mb-4 hover:bg-black dark:hover:bg-brown transition duration-300 disabled:bg-gray-400 disabled:cursor-not-allowed"
             >
               {logoutPending ? "Logging out..." : "Log Out"}

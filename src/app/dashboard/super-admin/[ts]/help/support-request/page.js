@@ -1,4 +1,4 @@
-import SupportRequest from "@/components/dashboard/support-request/page";
+import SupportRequest from "@/components/dashboard/support-request/SupportRequest";
 import React from "react";
 
 const Page = () => {

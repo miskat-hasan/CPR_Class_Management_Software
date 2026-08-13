@@ -28,7 +28,7 @@ const Page = ({ params }) => {
     fax: d.fax_number ?? "",
     stateProvince: d.state_province ?? "",
     zipPostalCode: d.postal_code ?? "",
-    country: d.country_id ?? "",
+    country: d.country ?? "",
     mobilePhone: d.phone_number ?? "",
     emailAddress: d.email ?? "",
     trainingsiteid: d.training_site_id ?? "",
