@@ -136,10 +136,12 @@ export const getAllLocation = ({ type, page = 1, perPage = 10 } = {}) => {
 // ==================== CLIENT ====================
 
 export const storeClient = () => {
+  const { selectedTrainingSiteId } = useAuth();
   return useClientApi({
     method: "post",
     isPrivate: true,
     endpoint: "/api/clients/store",
+    headers: { "X-Site-Id": selectedTrainingSiteId },
   });
 };
 
@@ -166,7 +168,7 @@ export const getAllClient = ({ type, page = 1, perPage = 10 } = {}) => {
 
   const endpoint =
     type === "all"
-      ? "/api/site-users?type=all&role_id=6"
+      ? "/api/site-users?type=all&role_id[]=6"
       : `/api/clients?page=${page}&per_page=${perPage}`;
   return useClientApi({
     method: "get",
@@ -222,7 +224,7 @@ export const getAllInstructor = ({
   let endpoint;
 
   if (type === "all") {
-    endpoint = "/api/site-users?type=all&role_id=3";
+    endpoint = "/api/site-users?type=all&role_id[]=3";
   } else if (search) {
     endpoint = `/api/instructors?page=${page}&per_page=${perPage}&search=${search}`;
   } else {
@@ -239,26 +241,13 @@ export const getAllInstructor = ({
 };
 
 // ==================== USERS ====================
-
-// export const useGetAllUsers = (page = 1, perPage = 10) => {
-//   const { selectedTrainingSiteId } = useAuth();
-//   return useClientApi({
-//     method: "get",
-//     isPrivate: true,
-//     key: ["get-all-users", page, perPage],
-//     endpoint: `/api/site-users?page=${page}&per_page=${perPage}`,
-//     headers: { "X-Site-Id": selectedTrainingSiteId },
-//   });
-// };
-
-// GET /site-users?type=all&role_id[]=2&role_id[]=3&role_id[]=4
-// Admin (2), Instructor (3), Assistant (4) — eligible site coordinators
-export const useGetAllUsers = (
-  type = "all",
+export const useGetAllUsers = ({
+  type,
   page = 1,
   perPage = 10,
   roleIds,
-) => {
+  search,
+} = {}) => {
   const { selectedTrainingSiteId } = useAuth();
 
   const params = new URLSearchParams();
@@ -267,6 +256,10 @@ export const useGetAllUsers = (
   if (type !== "all") {
     params.set("page", page);
     params.set("per_page", perPage);
+  }
+
+  if (search) {
+    params.set("search", search);
   }
 
   roleIds?.forEach(id => params.append("role_id[]", id));
@@ -279,13 +272,13 @@ export const useGetAllUsers = (
       type,
       type !== "all" ? page : null,
       type !== "all" ? perPage : null,
+      search ?? null,
       ...(roleIds ?? []),
     ],
     endpoint: `/api/site-users?${params.toString()}`,
     headers: { "X-Site-Id": selectedTrainingSiteId },
   });
 };
-
 export const storeSiteCoordinator = () => {
   return useClientApi({
     method: "post",
@@ -377,24 +370,6 @@ export const getAllRole = () => {
   });
 };
 
-// Get users by role — generic
-export const getUsersByRole = (
-  roleId,
-  { type, page = 1, perPage = 10 } = {},
-) => {
-  const endpoint =
-    type === "all"
-      ? `/api/site-users?type=all&role_id=${roleId}`
-      : `/api/site-users?page=${page}&per_page=${perPage}&role_id=${roleId}`;
-  return useClientApi({
-    method: "get",
-    key: ["get-users-by-role", roleId, type ?? page, perPage],
-    isPrivate: true,
-    endpoint,
-    enabled: !!roleId,
-  });
-};
-
 // ==================== CERTIFICATIONS / DOCUMENTS ====================
 
 export const storeCertification = () => {
@@ -480,7 +455,7 @@ export const getAllProductAddOns = ({ type, page = 1, perPage = 10 } = {}) => {
     type === "all"
       ? "/api/addon_list/index?type=all"
       : `/api/addon_list/index?page=${page}&per_page=${perPage}`;
-  
+
   return useClientApi({
     method: "get",
     isPrivate: true,
@@ -1707,12 +1682,10 @@ export const useCheckPaymentStatus = (userId, siteId) => {
   });
 };
 
-export const useCreatePaymentOnboarding = () => {
+export const useSavePaymentCredentials = () => {
   return useClientApi({
     method: "post",
     isPrivate: true,
-    endpoint: "/api/payment-onboarding/create-url",
-    onError: error =>
-      toast.error(error?.response?.data?.message || "Failed to initiate payment onboarding."),
+    endpoint: "/api/payment-onboarding/save-credentials",
   });
-};
+};  

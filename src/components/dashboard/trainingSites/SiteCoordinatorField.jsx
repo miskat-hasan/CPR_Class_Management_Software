@@ -24,12 +24,11 @@ const SiteCoordinatorField = ({
     if (value) setPanelOpen(true);
   }, [value]);
 
-  const { data: candidates, isLoading } = useGetAllUsers(
-    "all",
-    1,
-    10,
-    [2, 3, 4, 7],
-  );
+  const { data: candidates, isLoading } = useGetAllUsers({
+    type: "all",
+    roleIds: [2, 3, 4, 7],
+  });
+
   const options = (candidates?.data ?? []).map(u => ({
     id: u.id,
     name: `${u.name} (${u.email})`,

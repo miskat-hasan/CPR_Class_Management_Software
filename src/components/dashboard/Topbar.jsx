@@ -47,18 +47,7 @@ const DashboardTopbar = () => {
         </Link>
 
         {/* User Info */}
-        <Link
-          href={
-            user?.roles?.find(item => item?.role_name === "Super Admin")
-              ? `/dashboard/super-admin/${trainingSiteId}/manage-profile`
-              : user?.roles?.find(item => item?.role_name === "Admin")
-                ? `/dashboard/admin/${trainingSiteId}/manage-profile`
-                : user?.roles?.find(item => item?.role_name === "Instructor")
-                  ? `/dashboard/instructor/${trainingSiteId}/manage-profile`
-                  : `/dashboard/student/settings/profile`
-          }
-          className="h-auto lg:h-[60px] bg-white dark:bg-black rounded-[14px] flex items-center p-1 w-auto gap-[11px]"
-        >
+        <div className="h-auto lg:h-[60px] bg-white dark:bg-black rounded-[14px] flex items-center p-1 w-auto gap-[11px]">
           {/* Avatar */}
           <div className="w-[30px] h-[30px] lg:w-[50px] lg:h-[50px] overflow-hidden rounded-[11px]">
             {loadingUserData ? (
@@ -98,7 +87,7 @@ const DashboardTopbar = () => {
               )
             )}
           </div>
-        </Link>
+        </div>
       </div>
 
       {/* Mobile Sidebar */}

@@ -25,9 +25,6 @@ const SectionBox = ({ children, cols = 2 }) => (
   </div>
 );
 
-const inputCls =
-  "w-full border border-gray-300 dark:border-zinc-600 dark:bg-zinc-900 dark:text-white rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-400 resize-none";
-
 const StepStudentInfo = ({
   form,
   classDetails,
@@ -168,6 +165,56 @@ const StepStudentInfo = ({
           label="Alternate Phone"
           placeholder="Alternate phone (optional)"
         />
+      </SectionBox>
+
+      {/* Account / Login Credentials */}
+      <SectionTitle>Create Your Account</SectionTitle>
+      <SectionBox>
+        <FormInput
+          name="username"
+          label="Username"
+          placeholder="Choose a username"
+          rules={{ required: "Username is required" }}
+        />
+        <FormInput
+          name="password"
+          label="Password"
+          type="password"
+          placeholder="Choose a password"
+          rules={{
+            required: "Password is required",
+            minLength: { value: 8, message: "Minimum 8 characters" },
+          }}
+        />
+        <div className="md:col-span-2 flex items-start gap-2 text-xs text-gray-500 dark:text-zinc-400 bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-700 rounded-md px-3 py-2.5">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="w-4 h-4 flex-shrink-0 mt-0.5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"
+            />
+          </svg>
+          <span>
+            Once you&apos;ve successfully enrolled in this class, you can use
+            this username and password to log in to your student dashboard at{" "}
+            <a
+              href="https://nathanielshell-six.vercel.app"
+              target="_blank"
+              rel="noreferrer"
+              className="font-medium underline text-gray-700 dark:text-zinc-200"
+            >
+              nathanielshell-six.vercel.app
+            </a>{" "}
+            to view your classes, certifications, and documents.
+          </span>
+        </div>
       </SectionBox>
 
       {/* Mailing Address */}

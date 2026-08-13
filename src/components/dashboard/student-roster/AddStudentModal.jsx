@@ -1,3 +1,6 @@
+// src/components/dashboard/class-and-students/AddStudentModal.jsx
+"use client";
+
 import { Controller, useForm } from "react-hook-form";
 import FormContainer from "../../shared/form/FormContainer";
 import FormInput from "../../shared/form/FormInput";
@@ -8,36 +11,15 @@ import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 
 const status = [
-  {
-    id: "Pending",
-    name: "Pending",
-  },
-  {
-    id: "Complete",
-    name: "Completed",
-  },
-  {
-    id: "Incomplete",
-    name: "Incomplete",
-  },
-  {
-    id: "Remediate",
-    name: "Remediate",
-  },
-  {
-    id: "No Show",
-    name: "No Show",
-  },
-  {
-    id: "Waitlisted",
-    name: "Waitlisted",
-  },
+  { id: "Pending", name: "Pending" },
+  { id: "Complete", name: "Completed" },
+  { id: "Incomplete", name: "Incomplete" },
+  { id: "Remediate", name: "Remediate" },
+  { id: "No Show", name: "No Show" },
+  { id: "Waitlisted", name: "Waitlisted" },
 ];
-const AddStudentModal = ({ classId, open, onClose }) => {
-  if (!open) {
-    return null;
-  }
 
+const AddStudentModal = ({ classId, open, onClose }) => {
   const queryClient = useQueryClient();
 
   const form = useForm();
@@ -51,6 +33,10 @@ const AddStudentModal = ({ classId, open, onClose }) => {
 
   const { mutate, isPending } = useStoreStudentData();
 
+  if (!open) {
+    return null;
+  }
+
   const onSubmit = data => {
     mutate(
       { class_details_id: classId, course_id: classId, ...data },
@@ -59,6 +45,9 @@ const AddStudentModal = ({ classId, open, onClose }) => {
           queryClient.invalidateQueries(["get-student-by-class", classId]);
           toast.success(data?.message || "Student added successfully");
           onClose();
+        },
+        onError: err => {
+          toast.error(err?.response?.data?.message || "Something went wrong!");
         },
       },
     );
@@ -98,6 +87,20 @@ const AddStudentModal = ({ classId, open, onClose }) => {
               name="primary_phone"
               placeholder="Mobile Phone"
               rules={{ required: "Mobile Phone is required" }}
+            />
+            <FormInput
+              name="username"
+              placeholder="Username"
+              rules={{ required: "Username is required" }}
+            />
+            <FormInput
+              name="password"
+              placeholder="Password"
+              type="password"
+              rules={{
+                required: "Password is required",
+                minLength: { value: 8, message: "Minimum 8 characters" },
+              }}
             />
             <FormInput name="address_1" placeholder="Address 1" />
             <FormInput name="address_2" placeholder="Address 2" />

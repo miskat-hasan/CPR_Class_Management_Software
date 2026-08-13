@@ -32,7 +32,6 @@ const DEFAULT_VALUES = {
   country: "",
 };
 
-// onCreated receives { id, name, email } for the newly created coordinator
 const SiteCoordinatorModal = ({ onCreated }) => {
   const [open, setOpen] = useState(false);
 
@@ -88,7 +87,10 @@ const SiteCoordinatorModal = ({ onCreated }) => {
         </button>
       </DialogTrigger>
 
-      <DialogContent className="sm:max-w-[700px] bg-white dark:bg-black dark:border-gray-700">
+      <DialogContent
+        className="sm:max-w-[550px] bg-white dark:bg-black dark:border-gray-700"
+        onSubmit={e => e.stopPropagation()}
+      >
         <DialogHeader>
           <DialogTitle className="text-black dark:text-gray">
             New Site Coordinator
@@ -97,18 +99,6 @@ const SiteCoordinatorModal = ({ onCreated }) => {
 
         <FormContainer form={form} onSubmit={onSubmit}>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <FormInput
-              name="first_name"
-              label="First Name"
-              placeholder="First name"
-              rules={{ required: "First name is required" }}
-            />
-            <FormInput
-              name="last_name"
-              label="Last Name"
-              placeholder="Last name"
-              rules={{ required: "Last name is required" }}
-            />
             <FormInput
               name="username"
               label="Username"
@@ -127,7 +117,28 @@ const SiteCoordinatorModal = ({ onCreated }) => {
                 },
               }}
             />
-
+            <FormInput
+              name="password"
+              label="Password"
+              placeholder="Password"
+              type="password"
+              rules={{
+                required: "Password is required",
+                minLength: { value: 8, message: "Minimum 8 characters" },
+              }}
+            />
+            <FormInput
+              name="first_name"
+              label="First Name"
+              placeholder="First name"
+              rules={{ required: "First name is required" }}
+            />
+            <FormInput
+              name="last_name"
+              label="Last Name"
+              placeholder="Last name"
+              rules={{ required: "Last name is required" }}
+            />
             <FormInput
               name="address_line_1"
               label="Address 1"
@@ -163,16 +174,6 @@ const SiteCoordinatorModal = ({ onCreated }) => {
                   error={errors.country?.message}
                 />
               )}
-            />
-            <FormInput
-              name="password"
-              label="Password"
-              placeholder="Password"
-              type="password"
-              rules={{
-                required: "Password is required",
-                minLength: { value: 8, message: "Minimum 8 characters" },
-              }}
             />
           </div>
 

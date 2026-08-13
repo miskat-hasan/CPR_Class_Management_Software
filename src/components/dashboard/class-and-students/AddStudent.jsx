@@ -1,3 +1,4 @@
+// src/components/dashboard/class-and-students/AddStudent.jsx
 "use client";
 
 import BackButton from "@/components/common/BackButton";
@@ -28,6 +29,8 @@ const AddStudentPage = () => {
       country_id: "",
       mailing_country: "",
       delivery_method: "",
+      username: "",
+      password: "",
     },
   });
 
@@ -69,6 +72,9 @@ const AddStudentPage = () => {
         toast.success(response?.message || "Student stored successfully");
         form.reset();
         router.back();
+      },
+      onError: err => {
+        toast.error(err?.response?.data?.message || "Something went wrong!");
       },
     });
   };
@@ -122,6 +128,22 @@ const AddStudentPage = () => {
                 className={"flex-1"}
               />
             )}
+          />
+          <FormInput
+            name="username"
+            label="Username"
+            placeholder="Username"
+            rules={{ required: "Username is required" }}
+          />
+          <FormInput
+            name="password"
+            label="Password"
+            placeholder="Password"
+            type="password"
+            rules={{
+              required: "Password is required",
+              minLength: { value: 8, message: "Minimum 8 characters" },
+            }}
           />
           <div className="flex items-center gap-2 h-full select-none">
             <input
