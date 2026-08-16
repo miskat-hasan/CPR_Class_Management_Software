@@ -1,6 +1,7 @@
 "use client";
 
 import TableSkeleton from "@/components/skeleton/TableSkeleton";
+import useSiteAwarePagination from "@/hooks/useSiteAwarePagination";
 import { Button } from "@/components/ui/button";
 import {
   deleteSingleCertificationFile,
@@ -25,7 +26,7 @@ import {
 import Link from "next/link";
 
 const CertificatesPage = () => {
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useSiteAwarePagination();
   const [perPage, setPerPage] = useState(10);
   const [selectedFileId, setSelectedFileId] = useState(null);
 

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import useSiteAwarePagination from "@/hooks/useSiteAwarePagination";
 import {
   Table,
   TableHead,
@@ -27,7 +28,7 @@ export default function KeycodeLinksTable({
   onRefetch,
 }) {
   const [search, setSearch] = useState("");
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useSiteAwarePagination();
   const [deleteLinkTarget, setDeleteLinkTarget] = useState(null);
 
   const { mutate: deleteLinkMutate, isPending: isDeletingLink } =

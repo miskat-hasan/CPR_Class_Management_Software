@@ -2,6 +2,7 @@
 "use client";
 
 import { useState } from "react";
+import useSiteAwarePagination from "@/hooks/useSiteAwarePagination";
 import { useForm, Controller, useFieldArray } from "react-hook-form";
 import FormContainer from "@/components/shared/form/FormContainer";
 import FormInput from "@/components/shared/form/FormInput";
@@ -315,7 +316,7 @@ const TypeBadge = ({ type }) => {
 // ─── Main Component ───────────────────────────────────────────────────────────
 
 const CustomRegistrationQuestions = () => {
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useSiteAwarePagination();
   const [perPage, setPerPage] = useState(10);
   const [showModal, setShowModal] = useState(false);
   const [editId, setEditId] = useState(null);

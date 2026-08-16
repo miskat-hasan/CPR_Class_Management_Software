@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import useSiteAwarePagination from "@/hooks/useSiteAwarePagination";
 import SectionTitle from "@/components/common/SectionTitle";
 import SubSectionTitle from "@/components/common/SubSectionTitle";
 import ClassFilters from "@/components/dashboard/class-and-students/ClassFilters";
@@ -8,7 +9,7 @@ import ClassTable from "@/components/dashboard/class-and-students/ClassTable";
 import { getAllUpcomingClasses, searchClasses } from "@/hooks/api/dashboardApi";
 
 export default function UpcomingClassesPage() {
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useSiteAwarePagination();
   const [perPage, setPerPage] = useState(10);
   const [filters, setFilters] = useState(null);
 

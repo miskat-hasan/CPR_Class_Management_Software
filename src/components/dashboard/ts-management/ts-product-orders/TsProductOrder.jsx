@@ -1,6 +1,7 @@
 "use client";
 
 import SectionTitle from "@/components/common/SectionTitle";
+import useSiteAwarePagination from "@/hooks/useSiteAwarePagination";
 import React, { useState } from "react";
 import { CiEdit } from "react-icons/ci";
 import { useGetTCProductOrder } from "@/hooks/api/dashboardApi";
@@ -14,7 +15,7 @@ import {
 } from "@/components/common/TableElement";
 
 const TsProductOrder = () => {
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useSiteAwarePagination();
   const [perPage, setPerPage] = useState(10);
 
   const { data: tcProductOrderData, isLoading: tcProductOrderLoading } =

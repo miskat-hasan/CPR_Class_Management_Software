@@ -62,6 +62,15 @@ export const TableButton = ({
   );
 };
 
+// Resolves the page number from a pagination link. Laravel-style links only
+// provide `url` (e.g. "?page=3"), while some callers build links with an
+// explicit `page` field — support both.
+export const getPageFromLink = link => {
+  if (link?.page != null) return link.page;
+  const match = String(link?.url ?? "").match(/[?&]page=(\d+)/);
+  return match ? Number(match[1]) : null;
+};
+
 export const TableFooter = ({ Links, setPage, perPage, setPerPage }) => {
   return (
     <div className="flex flex-col md:flex-row items-center justify-end mt-3 lg:mt-6 gap-3">
@@ -83,23 +92,27 @@ export const TableFooter = ({ Links, setPage, perPage, setPerPage }) => {
           </div> */}
       {/* Pagination */}
       <div className="flex items-center gap-2">
-        {Links?.map((link, index) => (
-          <button
-            key={index}
-            disabled={link.url === null || link.page === null}
-            onClick={() => link.page && setPage(link.page)}
-            className={`px-3 py-1 text-sm border rounded-md dark:text-gray ${
-              link.active
-                ? "border-blue-500 dark:border-gray text-blue-600 bg-blue-50 dark:bg-transparent"
-                : "hover:bg-gray-100 dark:hover:bg-[#292b2c] dark:border-[#343536]"
-            } ${
-              link.url === null || link.page === null
-                ? "text-gray-400 cursor-not-allowed"
-                : "cursor-pointer"
-            }`}
-            dangerouslySetInnerHTML={{ __html: link.label }}
-          />
-        ))}
+        {Links?.map((link, index) => {
+          const page = getPageFromLink(link);
+          const isDisabled = link.url === null || page === null;
+          return (
+            <button
+              key={index}
+              disabled={isDisabled}
+              onClick={() => page && setPage(page)}
+              className={`px-3 py-1 text-sm border rounded-md dark:text-gray ${
+                link.active
+                  ? "border-blue-500 dark:border-gray text-blue-600 bg-blue-50 dark:bg-transparent"
+                  : "hover:bg-gray-100 dark:hover:bg-[#292b2c] dark:border-[#343536]"
+              } ${
+                isDisabled
+                  ? "text-gray-400 cursor-not-allowed"
+                  : "cursor-pointer"
+              }`}
+              dangerouslySetInnerHTML={{ __html: link.label }}
+            />
+          );
+        })}
       </div>
     </div>
   );

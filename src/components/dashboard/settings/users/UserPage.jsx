@@ -2,6 +2,7 @@
 "use client";
 
 import SectionTitle from "@/components/common/SectionTitle";
+import useSiteAwarePagination from "@/hooks/useSiteAwarePagination";
 import SubSectionTitle from "@/components/common/SubSectionTitle";
 import TableSkeleton from "@/components/skeleton/TableSkeleton";
 import {
@@ -30,7 +31,7 @@ const UserPage = () => {
 
   const { reset } = form;
 
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useSiteAwarePagination();
   const [perPage] = useState(10);
   const [enableSearch, setEnableSearch] = useState(false);
   const [searchValue, setSearchValue] = useState("");

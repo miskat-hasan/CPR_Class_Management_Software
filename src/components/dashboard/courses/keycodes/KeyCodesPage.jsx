@@ -1,5 +1,6 @@
 "use client";
 import SectionTitle from "@/components/common/SectionTitle";
+import useSiteAwarePagination from "@/hooks/useSiteAwarePagination";
 import { Button } from "@/components/ui/button";
 import { PlusIcon } from "@/components/svg/SvgContainer";
 import React, { useState } from "react";
@@ -17,7 +18,7 @@ import {
 } from "@/components/common/TableElement";
 
 const KeyCodesPage = () => {
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useSiteAwarePagination();
   const [perPage, setPerPage] = useState(10);
   const router = useRouter();
 
