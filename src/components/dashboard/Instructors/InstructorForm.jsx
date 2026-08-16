@@ -1,4 +1,4 @@
-// src/components/dashboard/Instructors/InstructorForm.jsx
+// src/components/dashboard/instructors/InstructorForm.jsx
 "use client";
 
 import BackButton from "@/components/common/BackButton";

@@ -88,9 +88,6 @@ export const useLogin = ({ setNavigating } = {}) => {
         return;
       }
 
-      // Any ambiguity at all — multiple roles, OR one role across multiple
-      // sites — needs an explicit choice. Only a single (role, site) pair
-      // is unambiguous enough to skip straight to the dashboard.
       const needsSelection = site_roles.length > 1;
 
       if (needsSelection) {
@@ -109,10 +106,7 @@ export const useLogin = ({ setNavigating } = {}) => {
 
         setActiveRole(activeRole);
 
-        const path = isNoSite
-          ? `/dashboard/${segment}/${page}`
-          : `/dashboard/${segment}/${firstTs}/${page}`;
-
+        const path = `/dashboard/${segment}/${page}`;
         router.push(path);
       }
 

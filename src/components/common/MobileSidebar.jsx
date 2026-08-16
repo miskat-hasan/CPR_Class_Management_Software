@@ -15,7 +15,6 @@ import { roleSegment } from "@/config";
 const MobileSidebar = ({ onClose, isSidebarOpen }) => {
   const pathname = usePathname();
   const router = useRouter();
-  const { ts } = useParams();
 
   const [openMenu, setOpenMenu] = useState(null);
 
@@ -24,13 +23,14 @@ const MobileSidebar = ({ onClose, isSidebarOpen }) => {
     activeRole,
     accessibleSites,
     allSitesLoading,
+    selectedTrainingSiteId,
     setSelectedTrainingSiteId,
   } = useAuth();
 
   const { mutateAsync: logoutAsync, isPending: logoutPending } = useLogout();
 
   const role = activeRole?.role_name;
-  const menuItems = getSidebarMenu({ role, ts });
+  const menuItems = getSidebarMenu({ role, ts: selectedTrainingSiteId });
 
   // Format accessibleSites for CustomSelect
   const siteOptions = (accessibleSites ?? []).map(sr => ({
@@ -40,25 +40,17 @@ const MobileSidebar = ({ onClose, isSidebarOpen }) => {
 
   // Auto-open active menu on pathname change
   useEffect(() => {
-    if (!menuItems.length) return;
+    if (!menuItems?.length) return;
     for (const item of menuItems) {
       if (item.submenu?.some(sub => pathname.startsWith(sub.href))) {
         setOpenMenu(item.label);
         return;
       }
     }
-  }, [pathname, menuItems.length]);
+  }, [pathname, menuItems?.length]);
 
   const handleSiteChange = val => {
     setSelectedTrainingSiteId(val);
-
-    const segment = roleSegment[role];
-    const isSuperAdminOnMaster = role === "Super Admin" && String(val) === "1";
-    const page = isSuperAdminOnMaster
-      ? "class-and-students/upcoming_classes"
-      : "class-and-students/classes";
-
-    router.push(`/dashboard/${segment}/${val}/${page}`);
   };
 
   const handleLogout = async () => {
@@ -104,7 +96,7 @@ const MobileSidebar = ({ onClose, isSidebarOpen }) => {
           {!isNoSiteRole && (
             <CustomSelect
               id="mobile-training-site"
-              value={ts}
+              value={selectedTrainingSiteId}
               options={siteOptions}
               isLoading={allSitesLoading}
               onChange={handleSiteChange}

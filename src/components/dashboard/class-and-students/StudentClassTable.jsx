@@ -19,8 +19,6 @@ export default function StudentClassTable({
   setPage,
   basePath,
 }) {
-  const { ts } = useParams();
-
   return (
     <>
       {isLoading ? (

@@ -16,7 +16,7 @@ import {
 } from "@/hooks/api/dashboardApi";
 import useAuth from "@/hooks/useAuth";
 import { LucideTrash2 } from "lucide-react";
-import { useParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import React, { useMemo } from "react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { FaPlus } from "react-icons/fa";
@@ -30,17 +30,18 @@ const ASSIGNABLE_ROLES = {
     "Student",
     "Client",
   ],
-  Admin: ["Instructor", "Instructor Assistant", "Student", "Client"],
-  Instructor: ["Instructor Assistant", "Student", "Client"],
-  "Instructor Assistant": ["Student", "Client"],
+  "Site Coordinator": ["admin", "Instructor", "Instructor Assistant"],
+  Admin: ["admin", "Instructor", "Instructor Assistant"],
+  Instructor: [],
+  "Instructor Assistant": [],
   Student: [],
   Client: [],
 };
 
 const AddUser = () => {
   const router = useRouter();
-  const { ts } = useParams();
-  const isPrimarySite = String(ts) === "1";
+  const { selectedTrainingSiteId } = useAuth();
+  const isPrimarySite = selectedTrainingSiteId == 1;
   const { activeRole } = useAuth();
   const authRoleName = activeRole?.role_name;
 
@@ -394,7 +395,7 @@ const AddUser = () => {
                     )}
                   />
                   <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                    These roles will be assigned to training site #{ts}
+                    These roles will be assigned to this training site
                   </p>
                 </div>
               )}
