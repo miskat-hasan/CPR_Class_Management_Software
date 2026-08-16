@@ -1,4 +1,4 @@
-// src/app/dashboard/super-admin/[ts]/courses/course-type/page.js
+// src/components/dashboard/courses/course-type/CourseTypePage.jsx
 "use client";
 
 import TableSkeleton from "@/components/skeleton/TableSkeleton";
@@ -9,6 +9,7 @@ import Link from "next/link";
 import React, { useState } from "react";
 import { CiEdit } from "react-icons/ci";
 import SectionTitle from "@/components/common/SectionTitle";
+import useSiteAwarePagination from "@/hooks/useSiteAwarePagination";
 import {
   Table,
   TableBodyRow,
@@ -18,11 +19,11 @@ import {
 } from "@/components/common/TableElement";
 
 const CourseTypePage = () => {
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useSiteAwarePagination();
   const [perPage, setPerPage] = useState(10);
 
   const { data: coursesTypeData, isLoading: coursesTypeLoading } =
-    getAllCourses(page, perPage);
+    getAllCourses({ page, perPage });
 
   return (
     <section className="flex flex-col gap-[12.5px] lg:gap-[25px] ">
@@ -111,7 +112,7 @@ const CourseTypePage = () => {
           {/* Footer controls */}
           <TableFooter
             Links={coursesTypeData?.data?.links}
-            perPage={coursesTypeData?.data?.per_page}
+            perPage={perPage}
             setPage={setPage}
             setPerPage={setPerPage}
           />

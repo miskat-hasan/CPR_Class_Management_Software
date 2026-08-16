@@ -33,15 +33,19 @@ export const createSingleTrainingSite = () => {
   });
 };
 
-export const getallTrainingsite = ({ page = 1, perPage = 10, type }) => {
-  const endpoint =
-    type === "all"
-      ? "/api/training-sites?type=all"
-      : `/api/training-sites?page=${page}&per_page=${perPage}`;
+export const getallTrainingsite = ({ page = 1, perPage = 10, type } = {}) => {
+  const isAll = type === "all";
+  const endpoint = isAll
+    ? "/api/training-sites?type=all"
+    : `/api/training-sites?page=${page}&per_page=${perPage}`;
+
+  const key = isAll
+    ? ["get-all-training-site", "all"]
+    : ["get-all-training-site", "paginated", page, perPage];
 
   return useClientApi({
     method: "get",
-    key: ["get-all-training-site", type ?? "paginated", page, perPage],
+    key,
     isPrivate: true,
     endpoint,
   });
@@ -106,33 +110,37 @@ export const updateLocation = id => {
 };
 
 export const getSingleLocation = id => {
+  const { selectedTrainingSiteId } = useAuth();
   return useClientApi({
     method: "get",
     isPrivate: true,
-    key: ["get-single-location", id],
+    key: ["get-single-location", id, selectedTrainingSiteId],
     enabled: !!id,
+    headers: { "X-Site-Id": selectedTrainingSiteId },
     endpoint: `/api/locations/${id}`,
   });
 };
 
-// type=all → for dropdowns, paginated → for tables
 export const getAllLocation = ({ type, page = 1, perPage = 10 } = {}) => {
   const { selectedTrainingSiteId } = useAuth();
+  const isAll = type === "all";
 
-  const endpoint =
-    type === "all"
-      ? "/api/locations?type=all"
-      : `/api/locations?page=${page}&per_page=${perPage}`;
+  const endpoint = isAll
+    ? "/api/locations?type=all"
+    : `/api/locations?page=${page}&per_page=${perPage}`;
+
+  const key = isAll
+    ? ["get-all-location", "all", selectedTrainingSiteId]
+    : ["get-all-location", "paginated", page, perPage, selectedTrainingSiteId];
 
   return useClientApi({
     method: "get",
-    key: ["get-all-location", type ?? page, perPage],
+    key,
     isPrivate: true,
     headers: { "X-Site-Id": selectedTrainingSiteId },
     endpoint,
   });
 };
-
 // ==================== CLIENT ====================
 
 export const storeClient = () => {
@@ -146,11 +154,13 @@ export const storeClient = () => {
 };
 
 export const getSingleClient = id => {
+  const { selectedTrainingSiteId } = useAuth();
   return useClientApi({
     method: "get",
-    key: ["get-single-client", id],
+    key: ["get-single-client", id, selectedTrainingSiteId],
     enabled: !!id,
     isPrivate: true,
+    headers: { "X-Site-Id": selectedTrainingSiteId },
     endpoint: `/api/clients/${id}`,
   });
 };
@@ -165,14 +175,19 @@ export const updateSingleClient = id => {
 
 export const getAllClient = ({ type, page = 1, perPage = 10 } = {}) => {
   const { selectedTrainingSiteId } = useAuth();
+  const isAll = type === "all";
 
-  const endpoint =
-    type === "all"
-      ? "/api/site-users?type=all&role_id[]=6"
-      : `/api/clients?page=${page}&per_page=${perPage}`;
+  const endpoint = isAll
+    ? "/api/site-users?type=all&role_id[]=6"
+    : `/api/clients?page=${page}&per_page=${perPage}`;
+
+  const key = isAll
+    ? ["get-all-clients", "all", selectedTrainingSiteId]
+    : ["get-all-clients", "paginated", page, perPage, selectedTrainingSiteId];
+
   return useClientApi({
     method: "get",
-    key: ["get-all-clients", type ?? page, perPage],
+    key,
     isPrivate: true,
     headers: { "X-Site-Id": selectedTrainingSiteId },
     endpoint,
@@ -204,15 +219,16 @@ export const updateInstructor = id => {
 };
 
 export const getSingleInstructor = id => {
+  const { selectedTrainingSiteId } = useAuth();
   return useClientApi({
     method: "get",
-    key: ["get-single-instructor", id],
+    key: ["get-single-instructor", id, selectedTrainingSiteId],
     isPrivate: true,
     enabled: !!id,
+    headers: { "X-Site-Id": selectedTrainingSiteId },
     endpoint: `/api/single-instructors?id=${id}`,
   });
 };
-
 export const getAllInstructor = ({
   type,
   page = 1,
@@ -220,10 +236,10 @@ export const getAllInstructor = ({
   search,
 } = {}) => {
   const { selectedTrainingSiteId } = useAuth();
+  const isAll = type === "all";
 
   let endpoint;
-
-  if (type === "all") {
+  if (isAll) {
     endpoint = "/api/site-users?type=all&role_id[]=3";
   } else if (search) {
     endpoint = `/api/instructors?page=${page}&per_page=${perPage}&search=${search}`;
@@ -231,9 +247,20 @@ export const getAllInstructor = ({
     endpoint = `/api/instructors?page=${page}&per_page=${perPage}`;
   }
 
+  const key = isAll
+    ? ["get-all-instructor", "all", selectedTrainingSiteId]
+    : [
+        "get-all-instructor",
+        "paginated",
+        page,
+        perPage,
+        search ?? null,
+        selectedTrainingSiteId,
+      ];
+
   return useClientApi({
     method: "get",
-    key: ["get-all-instructor", type ?? page, perPage, search],
+    key,
     isPrivate: true,
     headers: { "X-Site-Id": selectedTrainingSiteId },
     endpoint,
@@ -251,7 +278,9 @@ export const useGetAllUsers = ({
   const { selectedTrainingSiteId } = useAuth();
 
   const params = new URLSearchParams();
-  params.set("type", type);
+  if (type) {
+    params.set("type", type);
+  }
 
   if (type !== "all") {
     params.set("page", page);
@@ -269,9 +298,8 @@ export const useGetAllUsers = ({
     isPrivate: true,
     key: [
       "get-all-users",
-      type,
-      type !== "all" ? page : null,
-      type !== "all" ? perPage : null,
+      type ? type : page,
+      !type && perPage,
       search ?? null,
       ...(roleIds ?? []),
       selectedTrainingSiteId,
@@ -321,7 +349,7 @@ export const useGetSingleUser = id => {
   return useClientApi({
     method: "get",
     isPrivate: true,
-    key: ["get-single-user", id],
+    key: ["get-single-user", id, selectedTrainingSiteId],
     endpoint: `/api/site-users/${id}`,
     enabled: !!id,
     headers: { "X-Site-Id": selectedTrainingSiteId },
@@ -403,7 +431,7 @@ export const storeDocument = () => {
     endpoint: "/api/documents/store",
   });
 };
-export const getAllDocuments = (page = 1, perPage = 10) => {
+export const getAllDocuments = ({ page = 1, perPage = 10 } = {}) => {
   return useClientApi({
     method: "get",
     key: ["get-all-documents", page, perPage],
@@ -435,11 +463,13 @@ export const storeProductAddOns = () => {
   });
 };
 export const getSingleProductAddOns = id => {
+  const { selectedTrainingSiteId } = useAuth();
   return useClientApi({
     method: "get",
     isPrivate: true,
-    key: ["get-single-product-add-ons", id],
+    key: ["get-single-product-add-ons", id, selectedTrainingSiteId],
     enabled: !!id,
+    headers: { "X-Site-Id": selectedTrainingSiteId },
     endpoint: `/api/addon_list/show?id=${id}`,
   });
 };
@@ -452,15 +482,26 @@ export const updateProductAddOns = () => {
 };
 export const getAllProductAddOns = ({ type, page = 1, perPage = 10 } = {}) => {
   const { selectedTrainingSiteId } = useAuth();
-  const endpoint =
-    type === "all"
-      ? "/api/addon_list/index?type=all"
-      : `/api/addon_list/index?page=${page}&per_page=${perPage}`;
+  const isAll = type === "all";
+
+  const endpoint = isAll
+    ? "/api/addon_list/index?type=all"
+    : `/api/addon_list/index?page=${page}&per_page=${perPage}`;
+
+  const key = isAll
+    ? ["get-all-product-add-ons", "all", selectedTrainingSiteId]
+    : [
+        "get-all-product-add-ons",
+        "paginated",
+        page,
+        perPage,
+        selectedTrainingSiteId,
+      ];
 
   return useClientApi({
     method: "get",
     isPrivate: true,
-    key: ["get-all-product-add-ons", type ?? page, perPage],
+    key,
     headers: { "X-Site-Id": selectedTrainingSiteId },
     endpoint,
   });
@@ -491,7 +532,7 @@ export const updatePromoCode = () => {
     endpoint: "/api/promo-codes/update",
   });
 };
-export const getAllPromoCode = (page = 1, perPage = 10) => {
+export const getAllPromoCode = ({ page = 1, perPage = 10 } = {}) => {
   return useClientApi({
     method: "get",
     isPrivate: true,
@@ -512,11 +553,13 @@ export const addKeyCodeBank = () => {
   });
 };
 export const getSingleKeyCodeBank = id => {
+  const { selectedTrainingSiteId } = useAuth();
   return useClientApi({
     method: "get",
     isPrivate: true,
-    key: ["get-single-keycode-bank", id],
+    key: ["get-single-keycode-bank", id, selectedTrainingSiteId],
     enabled: !!id,
+    headers: { "X-Site-Id": selectedTrainingSiteId },
     endpoint: `/api/keycode/show?id=${id}`,
   });
 };
@@ -542,14 +585,28 @@ export const deleteSingleKeyCode = id => {
   });
 };
 export const getAllKeyCodeBank = ({ type, page = 1, perPage = 10 } = {}) => {
-  const endpoint =
-    type === "all"
-      ? "/api/keycode/index?type=all"
-      : `/api/keycode/index?page=${page}&per_page=${perPage}`;
+  const { selectedTrainingSiteId } = useAuth();
+  const isAll = type === "all";
+
+  const endpoint = isAll
+    ? "/api/keycode/index?type=all"
+    : `/api/keycode/index?page=${page}&per_page=${perPage}`;
+
+  const key = isAll
+    ? ["get-all-keycode-bank", "all", selectedTrainingSiteId]
+    : [
+        "get-all-keycode-bank",
+        "paginated",
+        page,
+        perPage,
+        selectedTrainingSiteId,
+      ];
+
   return useClientApi({
     method: "get",
     isPrivate: true,
-    key: ["get-all-keycode-bank", type ?? page, perPage],
+    key,
+    headers: { "X-Site-Id": selectedTrainingSiteId },
     endpoint,
   });
 };
@@ -591,17 +648,32 @@ export const updateCardSettings = () => {
 // ==================== EXTERNAL SKU ====================
 
 export const getAllExternalSKU = ({ type, page = 1, perPage = 10 } = {}) => {
-  const endpoint =
-    type === "all"
-      ? "/api/external_sku/index?type=all"
-      : `/api/external_sku/index?page=${page}&per_page=${perPage}`;
+  const { selectedTrainingSiteId } = useAuth();
+  const isAll = type === "all";
+
+  const endpoint = isAll
+    ? "/api/external_sku/index?type=all"
+    : `/api/external_sku/index?page=${page}&per_page=${perPage}`;
+
+  const key = isAll
+    ? ["get-all-external-sku", "all", selectedTrainingSiteId]
+    : [
+        "get-all-external-sku",
+        "paginated",
+        page,
+        perPage,
+        selectedTrainingSiteId,
+      ];
+
   return useClientApi({
     method: "get",
     isPrivate: true,
-    key: ["get-all-external-sku", type ?? page, perPage],
+    key,
+    headers: { "X-Site-Id": selectedTrainingSiteId },
     endpoint,
   });
 };
+
 export const storeExternalSKU = () => {
   return useClientApi({
     method: "post",
@@ -619,20 +691,31 @@ export const deleteSingleExternalSKU = () => {
 
 export const getAllCertifyingBody = ({ type, page = 1, perPage = 10 } = {}) => {
   const { selectedTrainingSiteId } = useAuth();
+  const isAll = type === "all";
 
-  const endpoint =
-    type === "all"
-      ? "/api/course_cb/index?type=all"
-      : `/api/course_cb/index?page=${page}&per_page=${perPage}`;
+  const endpoint = isAll
+    ? "/api/course_cb/index?type=all"
+    : `/api/course_cb/index?page=${page}&per_page=${perPage}`;
+
+  const key = isAll
+    ? ["get-all-certifying-body", "all", selectedTrainingSiteId]
+    : [
+        "get-all-certifying-body",
+        "paginated",
+        page,
+        perPage,
+        selectedTrainingSiteId,
+      ];
 
   return useClientApi({
     method: "get",
     isPrivate: true,
-    key: ["get-all-certifying-body", type ?? page, perPage],
-    headers: { "X-Site-Id": 1 },
+    key,
+    headers: { "X-Site-Id": selectedTrainingSiteId }, // was hardcoded to 1
     endpoint,
   });
 };
+
 export const storeCertifyingBody = () => {
   return useClientApi({
     method: "post",
@@ -651,17 +734,32 @@ export const deleteCertifyingBody = () => {
 // ==================== DISCIPLINE ====================
 
 export const getAllDiscipline = ({ type, page = 1, perPage = 10 } = {}) => {
-  const endpoint =
-    type === "all"
-      ? "/api/discipline/index?type=all"
-      : `/api/discipline/index?page=${page}&per_page=${perPage}`;
+  const { selectedTrainingSiteId } = useAuth();
+  const isAll = type === "all";
+
+  const endpoint = isAll
+    ? "/api/discipline/index?type=all"
+    : `/api/discipline/index?page=${page}&per_page=${perPage}`;
+
+  const key = isAll
+    ? ["get-all-discipline", "all", selectedTrainingSiteId]
+    : [
+        "get-all-discipline",
+        "paginated",
+        page,
+        perPage,
+        selectedTrainingSiteId,
+      ];
+
   return useClientApi({
     method: "get",
     isPrivate: true,
-    key: ["get-all-discipline", type ?? page, perPage],
+    key,
+    headers: { "X-Site-Id": selectedTrainingSiteId },
     endpoint,
   });
 };
+
 export const storeDiscipline = () => {
   return useClientApi({
     method: "post",
@@ -684,15 +782,16 @@ export const deleteDiscipline = () => {
   });
 };
 export const getSingleDiscipline = id => {
+  const { selectedTrainingSiteId } = useAuth();
   return useClientApi({
     method: "get",
     isPrivate: true,
-    key: ["get-single-discipline", id],
+    key: ["get-single-discipline", id, selectedTrainingSiteId],
     enabled: !!id,
+    headers: { "X-Site-Id": selectedTrainingSiteId },
     endpoint: `/api/discipline/show?id=${id}`,
   });
 };
-
 // ==================== COURSES ====================
 
 export const storeCourse = () => {
@@ -705,11 +804,13 @@ export const storeCourse = () => {
   });
 };
 export const getSingleCourse = id => {
+  const { selectedTrainingSiteId } = useAuth();
   return useClientApi({
     method: "get",
-    key: ["get-single-course", id],
+    key: ["get-single-course", id, selectedTrainingSiteId],
     isPrivate: true,
     enabled: !!id,
+    headers: { "X-Site-Id": selectedTrainingSiteId },
     endpoint: `/api/courses/show?id=${id}`,
   });
 };
@@ -724,18 +825,26 @@ export const updateCourse = id => {
 };
 export const getAllCourses = ({ type, page = 1, perPage = 10 } = {}) => {
   const { selectedTrainingSiteId } = useAuth();
-  const endpoint =
-    type === "all"
-      ? "/api/courses/index?type=all"
-      : `/api/courses/index?page=${page}&per_page=${perPage}`;
+
+  const isAll = type === "all";
+
+  const endpoint = isAll
+    ? "/api/courses/index?type=all"
+    : `/api/courses/index?page=${page}&per_page=${perPage}`;
+
+  const key = isAll
+    ? ["get-all-course", "all", selectedTrainingSiteId]
+    : ["get-all-course", "paginated", page, perPage, selectedTrainingSiteId];
+
   return useClientApi({
     method: "get",
-    key: ["get-all-course", type ?? page, perPage],
+    key,
     headers: { "X-Site-Id": selectedTrainingSiteId },
     isPrivate: true,
     endpoint,
   });
 };
+
 export const getCourseOptions = () => {
   return useClientApi({
     method: "get",
@@ -748,17 +857,32 @@ export const getCourseOptions = () => {
 // ==================== COURSE IMAGE ====================
 
 export const getAllCourseImages = ({ type, page = 1, perPage = 10 } = {}) => {
-  const endpoint =
-    type === "all"
-      ? "/api/course_image/index?type=all"
-      : `/api/course_image/index?page=${page}&per_page=${perPage}`;
+  const { selectedTrainingSiteId } = useAuth();
+  const isAll = type === "all";
+
+  const endpoint = isAll
+    ? "/api/course_image/index?type=all"
+    : `/api/course_image/index?page=${page}&per_page=${perPage}`;
+
+  const key = isAll
+    ? ["get-all-course-images", "all", selectedTrainingSiteId]
+    : [
+        "get-all-course-images",
+        "paginated",
+        page,
+        perPage,
+        selectedTrainingSiteId,
+      ];
+
   return useClientApi({
     method: "get",
     isPrivate: true,
-    key: ["get-all-course-images", type ?? page, perPage],
+    key,
+    headers: { "X-Site-Id": selectedTrainingSiteId },
     endpoint,
   });
 };
+
 export const storeCourseImage = () => {
   return useClientApi({
     method: "post",
@@ -799,11 +923,13 @@ export const storeClass = () => {
   });
 };
 export const getSingleClass = id => {
+  const { selectedTrainingSiteId } = useAuth();
   return useClientApi({
     method: "get",
     isPrivate: true,
-    key: ["get-single-class", id],
+    key: ["get-single-class", id, selectedTrainingSiteId],
     enabled: !!id,
+    headers: { "X-Site-Id": selectedTrainingSiteId },
     endpoint: `/api/class/show?id=${id}`,
   });
 };
@@ -882,6 +1008,7 @@ export const searchClasses = ({
     isPrivate: true,
     key: [
       "search-classes",
+      type,
       courseId,
       instructorId,
       locationId,
@@ -1299,14 +1426,15 @@ export const useUpdateTCProduct = id => {
       toast.error(err?.response?.data?.message || "Something went wrong!"),
   });
 };
-export const useGetTCProductOrder = (page = 1, perPage = 10) => {
+export const useGetTCProductOrder = ({ page = 1, perPage = 10 } = {}) => {
   return useClientApi({
     method: "get",
     isPrivate: true,
     key: ["get-tc-product-order", page, perPage],
-    endpoint: `/api/tc-product-orders?page=${page}`,
+    endpoint: `/api/tc-product-orders?page=${page}&per_page=${perPage}`,
   });
 };
+
 export const useGetSingleTCProductOrder = id => {
   return useClientApi({
     method: "get",
@@ -1338,12 +1466,12 @@ export const useMarkAsPaid = id => {
       toast.error(err?.response?.data?.message || "Something went wrong!"),
   });
 };
-export const useGetTSProductOrder = (id, page = 1, perPage = 10) => {
+export const useGetTSProductOrder = ({ id, page = 1, perPage = 10 } = {}) => {
   return useClientApi({
     method: "get",
     isPrivate: true,
     key: ["get-ts-product-order", id, page, perPage],
-    endpoint: `/api/my/tc-product-orders/${id}?page=${page}`,
+    endpoint: `/api/my/tc-product-orders/${id}?page=${page}&per_page=${perPage}`,
   });
 };
 export const useTSProductCheckout = () => {
@@ -1534,7 +1662,7 @@ export const useGetSiteSettings = group => {
   const { selectedTrainingSiteId } = useAuth();
   return useClientApi({
     method: "get",
-    key: ["get-site-settings", group],
+    key: ["get-site-settings", group, selectedTrainingSiteId],
     isPrivate: true,
     headers: { "X-Site-Id": selectedTrainingSiteId },
     endpoint: `/api/settings/index?group=${group}`,
@@ -1650,11 +1778,9 @@ export const getStudentPastClasses = (page = 1, perPage = 10) => {
 };
 
 export const getClientUpcomingClasses = (page = 1, perPage = 10) => {
-  const { selectedTrainingSiteId } = useAuth();
   return useClientApi({
     method: "get",
     isPrivate: true,
-    headers: { "X-Site-Id": selectedTrainingSiteId },
     key: ["client-upcoming", page, perPage],
     endpoint: `/api/clients/upcoming-classes?page=${page}&per_page=${perPage}`,
   });
@@ -1666,7 +1792,7 @@ export const getClientPastClasses = (page = 1, perPage = 10) => {
     method: "get",
     isPrivate: true,
     headers: { "X-Site-Id": selectedTrainingSiteId },
-    key: ["client-past", page, perPage],
+    key: ["client-past", page, perPage, selectedTrainingSiteId],
     endpoint: `/api/clients/past-classes?page=${page}&per_page=${perPage}`,
   });
 };

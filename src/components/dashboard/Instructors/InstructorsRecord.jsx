@@ -1,6 +1,7 @@
 // src/components/dashboard/instructors/InstructorsRecord.jsx
 "use client";
 import SectionTitle from "@/components/common/SectionTitle";
+import useSiteAwarePagination from "@/hooks/useSiteAwarePagination";
 import SubSectionTitle from "@/components/common/SubSectionTitle";
 import TableSkeleton from "@/components/skeleton/TableSkeleton";
 import {
@@ -15,7 +16,7 @@ import { CiEdit } from "react-icons/ci";
 import React, { useState } from "react";
 
 const InstructorRecord = () => {
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useSiteAwarePagination();
   const [perPage, setPerPage] = useState(10);
 
   const { data: allInstructor, isLoading } = getAllInstructor(page, perPage);

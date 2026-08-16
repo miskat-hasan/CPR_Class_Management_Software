@@ -1,5 +1,6 @@
 "use client";
 import SectionTitle from "@/components/common/SectionTitle";
+import useSiteAwarePagination from "@/hooks/useSiteAwarePagination";
 import SubSectionTitle from "@/components/common/SubSectionTitle";
 import TableSkeleton from "@/components/skeleton/TableSkeleton";
 import { Table, TableHead, TableBodyRow, TableFooter } from "@/components/common/TableElement";
@@ -7,7 +8,7 @@ import { getClassReport } from "@/hooks/api/dashboardApi";
 import { useState } from "react";
 
 const ClassReport = () => {
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useSiteAwarePagination();
   const { data: classReportData, isLoading: classReportDataLoading } =
     getClassReport(page);
 

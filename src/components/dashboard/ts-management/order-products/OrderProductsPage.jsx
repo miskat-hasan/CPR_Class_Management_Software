@@ -8,6 +8,7 @@ import Link from "next/link";
 import FormInput from "@/components/shared/form/FormInput";
 import FormContainer from "@/components/shared/form/FormContainer";
 import { useForm } from "react-hook-form";
+import { getPageFromLink } from "@/components/common/TableElement";
 
 const OrderProductsPage = () => {
 
@@ -123,23 +124,27 @@ const OrderProductsPage = () => {
             <div className="flex flex-col md:flex-row items-center justify-center mt-3 lg:mt-6 gap-3">
               {/* Pagination */}
               <div className="flex items-center gap-2">
-                {tcProductOrderData?.data?.links?.map((link, index) => (
-                  <button
-                    key={index}
-                    disabled={link.url === null || link.page === null}
-                    onClick={() => link.page && setPage(link.page)}
-                    className={`px-3 py-1 text-sm border rounded-md ${
-                      link.active
-                        ? "border-blue-500 text-blue-600 bg-blue-50"
-                        : "hover:bg-gray-100"
-                    } ${
-                      link.url === null || link.page === null
-                        ? "text-gray-400 cursor-not-allowed"
-                        : "cursor-pointer"
-                    }`}
-                    dangerouslySetInnerHTML={{ __html: link.label }}
-                  />
-                ))}
+                {tcProductOrderData?.data?.links?.map((link, index) => {
+                  const page = getPageFromLink(link);
+                  const isDisabled = link.url === null || page === null;
+                  return (
+                    <button
+                      key={index}
+                      disabled={isDisabled}
+                      onClick={() => page && setPage(page)}
+                      className={`px-3 py-1 text-sm border rounded-md ${
+                        link.active
+                          ? "border-blue-500 text-blue-600 bg-blue-50"
+                          : "hover:bg-gray-100"
+                      } ${
+                        isDisabled
+                          ? "text-gray-400 cursor-not-allowed"
+                          : "cursor-pointer"
+                      }`}
+                      dangerouslySetInnerHTML={{ __html: link.label }}
+                    />
+                  );
+                })}
               </div>
             </div>
           )}

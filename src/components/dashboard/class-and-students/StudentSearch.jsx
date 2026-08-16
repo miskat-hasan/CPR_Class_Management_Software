@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import useSiteAwarePagination from "@/hooks/useSiteAwarePagination";
 import SectionTitle from "@/components/common/SectionTitle";
 import SubSectionTitle from "@/components/common/SubSectionTitle";
 import CustomSelect from "@/components/shared/form/CustomSelect";
@@ -12,11 +13,13 @@ import TableSkeleton from "@/components/skeleton/TableSkeleton";
 import {
   Table,
   TableBodyRow,
+  TableFooter,
   TableHead,
+  getPageFromLink,
 } from "@/components/common/TableElement";
 
 const StudentSearch = () => {
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useSiteAwarePagination();
   const [perPage, setPerPage] = useState(10);
   const [searchBy, setSearchBy] = useState("name");
   const [firstName, setFirstName] = useState("");
@@ -213,27 +216,13 @@ const StudentSearch = () => {
         )}
 
         {/* Pagination */}
-        {links.length > 0 && (
-          <div className="flex items-center justify-end gap-2 flex-wrap">
-            {links.map((link, index) => (
-              <button
-                key={index}
-                disabled={link.url === null || link.page === null}
-                onClick={() => link.page && setPage(link.page)}
-                className={`px-3 py-1 text-sm border rounded-md transition-colors ${
-                  link.active
-                    ? "border-brown text-brown bg-brown/10 dark:border-dark-brown dark:text-dark-brown dark:bg-dark-brown/10"
-                    : "border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 dark:text-gray-300"
-                } ${
-                  link.url === null || link.page === null
-                    ? "text-gray-300 dark:text-gray-600 cursor-not-allowed"
-                    : "cursor-pointer"
-                }`}
-                dangerouslySetInnerHTML={{ __html: link.label }}
-              />
-            ))}
-          </div>
-        )}
+        <TableFooter
+          Links={links}
+          page={page}
+          setPage={setPage}
+          perPage={perPage}
+          setPerPage={setPerPage}
+        />
       </div>
     </div>
   );

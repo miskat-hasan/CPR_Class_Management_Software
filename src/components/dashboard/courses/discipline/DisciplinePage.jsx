@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import useSiteAwarePagination from "@/hooks/useSiteAwarePagination";
 import { toast } from "sonner";
 import SectionTitle from "@/components/common/SectionTitle";
 import TableSkeleton from "@/components/skeleton/TableSkeleton";
@@ -20,7 +21,7 @@ import { HiOutlineTrash } from "react-icons/hi";
 import { CiEdit } from "react-icons/ci";
 
 export default function DisciplinePage() {
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useSiteAwarePagination();
   const [perPage, setPerPage] = useState(10);
   const [showModal, setShowModal] = useState(false);
   const [editItem, setEditItem] = useState(null);

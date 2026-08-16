@@ -10,7 +10,7 @@ import { useLogout } from "@/hooks/api/authApi";
 import useAuth from "@/hooks/useAuth";
 import { Logo, DashboardIcon } from "@/components/svg/SvgContainer";
 import SidebarSkeleton from "../skeleton/SidebarSkeleton";
-import { roleSegment } from "@/config";
+import { roleSegment, roleDefaultPage } from "@/config";
 import TrainingSiteSwitcher from "./TrainingSiteSwitcher";
 
 export default function Sidebar() {
@@ -52,6 +52,13 @@ export default function Sidebar() {
     );
 
     setActiveRole({ ...activeRole, ...matchedSite, training_site_id: val });
+
+    // Always land back on the role's default page after switching sites.
+    const segment = roleSegment[role];
+    const page = roleDefaultPage[role];
+    if (segment && page) {
+      router.push(`/dashboard/${segment}/${page}`);
+    }
   };
 
   if (loading || !user) return <SidebarSkeleton />;

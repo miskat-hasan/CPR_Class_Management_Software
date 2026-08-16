@@ -1,5 +1,6 @@
 "use client"
 import React from "react";
+import useSiteAwarePagination from "@/hooks/useSiteAwarePagination";
 import SectionTitle from "@/components/common/SectionTitle";
 import SubSectionTitle from "@/components/common/SubSectionTitle";
 import { getEventLog } from "@/hooks/api/dashboardApi";
@@ -8,7 +9,7 @@ import { Table, TableHead, TableBodyRow, TableFooter } from "@/components/common
 import { useState } from "react";
 
 const EventLog = () => {
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useSiteAwarePagination();
   const { data: eventLogData, isLoading: eventLogDataLoading } = getEventLog(page);
   console.log(eventLogData)
   return (
