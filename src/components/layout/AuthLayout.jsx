@@ -87,10 +87,7 @@ export default function AuthLayout({ children }) {
 
     if (!segment || !page) return;
 
-    const path =
-      segment === "student" || segment === "client"
-        ? `/dashboard/${segment}/${page}`
-        : `/dashboard/${segment}/${firstTs}/${page}`;
+    const path = `/dashboard/${segment}/${page}`;
 
     router.replace(path);
   }, [

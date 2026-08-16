@@ -409,7 +409,7 @@ export default function ClassForm({
           )}
         />
         {/* Assistants */}
-        <div className="md:col-span-2">
+        <div className="md:col-span-2 z-10">
           <Controller
             name="assistants"
             control={control}

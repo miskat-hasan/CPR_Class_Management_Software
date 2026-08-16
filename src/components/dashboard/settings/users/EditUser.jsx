@@ -40,9 +40,9 @@ const ASSIGNABLE_ROLES = {
 
 const EditUser = () => {
   const router = useRouter();
-  const { ts, id } = useParams();
-  const isPrimarySite = String(ts) === "1";
-  const { activeRole } = useAuth();
+  const { activeRole, selectedTrainingSiteId } = useAuth();
+  const { id } = useParams();
+  const isPrimarySite = String(selectedTrainingSiteId) === "1";
   const authRoleName = activeRole?.role_name;
 
   const form = useForm({
@@ -213,7 +213,6 @@ const EditUser = () => {
             router.back();
           }
         },
-        
       },
     );
   };

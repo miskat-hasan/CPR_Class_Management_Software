@@ -9,7 +9,7 @@ import Cookies from "js-cookie";
 
 export const AuthContextProvider = createContext(null);
 
-const ensureArray = (val) => {
+const ensureArray = val => {
   if (Array.isArray(val)) return val;
   if (typeof val === "string") {
     try {
@@ -34,9 +34,32 @@ export default function AuthProvider({ children }) {
   const { data: allSitesData, isLoading: allSitesLoading } =
     useGetUserTrainingSiteData(token);
 
-  const accessibleSites = allSitesData?.data
-    ? allSitesData.data.filter((sr) => sr.role_name === activeRole?.role_name)
-    : siteRoles.filter((sr) => sr.role_name === activeRole?.role_name);
+  const roleName = activeRole?.role_name;
+
+  const accessibleSites = (() => {
+    if (!roleName) return [];
+
+    if (allSitesData?.data && Array.isArray(allSitesData.data) && allSitesData.data.length > 0) {
+      if (roleName === "Super Admin") {
+        return allSitesData.data;
+      }
+      const allowedSiteIds = siteRoles
+        .filter(sr => sr.role_name === roleName)
+        .map(sr => String(sr.training_site_id ?? sr.id));
+
+      return allSitesData.data.filter(site => {
+        if (site.role_name) return site.role_name === roleName;
+        const siteId = String(site.training_site_id ?? site.id);
+        return allowedSiteIds.includes(siteId);
+      });
+    }
+
+    if (roleName === "Super Admin" && siteRoles.length > 0) {
+      return siteRoles;
+    }
+
+    return siteRoles.filter(sr => sr.role_name === roleName);
+  })();
 
   const selectedTrainingSiteId = activeRole?.training_site_id ?? null;
 
@@ -63,28 +86,27 @@ export default function AuthProvider({ children }) {
   useEffect(() => {
     if (!activeRole) return;
 
-    const loginSites = siteRoles.filter(
-      (sr) => sr.role_name === activeRole.role_name,
-    );
-    const allowedSites = loginSites.map((sr) => sr.training_site_id).join(",");
+    let allowedSites = "";
+    if (activeRole.role_name === "Super Admin") {
+      if (allSitesData?.data && Array.isArray(allSitesData.data) && allSitesData.data.length > 0) {
+        allowedSites = allSitesData.data.map(sr => sr.training_site_id ?? sr.id).join(",");
+      } else {
+        const loginSites = siteRoles.filter(sr => sr.role_name === activeRole.role_name);
+        allowedSites = loginSites.map(sr => sr.training_site_id ?? sr.id).join(",");
+      }
+    } else {
+      const loginSites = siteRoles.filter(sr => sr.role_name === activeRole.role_name);
+      allowedSites = loginSites.map(sr => sr.training_site_id ?? sr.id).join(",");
+    }
 
     Cookies.set("role", activeRole.role_name, { sameSite: "strict" });
-    Cookies.set("allowed_sites", allowedSites, { sameSite: "strict" });
+    if (allowedSites) {
+      Cookies.set("allowed_sites", allowedSites, { sameSite: "strict" });
+    }
     setItem("selected_site_id", activeRole.training_site_id);
-  }, [activeRole?.role_name, activeRole?.training_site_id]);
+  }, [activeRole?.role_name, activeRole?.training_site_id, siteRoles, allSitesData?.data]);
 
-  useEffect(() => {
-    if (!allSitesData?.data || !activeRole) return;
-
-    const fullSites = allSitesData.data.filter(
-      (sr) => sr.role_name === activeRole.role_name,
-    );
-    const allowedSites = fullSites.map((sr) => sr.id).join(",");
-
-    Cookies.set("allowed_sites", allowedSites, { sameSite: "strict" });
-  }, [allSitesData, activeRole?.role_name]);
-
-  const setSelectedTrainingSiteId = (id) => {
+  const setSelectedTrainingSiteId = id => {
     if (!activeRole) return;
     setActiveRole({ ...activeRole, training_site_id: id });
     setItem("selected_site_id", id);

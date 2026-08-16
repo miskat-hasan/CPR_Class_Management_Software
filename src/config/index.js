@@ -32,8 +32,8 @@ export const Roles = [
 
 export const roleDefaultPage = {
   "Super Admin": "class-and-students/upcoming-classes",
-  Admin: "class-and-students/classes",
-  Instructor: "class-and-students/classes",
+  Admin: "class-and-students/upcoming-classes",
+  Instructor: "class-and-students/upcoming-classes",
   "Instructor Assistant": "class-and-students/classes",
   Student: "classes/upcoming-classes",
   Client: "class-and-students/upcoming-classes",

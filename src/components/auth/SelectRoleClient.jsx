@@ -32,10 +32,7 @@ export default function SelectRoleClient() {
     const page = roleDefaultPage[siteRole.role_name];
     const isNoSite = segment === "student" || segment === "client";
 
-    const path = isNoSite
-      ? `/dashboard/${segment}/${page}`
-      : `/dashboard/${segment}/${siteRole.training_site_id}/${page}`;
-
+    const path = `/dashboard/${segment}/${page}`;
     router.push(path);
   };
 

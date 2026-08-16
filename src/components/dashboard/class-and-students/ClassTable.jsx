@@ -25,7 +25,6 @@ export default function ClassTable({
   basePath,
   onRefetch,
 }) {
-  const { ts } = useParams();
 
   const [selected, setSelected] = useState([]);
   const [deleteTarget, setDeleteTarget] = useState(null);
@@ -230,7 +229,7 @@ export default function ClassTable({
                     <td className="px-3 sm:px-6 py-3 text-center">
                       <div className="flex items-center gap-2 justify-center">
                         <TableButton
-                          href={`/dashboard/super-admin/${ts}/class-and-students/${basePath}/${item.id}`}
+                          href={`/dashboard/super-admin/class-and-students/${basePath}/${item.id}`}
                         >
                           <CiEdit className="text-gray-600 dark:text-gray text-[16px]" />
                         </TableButton>
