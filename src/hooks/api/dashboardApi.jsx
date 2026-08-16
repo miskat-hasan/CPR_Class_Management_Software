@@ -274,6 +274,7 @@ export const useGetAllUsers = ({
       type !== "all" ? perPage : null,
       search ?? null,
       ...(roleIds ?? []),
+      selectedTrainingSiteId,
     ],
     endpoint: `/api/site-users?${params.toString()}`,
     headers: { "X-Site-Id": selectedTrainingSiteId },
@@ -833,7 +834,7 @@ export const getAllUpcomingClasses = (page = 1, perPage = 10) => {
   return useClientApi({
     method: "get",
     isPrivate: true,
-    key: ["get-all-upcoming-class", page, perPage],
+    key: ["get-all-upcoming-class", page, perPage, selectedTrainingSiteId],
     endpoint: `/api/class/upcoming?page=${page}&per_page=${perPage}`,
     headers: { "X-Site-Id": selectedTrainingSiteId },
   });
@@ -1688,4 +1689,4 @@ export const useSavePaymentCredentials = () => {
     isPrivate: true,
     endpoint: "/api/payment-onboarding/save-credentials",
   });
-};  
+};

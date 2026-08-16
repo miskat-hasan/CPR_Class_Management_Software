@@ -1,22 +1,21 @@
 // src/components/dashboard/Sidebar.jsx
 "use client";
 
-import { useParams, usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { FaChevronRight } from "react-icons/fa";
 import { getSidebarMenu } from "@/config/sidebarConfig";
 import { useLogout } from "@/hooks/api/authApi";
 import useAuth from "@/hooks/useAuth";
-import CustomSelect from "@/components/shared/form/CustomSelect";
 import { Logo, DashboardIcon } from "@/components/svg/SvgContainer";
 import SidebarSkeleton from "../skeleton/SidebarSkeleton";
 import { roleSegment } from "@/config";
+import TrainingSiteSwitcher from "./TrainingSiteSwitcher";
 
 export default function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
-  const { ts } = useParams();
 
   const {
     user,
@@ -25,18 +24,20 @@ export default function Sidebar() {
     accessibleSites,
     allSitesLoading,
     setActiveRole,
+    selectedTrainingSiteId,
+    setSelectedTrainingSiteId,
   } = useAuth();
 
   const { mutateAsync: logout, isPending: logoutPending } = useLogout();
 
   const role = activeRole?.role_name;
 
-  const menuItems = getSidebarMenu({ role, ts });
+  const menuItems = getSidebarMenu({ role, ts: selectedTrainingSiteId });
 
   const [openMenu, setOpenMenu] = useState(null);
 
   useEffect(() => {
-    if (!menuItems.length) return;
+    if (!menuItems?.length) return;
     for (const item of menuItems) {
       if (item.submenu?.some(sub => pathname.startsWith(sub.href))) {
         setOpenMenu(item.label);
@@ -46,24 +47,11 @@ export default function Sidebar() {
   }, [pathname, menuItems?.length]);
 
   const handleSiteChange = val => {
-    const isSuperAdminOnMaster = role === "Super Admin" && String(val) === "1";
-    const segment = roleSegment[role];
-    const page = isSuperAdminOnMaster
-      ? "class-and-students/upcoming-classes"
-      : "class-and-students/classes";
-
-    // Find the full site record so activeRole picks up that site's own
-    // is_authorize_connected / needs_payment_setup / training_site_name too —
-    // not just the id, which would leave those fields stale from the old site.
     const matchedSite = accessibleSites.find(
       sr => String(sr.training_site_id ?? sr.id) === String(val),
     );
 
-    if (matchedSite) {
-      setActiveRole({ ...activeRole, ...matchedSite });
-    }
-
-    router.push(`/dashboard/${segment}/${val}/${page}`);
+    setActiveRole({ ...activeRole, ...matchedSite, training_site_id: val });
   };
 
   if (loading || !user) return <SidebarSkeleton />;
@@ -82,12 +70,11 @@ export default function Sidebar() {
 
       <div className="flex flex-col gap-2">
         {["Super Admin"].includes(role) && (
-          <CustomSelect
-            value={ts}
+          <TrainingSiteSwitcher
+            value={selectedTrainingSiteId}
             options={siteOptions}
             isLoading={allSitesLoading}
             onChange={handleSiteChange}
-            placeholder="Select training site"
           />
         )}
 

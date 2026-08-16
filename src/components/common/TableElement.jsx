@@ -52,7 +52,7 @@ export const TableButton = ({
     <Comp {...props}>
       <div
         className={cn(
-          "p-1.5 sm:p-2 bg-gray-100 dark:bg-transparent dark:border dark:border-[#6b6c6d] dark:hover:bg-[#292b2c] rounded-lg hover:bg-gray-200 transition cursor-pointer",
+          "p-1.5 sm:p-2 bg-gray-100 dark:bg-transparent w-fit mx-auto dark:border dark:border-[#6b6c6d] dark:hover:bg-[#292b2c] rounded-lg hover:bg-gray-200 transition cursor-pointer",
           className,
         )}
       >

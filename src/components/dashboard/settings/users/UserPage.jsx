@@ -18,7 +18,6 @@ import { useDeleteUser, useGetAllUsers } from "@/hooks/api/dashboardApi";
 import { PlusIcon, SearchIcon } from "@/components/svg/SvgContainer";
 import { Check, Trash2 } from "lucide-react";
 import Link from "next/link";
-import { useParams } from "next/navigation";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { CiEdit } from "react-icons/ci";
@@ -28,7 +27,7 @@ import { HiOutlineTrash } from "react-icons/hi";
 
 const UserPage = () => {
   const form = useForm();
-  const { ts } = useParams();
+
   const { reset } = form;
 
   const [page, setPage] = useState(1);
@@ -228,7 +227,7 @@ const UserPage = () => {
                         <td className="px-3 md:px-6 py-4 text-center">
                           <div className="flex items-center justify-center gap-2">
                             <TableButton
-                              href={`/dashboard/super-admin/${ts}/settings/users/${user?.id}/edit`}
+                              href={`/dashboard/super-admin/settings/users/${user?.id}/edit`}
                             >
                               <CiEdit className="text-gray-600 dark:text-gray text-[16px]" />
                             </TableButton>
