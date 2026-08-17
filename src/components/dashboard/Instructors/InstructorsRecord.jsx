@@ -11,7 +11,7 @@ import {
   TableFooter,
   TableHead,
 } from "@/components/common/TableElement";
-import { getAllInstructor } from "@/hooks/api/dashboardApi";
+import { getAllInstructor, useGetAllUsers } from "@/hooks/api/dashboardApi";
 import { CiEdit } from "react-icons/ci";
 import React, { useState } from "react";
 
@@ -19,8 +19,11 @@ const InstructorRecord = () => {
   const [page, setPage] = useSiteAwarePagination();
   const [perPage, setPerPage] = useState(10);
 
-  const { data: allInstructor, isLoading } = getAllInstructor(page, perPage);
-
+  const { data: allInstructor, isLoading } = getAllInstructor({
+    page,
+    perPage,
+  });
+  
   return (
     <section className="flex flex-col gap-[13.5px] lg:gap-[25px]">
       <div className="flex justify-between">
@@ -64,7 +67,7 @@ const InstructorRecord = () => {
                       <td className="px-3 md:px-6 py-4 whitespace-nowrap">
                         <div className="flex flex-col">
                           <span className="font-medium text-gray-800 dark:text-gray">
-                            {item.first_name} {item.last_name}
+                            {item.name}
                           </span>
                           <span className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 truncate max-w-[150px] sm:max-w-[200px]">
                             {item.email}
@@ -72,7 +75,7 @@ const InstructorRecord = () => {
                         </div>
                       </td>
                       <td className="px-3 md:px-6 py-4 whitespace-nowrap">
-                        {item.aha_instructor_id}
+                        {item?.instructor?.aha_instructor_id}
                       </td>
                       <td className="px-3 md:px-6 py-4 truncate max-w-[150px] sm:max-w-[200px]">
                         {item.certifications?.map(cert => (

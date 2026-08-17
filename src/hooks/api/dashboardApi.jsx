@@ -242,9 +242,9 @@ export const getAllInstructor = ({
   if (isAll) {
     endpoint = "/api/site-users?type=all&role_id[]=3";
   } else if (search) {
-    endpoint = `/api/instructors?page=${page}&per_page=${perPage}&search=${search}`;
+    endpoint = `/api/site-users?role_id[]=3&page=${page}&per_page=${perPage}&search=${search}`;
   } else {
-    endpoint = `/api/instructors?page=${page}&per_page=${perPage}`;
+    endpoint = `/api/site-users?role_id[]=3&page=${page}&per_page=${perPage}`;
   }
 
   const key = isAll
@@ -690,7 +690,6 @@ export const deleteSingleExternalSKU = () => {
 // ==================== CERTIFYING BODY ====================
 
 export const getAllCertifyingBody = ({ type, page = 1, perPage = 10 } = {}) => {
-  const { selectedTrainingSiteId } = useAuth();
   const isAll = type === "all";
 
   const endpoint = isAll
@@ -698,20 +697,13 @@ export const getAllCertifyingBody = ({ type, page = 1, perPage = 10 } = {}) => {
     : `/api/course_cb/index?page=${page}&per_page=${perPage}`;
 
   const key = isAll
-    ? ["get-all-certifying-body", "all", selectedTrainingSiteId]
-    : [
-        "get-all-certifying-body",
-        "paginated",
-        page,
-        perPage,
-        selectedTrainingSiteId,
-      ];
+    ? ["get-all-certifying-body", "all"]
+    : ["get-all-certifying-body", "paginated", page, perPage];
 
   return useClientApi({
     method: "get",
     isPrivate: true,
     key,
-    headers: { "X-Site-Id": selectedTrainingSiteId }, // was hardcoded to 1
     endpoint,
   });
 };
