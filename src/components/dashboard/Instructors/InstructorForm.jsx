@@ -20,6 +20,7 @@ import { useEffect, useMemo } from "react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { FaPlus } from "react-icons/fa";
 import { toast } from "sonner";
+import { useDefaultCountry } from "@/hooks/useDefaultCountry";
 
 const INSTRUCTOR_ROLE_ID = 3;
 
@@ -58,6 +59,13 @@ const InstructorForm = ({ mode = "add", instructorId }) => {
   } = form;
 
   const { data: countryData, isLoading: countryDataLoading } = getAllCountry();
+
+  useDefaultCountry({
+    form,
+    countryData,
+    countryLoading: countryDataLoading,
+    fieldName: "country",
+  });
   const { data: trainingSiteData, isLoading: trainingSiteLoading } =
     getallTrainingsite({ type: "all" });
   const { data: instructorData, isLoading: instructorLoading } =
@@ -382,7 +390,7 @@ const InstructorForm = ({ mode = "add", instructorId }) => {
           </div>
 
           <div className="flex items-center justify-end mt-8 gap-4">
-            <BackButton />
+            {isEdit && <BackButton />}
             <Button
               type="submit"
               disabled={isPending}

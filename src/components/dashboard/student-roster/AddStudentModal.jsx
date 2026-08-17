@@ -9,6 +9,7 @@ import CustomSelect from "../../shared/form/CustomSelect";
 import { Button } from "../../ui/button";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
+import { useDefaultCountry } from "@/hooks/useDefaultCountry";
 
 const status = [
   { id: "Pending", name: "Pending" },
@@ -30,6 +31,13 @@ const AddStudentModal = ({ classId, open, onClose }) => {
   } = form;
 
   const { data: countryData, isLoading: countryDataLoading } = getAllCountry();
+
+  useDefaultCountry({
+    form,
+    countryData,
+    countryLoading: countryDataLoading,
+    fieldName: "country_id",
+  });
 
   const { mutate, isPending } = useStoreStudentData();
 

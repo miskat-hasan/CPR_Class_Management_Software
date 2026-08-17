@@ -11,6 +11,7 @@ import CustomSelect from "@/components/shared/form/CustomSelect";
 import { Button } from "@/components/ui/button";
 import { getAllCountry } from "@/hooks/api/dashboardApi";
 import SiteCoordinatorField from "./SiteCoordinatorField";
+import { useDefaultCountry } from "@/hooks/useDefaultCountry";
 
 const RichTextEditor = dynamic(() => import("@/components/shared/RichEditor"), {
   ssr: false,
@@ -69,6 +70,13 @@ const TrainingSiteForm = ({
   } = form;
 
   const { data: countryData, isLoading: countryLoading } = getAllCountry();
+
+  useDefaultCountry({
+    form,
+    countryData,
+    countryLoading,
+    fieldName: "country",
+  });
 
   useEffect(() => {
     if (defaultValues) {

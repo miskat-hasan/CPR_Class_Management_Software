@@ -17,6 +17,7 @@ import FormContainer from "@/components/shared/form/FormContainer";
 import FormInput from "@/components/shared/form/FormInput";
 import CustomSelect from "@/components/shared/form/CustomSelect";
 import { getAllCountry, storeSiteCoordinator } from "@/hooks/api/dashboardApi";
+import { useDefaultCountry } from "@/hooks/useDefaultCountry";
 
 const DEFAULT_VALUES = {
   username: "",
@@ -43,6 +44,13 @@ const SiteCoordinatorModal = ({ onCreated }) => {
   } = form;
 
   const { data: countryData, isLoading: countryLoading } = getAllCountry();
+
+  useDefaultCountry({
+    form,
+    countryData,
+    countryLoading,
+    fieldName: "country",
+  });
   const { mutateAsync, isPending } = storeSiteCoordinator();
 
   const onSubmit = async data => {

@@ -4,7 +4,7 @@ import UserPage from "@/components/dashboard/settings/users/UserPage";
 const Page = () => {
   return (
     <div>
-      <UserPage />
+      <UserPage dashboard="admin" />
     </div>
   );
 };

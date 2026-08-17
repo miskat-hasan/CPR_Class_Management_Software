@@ -242,9 +242,9 @@ export const getAllInstructor = ({
   if (isAll) {
     endpoint = "/api/site-users?type=all&role_id[]=3";
   } else if (search) {
-    endpoint = `/api/instructors?page=${page}&per_page=${perPage}&search=${search}`;
+    endpoint = `/api/site-users?role_id[]=3&page=${page}&per_page=${perPage}&search=${search}`;
   } else {
-    endpoint = `/api/instructors?page=${page}&per_page=${perPage}`;
+    endpoint = `/api/site-users?role_id[]=3&page=${page}&per_page=${perPage}`;
   }
 
   const key = isAll
@@ -690,7 +690,6 @@ export const deleteSingleExternalSKU = () => {
 // ==================== CERTIFYING BODY ====================
 
 export const getAllCertifyingBody = ({ type, page = 1, perPage = 10 } = {}) => {
-  const { selectedTrainingSiteId } = useAuth();
   const isAll = type === "all";
 
   const endpoint = isAll
@@ -698,20 +697,13 @@ export const getAllCertifyingBody = ({ type, page = 1, perPage = 10 } = {}) => {
     : `/api/course_cb/index?page=${page}&per_page=${perPage}`;
 
   const key = isAll
-    ? ["get-all-certifying-body", "all", selectedTrainingSiteId]
-    : [
-        "get-all-certifying-body",
-        "paginated",
-        page,
-        perPage,
-        selectedTrainingSiteId,
-      ];
+    ? ["get-all-certifying-body", "all"]
+    : ["get-all-certifying-body", "paginated", page, perPage];
 
   return useClientApi({
     method: "get",
     isPrivate: true,
     key,
-    headers: { "X-Site-Id": selectedTrainingSiteId }, // was hardcoded to 1
     endpoint,
   });
 };
@@ -1683,11 +1675,13 @@ export const useUpdateSiteSettings = () => {
 
 // GET /api/registration-questions?page=1&per_page=10
 export const useGetRegistrationQuestions = (page = 1, perPage = 10) => {
+  const { selectedTrainingSiteId } = useAuth();
   return useClientApi({
     method: "get",
-    key: ["get-registration-questions", page, perPage],
+    key: ["get-registration-questions", page, perPage, selectedTrainingSiteId],
     isPrivate: true,
     endpoint: `/api/registration-questions?page=${page}&per_page=${perPage}`,
+    headers: { "X-Site-Id": selectedTrainingSiteId },
   });
 };
 
@@ -1705,10 +1699,12 @@ export const useGetSingleRegistrationQuestion = id => {
 
 // POST /api/registration-questions
 export const useCreateRegistrationQuestion = () => {
+  const { selectedTrainingSiteId } = useAuth();
   return useClientApi({
     method: "post",
     isPrivate: true,
     endpoint: "/api/registration-questions",
+    headers: { "X-Site-Id": selectedTrainingSiteId },
   });
 };
 
@@ -1731,11 +1727,6 @@ export const useDeleteRegistrationQuestion = id => {
 };
 
 // course schedule data (public api)
-// ── Replace in src/hooks/api/dashboardApi.js ──
-
-// GET /api/courses-with-classes
-// Supports: training_site_id, search, course_id, location_id,
-//           instructor_id, date, from_time, to_time, page
 export const useGetCourseSchedule = (siteId = 1, filters = {}) => {
   const params = {
     training_site_id: siteId,

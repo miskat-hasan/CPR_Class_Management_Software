@@ -10,6 +10,7 @@ import FormContainer from "@/components/shared/form/FormContainer";
 import FormInput from "@/components/shared/form/FormInput";
 import { Button } from "@/components/ui/button";
 import { getAllCountry } from "@/hooks/api/dashboardApi";
+import { useDefaultCountry } from "@/hooks/useDefaultCountry";
 
 const RichTextEditor = dynamic(() => import("@/components/shared/RichEditor"), {
   ssr: false,
@@ -58,6 +59,13 @@ const ClientForm = ({
   } = form;
 
   const { data: countryData, isLoading: countryDataLoading } = getAllCountry();
+
+  useDefaultCountry({
+    form,
+    countryData,
+    countryLoading: countryDataLoading,
+    fieldName: "country",
+  });
 
   useEffect(() => {
     if (defaultValues) {
@@ -243,7 +251,7 @@ const ClientForm = ({
 
         <div className="flex items-center justify-end">
           <div className="flex justify-end gap-4 mt-4 lg:mt-8">
-            <BackButton />
+            {isEdit && <BackButton />}
             <Button
               type="submit"
               disabled={isPending}

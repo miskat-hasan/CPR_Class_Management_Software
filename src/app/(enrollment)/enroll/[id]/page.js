@@ -14,6 +14,7 @@ import EnrollSidebar from "@/components/enrollment/EnrollSidebar";
 import StepCourseOptions from "@/components/enrollment/StepCourseOptions";
 import StepStudentInfo from "@/components/enrollment/StepStudentInfo";
 import StepReviewPayment from "@/components/enrollment/StepReviewPayment";
+import { useDefaultCountry } from "@/hooks/useDefaultCountry";
 
 const Page = () => {
   const { id } = useParams();
@@ -49,6 +50,13 @@ const Page = () => {
 
   const { data, isLoading } = getEnrollmentDetails(id);
   const { data: countryData, isLoading: countryDataLoading } = getAllCountry();
+
+  useDefaultCountry({
+    form,
+    countryData,
+    countryLoading: countryDataLoading,
+    fieldName: "country",
+  });
 
   const classDetails = data?.data?.class_details;
   const siteSettings = data?.data?.site_settings;

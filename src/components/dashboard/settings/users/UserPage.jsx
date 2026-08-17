@@ -17,7 +17,6 @@ import FormInput from "@/components/shared/form/FormInput";
 import { Button } from "@/components/ui/button";
 import { useDeleteUser, useGetAllUsers } from "@/hooks/api/dashboardApi";
 import { PlusIcon, SearchIcon } from "@/components/svg/SvgContainer";
-import { Check, Trash2 } from "lucide-react";
 import Link from "next/link";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -26,7 +25,7 @@ import { IoClose } from "react-icons/io5";
 import DeleteUserConfirmModal from "@/components/dashboard/settings/users/DeleteUserConfirmModal";
 import { HiOutlineTrash } from "react-icons/hi";
 
-const UserPage = () => {
+const UserPage = ({ dashboard = "super-admin" }) => {
   const form = useForm();
 
   const { reset } = form;
@@ -40,7 +39,7 @@ const UserPage = () => {
   const { data: usersData, isLoading } = useGetAllUsers({
     page,
     perPage,
-    roleIds: [1, 2, 3, 4, 7],
+    roleIds: [2, 3, 4, 7],
     ...(enableSearch && searchValue ? { search: searchValue } : {}),
   });
 
@@ -133,16 +132,13 @@ const UserPage = () => {
                       Name
                     </th>
                     <th className="px-3 md:px-6 py-3 whitespace-nowrap">
-                      Active
-                    </th>
-                    <th className="px-3 md:px-6 py-3 whitespace-nowrap">
                       Username
                     </th>
                     <th className="px-3 md:px-6 py-3 whitespace-nowrap">
                       Training Site &amp; Role
                     </th>
                     <th className="px-3 md:px-6 py-3 whitespace-nowrap">
-                      Admin
+                      Admin/Coordinator
                     </th>
                     <th className="px-3 md:px-6 py-3 whitespace-nowrap">
                       Last Activity
@@ -164,15 +160,6 @@ const UserPage = () => {
                           <p className="text-xs text-gray-500 dark:text-gray-400">
                             {user?.email}
                           </p>
-                        </td>
-
-                        {/* Active */}
-                        <td className="px-3 md:px-6 py-4 whitespace-nowrap">
-                          {user?.active_user ? (
-                            <Check size={16} className="text-green-600" />
-                          ) : (
-                            <span className="text-gray-400 text-sm">—</span>
-                          )}
                         </td>
 
                         {/* Username */}
@@ -210,7 +197,13 @@ const UserPage = () => {
                             ur => ur?.role?.name === "Admin",
                           ) ? (
                             <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400">
-                              TS
+                              Admin
+                            </span>
+                          ) : user?.user_roles?.some(
+                              ur => ur?.role?.name === "Site Coordinator",
+                            ) ? (
+                            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400">
+                              Coordinator
                             </span>
                           ) : (
                             <span className="text-gray-400">—</span>
@@ -228,7 +221,7 @@ const UserPage = () => {
                         <td className="px-3 md:px-6 py-4 text-center">
                           <div className="flex items-center justify-center gap-2">
                             <TableButton
-                              href={`/dashboard/super-admin/settings/users/${user?.id}/edit`}
+                              href={`/dashboard/${dashboard}/settings/users/${user?.id}/edit`}
                             >
                               <CiEdit className="text-gray-600 dark:text-gray text-[16px]" />
                             </TableButton>

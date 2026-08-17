@@ -4,7 +4,7 @@
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { FaChevronRight } from "react-icons/fa";
+import { FaBuilding, FaChevronRight } from "react-icons/fa";
 import { getSidebarMenu } from "@/config/sidebarConfig";
 import { useLogout } from "@/hooks/api/authApi";
 import useAuth from "@/hooks/useAuth";
@@ -25,7 +25,6 @@ export default function Sidebar() {
     allSitesLoading,
     setActiveRole,
     selectedTrainingSiteId,
-    setSelectedTrainingSiteId,
   } = useAuth();
 
   const { mutateAsync: logout, isPending: logoutPending } = useLogout();
@@ -53,7 +52,6 @@ export default function Sidebar() {
 
     setActiveRole({ ...activeRole, ...matchedSite, training_site_id: val });
 
-    // Always land back on the role's default page after switching sites.
     const segment = roleSegment[role];
     const page = roleDefaultPage[role];
     if (segment && page) {
@@ -83,6 +81,28 @@ export default function Sidebar() {
             isLoading={allSitesLoading}
             onChange={handleSiteChange}
           />
+        )}
+
+        {[
+          "Site Coordinator",
+          "Admin",
+          "Instructor",
+          "Instructor Assistant",
+          "Client",
+        ].includes(role) && (
+          <div className="flex items-center gap-3 px-4 py-3 rounded-[10px] bg-gray-50 dark:bg-[#1B1D1E] border border-gray-100 dark:border-[#25282A]">
+            <span className="flex items-center justify-center h-9 w-9 shrink-0 rounded-full bg-brown/10 dark:bg-dark-brown/20 text-brown dark:text-dark-brown">
+              <FaBuilding className="h-4 w-4" />
+            </span>
+            <div className="flex flex-col gap-1 min-w-0">
+              <h6 className="text-sm font-semibold text-dark dark:text-gray truncate">
+                {activeRole?.training_site_name}
+              </h6>
+              <span className="w-fit text-[11px] font-medium leading-none px-2 py-1 rounded-full bg-brown/10 dark:bg-dark-brown/20 text-brown dark:text-dark-brown">
+                {role}
+              </span>
+            </div>
+          </div>
         )}
 
         <div className="flex items-center gap-3 px-5 py-2.5">
