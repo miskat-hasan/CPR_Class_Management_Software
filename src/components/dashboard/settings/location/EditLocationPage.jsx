@@ -16,6 +16,7 @@ import {
 import Link from "next/link";
 import { toast } from "sonner";
 import { useParams } from "next/navigation";
+import { useDefaultCountry } from "@/hooks/useDefaultCountry";
 
 const EditLocationPage = () => {
   const { id } = useParams();
@@ -46,6 +47,13 @@ const EditLocationPage = () => {
   } = form;
 
   const { data: countryData, isLoading: countryDataLoading } = getAllCountry();
+
+  useDefaultCountry({
+    form,
+    countryData,
+    countryLoading: countryDataLoading,
+    fieldName: "country",
+  });
 
   const { data: locationData, isLoading: locationDataLoading } =
     getSingleLocation(id);

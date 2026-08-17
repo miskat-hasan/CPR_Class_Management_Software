@@ -22,6 +22,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { FaPlus } from "react-icons/fa";
 import { toast } from "sonner";
+import { useDefaultCountry } from "@/hooks/useDefaultCountry";
 
 const ASSIGNABLE_ROLES = {
   "Super Admin": ["Admin", "Instructor", "Instructor Assistant"],
@@ -74,6 +75,13 @@ const UserForm = ({ mode, id }) => {
   const watchedSites = watch("trainingSites");
 
   const { data: countryData, isLoading: countryDataLoading } = getAllCountry();
+
+  useDefaultCountry({
+    form,
+    countryData,
+    countryLoading: countryDataLoading,
+    fieldName: "country",
+  });
   const { data: trainingSiteData, isLoading: trainingSiteLoading } =
     getallTrainingsite({ type: "all" });
   const { data: rolesData, isLoading: rolesLoading } = getAllRole();
