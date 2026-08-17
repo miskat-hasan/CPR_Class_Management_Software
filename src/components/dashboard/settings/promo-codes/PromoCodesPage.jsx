@@ -1,5 +1,6 @@
 "use client";
 import SectionTitle from "@/components/common/SectionTitle";
+import useSiteAwarePagination from "@/hooks/useSiteAwarePagination";
 import { Button } from "@/components/ui/button";
 import { PlusIcon } from "@/components/svg/SvgContainer";
 import React, { useState } from "react";
@@ -18,11 +19,11 @@ import {
 } from "@/components/common/TableElement";
 
 const PromoCodesPage = () => {
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useSiteAwarePagination();
   const [perPage, setPerPage] = useState(10);
   const router = useRouter();
 
-  const { data: promoCodeData, isLoading } = getAllPromoCode(page, perPage);
+  const { data: promoCodeData, isLoading } = getAllPromoCode({page, perPage});
 
   return (
     <section className="flex flex-col gap-[12.5px] lg:gap-[25px] ">

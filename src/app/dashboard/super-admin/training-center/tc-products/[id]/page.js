@@ -48,7 +48,7 @@ const Page = ({ params }) => {
         is_taxable: productData?.data?.is_taxable || "",
       });
     }
-  }, [productData, reset]);
+  }, [productData, reset, priceLevel]);
 
   // update product data
   const { mutate, isPending } = useUpdateTCProduct(id);

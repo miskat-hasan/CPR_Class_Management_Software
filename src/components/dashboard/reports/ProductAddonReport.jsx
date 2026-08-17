@@ -1,5 +1,6 @@
 "use client";
 import SectionTitle from "@/components/common/SectionTitle";
+import useSiteAwarePagination from "@/hooks/useSiteAwarePagination";
 import SubSectionTitle from "@/components/common/SubSectionTitle";
 import TableSkeleton from "@/components/skeleton/TableSkeleton";
 import CustomSelect from "@/components/shared/form/CustomSelect";
@@ -10,7 +11,7 @@ import { SearchIcon } from "@/components/svg/SvgContainer";
 import React, { useState } from "react";
 
 const ProductAddonReport = () => {
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useSiteAwarePagination();
 
   const [filters, setFilters] = useState({ month: "" });
 

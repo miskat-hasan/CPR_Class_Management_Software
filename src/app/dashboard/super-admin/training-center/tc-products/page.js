@@ -1,6 +1,7 @@
 "use client";
 
 import SectionTitle from "@/components/common/SectionTitle";
+import useSiteAwarePagination from "@/hooks/useSiteAwarePagination";
 import { Button } from "@/components/ui/button";
 import { PlusIcon } from "@/components/svg/SvgContainer";
 import React, { useState } from "react";
@@ -17,7 +18,7 @@ import {
 import Link from "next/link";
 
 const Page = () => {
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useSiteAwarePagination();
   const [perPage, setPerPage] = useState(10);
 
   const { data: tcProductData, isLoading: tsProductLoading } = useGetTCProduct(

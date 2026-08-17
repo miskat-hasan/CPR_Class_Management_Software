@@ -10,7 +10,7 @@ import useAuth from "@/hooks/useAuth";
 import { useLogout } from "@/hooks/api/authApi";
 import CustomSelect from "../shared/form/CustomSelect";
 import { getSidebarMenu } from "@/config/sidebarConfig";
-import { roleSegment } from "@/config";
+import { roleSegment, roleDefaultPage } from "@/config";
 
 const MobileSidebar = ({ onClose, isSidebarOpen }) => {
   const pathname = usePathname();
@@ -51,6 +51,13 @@ const MobileSidebar = ({ onClose, isSidebarOpen }) => {
 
   const handleSiteChange = val => {
     setSelectedTrainingSiteId(val);
+
+    // Always land back on the role's default page after switching sites.
+    const segment = roleSegment[role];
+    const page = roleDefaultPage[role];
+    if (segment && page) {
+      router.push(`/dashboard/${segment}/${page}`);
+    }
   };
 
   const handleLogout = async () => {

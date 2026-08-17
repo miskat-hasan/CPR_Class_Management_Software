@@ -2,6 +2,7 @@
 "use client";
 
 import { useState } from "react";
+import useSiteAwarePagination from "@/hooks/useSiteAwarePagination";
 import Link from "next/link";
 import SectionTitle from "@/components/common/SectionTitle";
 import TableSkeleton from "@/components/skeleton/TableSkeleton";
@@ -18,7 +19,7 @@ import { getallTrainingsite } from "@/hooks/api/dashboardApi";
 import { CiEdit } from "react-icons/ci";
 
 const Page = () => {
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useSiteAwarePagination();
   const [perPage, setPerPage] = useState(10);
 
   const { data, isLoading } = getallTrainingsite({page, perPage});

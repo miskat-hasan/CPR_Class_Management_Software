@@ -2,13 +2,14 @@
 "use client";
 
 import { useState } from "react";
+import useSiteAwarePagination from "@/hooks/useSiteAwarePagination";
 import SectionTitle from "@/components/common/SectionTitle";
 import SubSectionTitle from "@/components/common/SubSectionTitle";
 import StudentClassTable from "@/components/dashboard/class-and-students/StudentClassTable";
 import { getClientUpcomingClasses } from "@/hooks/api/dashboardApi";
 
 export default function ClientUpcomingClassesPage() {
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useSiteAwarePagination();
   const [perPage] = useState(10);
 
   const { data, isLoading } = getClientUpcomingClasses(page, perPage);

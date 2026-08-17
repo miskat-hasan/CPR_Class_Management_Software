@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import useSiteAwarePagination from "@/hooks/useSiteAwarePagination";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import SectionTitle from "@/components/common/SectionTitle";
@@ -28,7 +29,7 @@ const formatDate = iso => {
 };
 
 export default function ExternalSkuPage() {
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useSiteAwarePagination();
   const [perPage, setPerPage] = useState(10);
   const [showAddModal, setShowAddModal] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState(null);
