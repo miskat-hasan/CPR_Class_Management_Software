@@ -65,7 +65,7 @@ export default function UpcomingClassesPage() {
           isLoading={tableLoading}
           links={tableLinks}
           setPage={setPage}
-          basePath="upcoming-classes"
+          basePath="student/classes/upcoming-classes"
           onRefetch={refetch}
         />
       </div>
