@@ -11,6 +11,7 @@ import FormTextarea from "@/components/shared/form/FormTextarea";
 import { getAllCountry, storeLocation } from "@/hooks/api/dashboardApi";
 import useAuth from "@/hooks/useAuth";
 import BackButton from "@/components/common/BackButton";
+import { useDefaultCountry } from "@/hooks/useDefaultCountry";
 
 const AddLocationPage = () => {
   const form = useForm({
@@ -41,6 +42,13 @@ const AddLocationPage = () => {
   const { user, selectedTrainingSiteId } = useAuth();
 
   const { data: countryData, isLoading: countryDataLoading } = getAllCountry();
+
+  useDefaultCountry({
+    form,
+    countryData,
+    countryLoading: countryDataLoading,
+    fieldName: "country",
+  });
 
   const { mutateAsync: storeLocationMutation, isPending } = storeLocation();
 

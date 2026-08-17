@@ -77,7 +77,7 @@ export default function StudentClassTable({
                     <td className="px-3 sm:px-6 py-3 text-center">
                       <div className="flex items-center gap-2 justify-center">
                         <TableButton
-                          href={`/dashboard/student/classes/${basePath}/${item.id}`}
+                          href={`/dashboard/${basePath}/${item.id}`}
                         >
                           <GoArrowUpRight className="text-gray-600 dark:text-gray text-[16px]" />
                         </TableButton>

@@ -15,6 +15,7 @@ import {
 } from "@/hooks/api/dashboardApi";
 import useAuth from "@/hooks/useAuth";
 import { toast } from "sonner";
+import { useDefaultCountry } from "@/hooks/useDefaultCountry";
 
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
 const Skeleton = ({ className }) => (
@@ -73,6 +74,13 @@ const ProfilePage = () => {
     reset: profileReset,
     formState: { errors },
   } = profileForm;
+
+  useDefaultCountry({
+    form: profileForm,
+    countryData,
+    countryLoading,
+    fieldName: "country_id",
+  });
 
   const profileDefaults = useMemo(() => {
     // Profile fields live under user_details, not directly on the user record —

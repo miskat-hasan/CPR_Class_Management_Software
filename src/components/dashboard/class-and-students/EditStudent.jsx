@@ -16,6 +16,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { useDefaultCountry } from "@/hooks/useDefaultCountry";
 
 const STATUS_OPTIONS = [
   { id: "Pending", name: "Pending" },
@@ -54,6 +55,13 @@ const EditStudentPage = () => {
     useGetStudent(studentId);
 
   const { data: countryData, isLoading: countryDataLoading } = getAllCountry();
+
+  useDefaultCountry({
+    form,
+    countryData,
+    countryLoading: countryDataLoading,
+    fieldName: "country_id",
+  });
 
   useEffect(() => {
     if (studentData?.data && countryData?.data) {

@@ -25,7 +25,7 @@ export default function ClientPastClassesPage() {
           isLoading={isLoading}
           links={data?.data?.links}
           setPage={setPage}
-          basePath="past-classes"
+          basePath="client/class-and-students/past-classes"
         />
       </div>
     </div>

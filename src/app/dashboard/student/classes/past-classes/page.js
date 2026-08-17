@@ -63,7 +63,7 @@ export default function PastClassesPage() {
           isLoading={tableLoading}
           links={tableLinks}
           setPage={setPage}
-          basePath="past-classes"
+          basePath="student/classes/past-classes"
           onRefetch={refetch}
         />
       </div>

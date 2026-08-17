@@ -15,6 +15,7 @@ import {
 import { useParams, useRouter } from "next/navigation";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { useDefaultCountry } from "@/hooks/useDefaultCountry";
 
 const AddStudentPage = () => {
   const { id } = useParams();
@@ -44,6 +45,13 @@ const AddStudentPage = () => {
   const isBillingSameAsMailing = watch("billing_same_as_mailing");
 
   const { data: countryData, isLoading: countryDataLoading } = getAllCountry();
+
+  useDefaultCountry({
+    form,
+    countryData,
+    countryLoading: countryDataLoading,
+    fieldName: "country_id",
+  });
   const { data: clientData, isLoading: clientDataLoading } = getAllClient();
 
   const { mutate, isPending } = useStoreStudentData();

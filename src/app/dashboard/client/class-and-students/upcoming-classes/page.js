@@ -25,7 +25,7 @@ export default function ClientUpcomingClassesPage() {
           isLoading={isLoading}
           links={data?.data?.links}
           setPage={setPage}
-          basePath="upcoming-classes"
+          basePath="client/class-and-students/upcoming-classes"
         />
       </div>
     </div>
