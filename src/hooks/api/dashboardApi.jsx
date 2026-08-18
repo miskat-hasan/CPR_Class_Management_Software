@@ -533,11 +533,13 @@ export const updatePromoCode = () => {
   });
 };
 export const getAllPromoCode = ({ page = 1, perPage = 10 } = {}) => {
+  const { selectedTrainingSiteId } = useAuth();
   return useClientApi({
     method: "get",
     isPrivate: true,
-    key: ["get-all-promo-code", page, perPage],
+    key: ["get-all-promo-code", page, perPage, selectedTrainingSiteId],
     endpoint: `/api/promo-codes/index?page=${page}&per_page=${perPage}`,
+    headers: { "X-Site-Id": selectedTrainingSiteId },
   });
 };
 
@@ -1129,11 +1131,13 @@ export const useDownloadRoster = id => {
 // ==================== EMAIL CAMPAIGNS ====================
 
 export const getAllEmailCampaigns = () => {
+  const { selectedTrainingSiteId } = useAuth();
   return useClientApi({
     method: "get",
     isPrivate: true,
-    key: ["get-all-email-campaigns"],
+    key: ["get-all-email-campaigns", selectedTrainingSiteId],
     endpoint: "/api/email-campaigns?type=all",
+    headers: { "X-Site-Id": selectedTrainingSiteId },
   });
 };
 export const getSingleEmailCampaign = id => {
@@ -1207,11 +1211,13 @@ export const sendTestEmail = () => {
 // ==================== TEXT CAMPAIGNS ====================
 
 export const getTextCampaignSettings = () => {
+  const { selectedTrainingSiteId } = useAuth();
   return useClientApi({
     method: "get",
     isPrivate: true,
-    key: ["get-text-campaign-settings"],
+    key: ["get-text-campaign-settings", selectedTrainingSiteId],
     endpoint: "/api/text-campaigns/settings",
+    headers: { "X-Site-Id": selectedTrainingSiteId },
   });
 };
 export const updateTextCampaignSettings = () => {
@@ -1222,11 +1228,13 @@ export const updateTextCampaignSettings = () => {
   });
 };
 export const getAllTextMessages = () => {
+  const { selectedTrainingSiteId } = useAuth();
   return useClientApi({
     method: "get",
     isPrivate: true,
-    key: ["get-all-text-messages"],
+    key: ["get-all-text-messages", selectedTrainingSiteId],
     endpoint: "/api/text-campaigns/all-messages?type=all",
+    headers: { "X-Site-Id": selectedTrainingSiteId },
   });
 };
 export const getSingleTextMessage = id => {
