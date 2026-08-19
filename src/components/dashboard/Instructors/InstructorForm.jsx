@@ -171,7 +171,6 @@ const InstructorForm = ({ mode = "add", instructorId }) => {
                   ? "Instructor updated successfully!"
                   : "Instructor added successfully!"),
             );
-            router.back();
           }
         },
         onError: err => {

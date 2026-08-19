@@ -21,7 +21,6 @@ const AddClientPage = () => {
         reset();
         sharedNotesRef.current?.clear?.();
         internalNotesRef.current?.clear?.();
-        router.back();
       },
       onError: err => {
         toast.error(err?.response?.data?.message || "Something went wrong!");

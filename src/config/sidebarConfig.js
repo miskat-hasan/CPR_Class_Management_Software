@@ -215,10 +215,6 @@ const superAdminFullMenu = ts => [
         href: `/dashboard/super-admin/settings/text-messaging`,
       },
       {
-        label: "Card Settings",
-        href: `/dashboard/super-admin/settings/cards-settings`,
-      },
-      {
         label: "Payment Account",
         href: `/dashboard/super-admin/settings/payment-account`,
       },

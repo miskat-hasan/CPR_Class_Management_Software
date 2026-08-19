@@ -13,7 +13,11 @@ import ThemeToggle from "../common/ThemeToggle";
 
 const DashboardTopbar = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const { user, userData, loadingUserData } = useAuth();
+  const { user, loadingUserData } = useAuth();
+
+ const path = window.location.pathname;
+  const parts = path.split("/");
+  const roleBasePath = `/${parts[1]}/${parts[2]}`;
 
   const params = useParams();
   const trainingSiteId = params.ts;
@@ -32,15 +36,7 @@ const DashboardTopbar = () => {
       <div className="flex items-center gap-2.5 py-3">
         <ThemeToggle />
         <Link
-          href={
-            user?.roles?.find(item => item?.role_name === "Super Admin")
-              ? `/dashboard/super-admin/${trainingSiteId}/notifications`
-              : user?.roles?.find(item => item?.role_name === "Admin")
-                ? `/dashboard/admin/${trainingSiteId}/notifications`
-                : user?.roles?.find(item => item?.role_name === "Instructor")
-                  ? `/dashboard/instructor/${trainingSiteId}/notifications`
-                  : `/dashboard/student/notifications`
-          }
+          href={`${roleBasePath}/notifications`}
           className="w-[40px] h-[40px] lg:w-[60px] lg:h-[60px] bg-white dark:bg-black rounded-[14px] flex items-center justify-center dark:text-gray"
         >
           <NotificationIcon />
