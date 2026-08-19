@@ -878,10 +878,12 @@ export const getAllCourseImages = ({ type, page = 1, perPage = 10 } = {}) => {
 };
 
 export const storeCourseImage = () => {
+  const { selectedTrainingSiteId } = useAuth();
   return useClientApi({
     method: "post",
     isPrivate: true,
     endpoint: "/api/course_image/store",
+    headers: { "X-Site-Id": selectedTrainingSiteId },
   });
 };
 export const updateCourseImage = () => {

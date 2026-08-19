@@ -209,7 +209,7 @@ export default function CourseForm({
   const { data: courseImageData, isLoading: courseImageLoading } =
     getAllCourseImages(1, 100);
   const { data: certifyingBodies, isLoading: certifyingLoading } =
-    getAllCertifyingBody();
+    getAllCertifyingBody({ type: "all" });
   const { data: externalSkuData, isLoading: externalSkuLoading } =
     getAllExternalSKU(1, 100);
 
