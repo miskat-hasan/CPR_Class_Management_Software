@@ -1,7 +1,7 @@
 // src/components/dashboard/site-settings/BasicSiteSettingsForm.jsx
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import FormContainer from "@/components/shared/form/FormContainer";
 import FormInput from "@/components/shared/form/FormInput";
@@ -81,10 +81,12 @@ const BasicSiteSettingsForm = () => {
   });
 
   const { register, reset } = form;
+  const hasReset = useRef(false);
 
   useEffect(() => {
-    if (settingsData?.data) {
+    if (!hasReset.current && settingsData?.data) {
       reset(settingsData.data);
+      hasReset.current = true;
     }
   }, [settingsData, reset]);
 
