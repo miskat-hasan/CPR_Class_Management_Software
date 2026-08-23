@@ -37,6 +37,7 @@ const DEFAULT_VALUES = {
   mobilePhone: "",
   emailAddress: "",
   trainingsiteid: "",
+  type: "paid",
   price_level: "",
   sales_tax_rate: "",
   enable_cert_print: false,
@@ -44,6 +45,7 @@ const DEFAULT_VALUES = {
   allow_bid: false,
   restrict_product: false,
   restrict_view: false,
+  is_active: true,
   user_id: "",
 };
 
@@ -77,7 +79,7 @@ const TrainingSiteForm = ({
     countryLoading,
     fieldName: "country",
   });
-
+console.log("defaultValues", defaultValues);
   useEffect(() => {
     if (defaultValues) {
       reset({ ...DEFAULT_VALUES, ...defaultValues });
@@ -114,6 +116,7 @@ const TrainingSiteForm = ({
       postal_code: data.zipPostalCode,
       country: String(data.country),
       training_site_id: data.trainingsiteid || null,
+      type: data.type,
       price_level: Number(data.price_level),
       sales_tax_rate: Number(data.sales_tax_rate) || 0,
       notes,
@@ -126,9 +129,8 @@ const TrainingSiteForm = ({
       restrict_instructors_to_only_view_classes_they_teach: Boolean(
         data.restrict_view,
       ),
-      user_id: data.user_id
-        ? Number(data.user_id)
-        : null,
+      is_active: Boolean(data.is_active),
+      user_id: data.user_id ? Number(data.user_id) : null,
     };
 
     onSubmit(payload, { reset, notesRef });
@@ -235,6 +237,32 @@ const TrainingSiteForm = ({
             )}
           />
 
+          <div className="flex flex-col gap-2">
+            <p className="font-semibold text-sm text-gray-700 dark:text-gray">
+              Type
+            </p>
+            <div className="flex items-center gap-6">
+              <label className="flex items-center gap-2 cursor-pointer dark:text-gray">
+                <input
+                  {...register("type")}
+                  type="radio"
+                  value="paid"
+                  className="accent-brown"
+                />
+                Paid
+              </label>
+              <label className="flex items-center gap-2 cursor-pointer dark:text-gray">
+                <input
+                  {...register("type")}
+                  type="radio"
+                  value="free"
+                  className="accent-brown"
+                />
+                Free
+              </label>
+            </div>
+          </div>
+
           <Controller
             name="price_level"
             control={control}
@@ -304,6 +332,14 @@ const TrainingSiteForm = ({
                 />
                 Restrict instructors (non-admins) to only view classes they
                 teach
+              </label>
+              <label className="flex w-fit cursor-pointer gap-2 items-center dark:text-gray">
+                <input
+                  {...register("is_active")}
+                  type="checkbox"
+                  className="accent-brown"
+                />
+                Is Active
               </label>
             </div>
           </div>

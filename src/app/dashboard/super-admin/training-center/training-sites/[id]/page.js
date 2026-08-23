@@ -45,6 +45,7 @@ const Page = ({ params }) => {
     restrict_view: Boolean(
       d.settings?.restrict_instructors_to_only_view_classes_they_teach,
     ),
+    is_active: Boolean(d.is_active),
     user_id: d.user?.id ?? "",
   };
 

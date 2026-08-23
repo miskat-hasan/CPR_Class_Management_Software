@@ -1484,24 +1484,6 @@ export const useTSProductCheckout = () => {
 };
 
 // ==================== MISC ====================
-
-export const getAllUserRole = (page = 1, perPage = 10) => {
-  return useClientApi({
-    method: "get",
-    key: ["get-all-roles", page, perPage],
-    isPrivate: true,
-    endpoint: `api/roles/index?page=${page}&per_page=${perPage}`,
-  });
-};
-export const useConnectAccount = () => {
-  return useClientApi({
-    method: "post",
-    isPrivate: true,
-    endpoint: "/api/instructor-account-connect",
-    onError: err =>
-      toast.error(err?.response?.data?.message || "Something went wrong!"),
-  });
-};
 export const useGetNotifications = () => {
   return useClientApi({
     method: "get",

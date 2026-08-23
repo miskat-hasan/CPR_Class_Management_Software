@@ -30,7 +30,7 @@ const SiteCoordinatorField = ({
   });
 
   const options = (candidates?.data ?? []).map(u => ({
-    id: u.id,
+    id: u.user_id,
     name: `${u.name} (${u.email})`,
   }));
 
