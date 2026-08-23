@@ -55,7 +55,6 @@ export const getSingleTrainingsite = id => {
   return useClientApi({
     method: "get",
     key: ["get-single-training-site", id],
-    enabled: !!id,
     isPrivate: true,
     endpoint: `/api/training-site/${id}/edit`,
   });
@@ -66,10 +65,6 @@ export const updateTrainingSite = id => {
     method: "post",
     isPrivate: true,
     endpoint: `/api/training-site/${id}/update`,
-    onSuccess: data =>
-      toast.success(data?.message || "Training Site Updated Successfully"),
-    onError: error =>
-      toast.error(error?.response?.data?.message || "Something went wrong!"),
   });
 };
 
@@ -1488,24 +1483,6 @@ export const useTSProductCheckout = () => {
 };
 
 // ==================== MISC ====================
-
-export const getAllUserRole = (page = 1, perPage = 10) => {
-  return useClientApi({
-    method: "get",
-    key: ["get-all-roles", page, perPage],
-    isPrivate: true,
-    endpoint: `api/roles/index?page=${page}&per_page=${perPage}`,
-  });
-};
-export const useConnectAccount = () => {
-  return useClientApi({
-    method: "post",
-    isPrivate: true,
-    endpoint: "/api/instructor-account-connect",
-    onError: err =>
-      toast.error(err?.response?.data?.message || "Something went wrong!"),
-  });
-};
 export const useGetNotifications = () => {
   return useClientApi({
     method: "get",
@@ -1659,7 +1636,7 @@ export const useSendTextMessage = () => {
   });
 };
 
-// SITE SETTINGS
+// =================== SITE SETTINGS ==========================
 export const useGetSiteSettings = group => {
   const { selectedTrainingSiteId } = useAuth();
   return useClientApi({
@@ -1683,7 +1660,6 @@ export const useUpdateSiteSettings = () => {
 
 // ── Custom Registration Questions ──
 
-// GET /api/registration-questions?page=1&per_page=10
 export const useGetRegistrationQuestions = (page = 1, perPage = 10) => {
   const { selectedTrainingSiteId } = useAuth();
   return useClientApi({
@@ -1697,13 +1673,13 @@ export const useGetRegistrationQuestions = (page = 1, perPage = 10) => {
 
 // GET /api/registration-questions/:id
 export const useGetSingleRegistrationQuestion = id => {
+  const { selectedTrainingSiteId } = useAuth();
   return useClientApi({
     method: "get",
-    key: ["get-single-registration-question", id],
+    key: ["get-single-registration-question", id, selectedTrainingSiteId],
     isPrivate: true,
     endpoint: `/api/registration-questions/${id}`,
-    // hook is only called when editing; id will be null when adding
-    enabled: !!id,
+    headers: { "X-Site-Id": selectedTrainingSiteId },
   });
 };
 

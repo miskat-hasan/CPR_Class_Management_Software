@@ -173,7 +173,7 @@ const MultiStepOrderPage = () => {
               className={"cursor-pointer"}
               asChild
             >
-              <Link href={"../ts_product_orders"}>Back</Link>
+              <Link href={"../order-tc-product"}>Back</Link>
             </Button>
             <Button
               type="submit"

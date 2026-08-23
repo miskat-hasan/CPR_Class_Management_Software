@@ -11,7 +11,7 @@ import { useState } from "react";
 const EventLog = () => {
   const [page, setPage] = useSiteAwarePagination();
   const { data: eventLogData, isLoading: eventLogDataLoading } = getEventLog(page);
-  console.log(eventLogData)
+
   return (
     <div className="flex flex-col gap-[12.5px] lg:gap-[25px]">
       {/* Header */}

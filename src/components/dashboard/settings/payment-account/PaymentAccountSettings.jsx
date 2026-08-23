@@ -54,8 +54,8 @@ const PaymentAccountSettings = () => {
   } = useCheckPaymentStatus(userId, siteId);
 
   const paymentData = statusData?.data;
-  const isConnected = paymentData?.is_connected ?? false;
-  const gateway = paymentData?.gateway_name;
+  const isConnected = !!paymentData?.gateway ?? false;
+  const gateway = paymentData?.gateway?.gateway_name;
 
   const handleConnected = () => {
     refetchStatus();
