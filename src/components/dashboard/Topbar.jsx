@@ -16,7 +16,7 @@ const DashboardTopbar = () => {
   const { user, loadingUserData } = useAuth();
 
   const path = usePathname();
-  console.log(path);
+
   const parts = path.split("/");
   const roleBasePath = `/${parts[1]}/${parts[2]}`;
 

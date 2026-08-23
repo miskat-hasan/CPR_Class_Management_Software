@@ -55,7 +55,6 @@ export const getSingleTrainingsite = id => {
   return useClientApi({
     method: "get",
     key: ["get-single-training-site", id],
-    enabled: !!id,
     isPrivate: true,
     endpoint: `/api/training-site/${id}/edit`,
   });
@@ -1637,7 +1636,7 @@ export const useSendTextMessage = () => {
   });
 };
 
-// =================== SITE SETTINGS ========================== 
+// =================== SITE SETTINGS ==========================
 export const useGetSiteSettings = group => {
   const { selectedTrainingSiteId } = useAuth();
   return useClientApi({

@@ -79,7 +79,7 @@ const TrainingSiteForm = ({
     countryLoading,
     fieldName: "country",
   });
-console.log("defaultValues", defaultValues);
+
   useEffect(() => {
     if (defaultValues) {
       reset({ ...DEFAULT_VALUES, ...defaultValues });

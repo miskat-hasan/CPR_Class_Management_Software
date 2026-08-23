@@ -75,7 +75,6 @@ const CertificatesPage = () => {
           const file = new Blob([blob], {
             type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
           });
-          console.log(file);
           const url = window.URL.createObjectURL(file);
           const link = document.createElement("a");
           link.href = url;
