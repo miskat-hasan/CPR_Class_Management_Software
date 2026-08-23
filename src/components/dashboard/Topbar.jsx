@@ -8,19 +8,17 @@ import MobileSidebar from "../common/MobileSidebar";
 import useAuth from "@/hooks/useAuth";
 import AdminMobileSidebar from "../common/AdminMobileSidebar";
 import { FaRegUser } from "react-icons/fa";
-import { useParams } from "next/navigation";
+import { usePathname } from "next/navigation";
 import ThemeToggle from "../common/ThemeToggle";
 
 const DashboardTopbar = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const { user, loadingUserData } = useAuth();
 
- const path = window.location.pathname;
+  const path = usePathname();
+
   const parts = path.split("/");
   const roleBasePath = `/${parts[1]}/${parts[2]}`;
-
-  const params = useParams();
-  const trainingSiteId = params.ts;
 
   const handleSidebar = () => {
     setIsSidebarOpen(prev => !prev);

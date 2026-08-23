@@ -7,13 +7,18 @@ import {
   getSingleTrainingsite,
   updateTrainingSite,
 } from "@/hooks/api/dashboardApi";
+import { useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 const Page = ({ params }) => {
   const { id } = params;
 
+  const router = useRouter();
+  const queryClient = useQueryClient();
+
   const { data: trainingSiteData, isLoading } = getSingleTrainingsite(id);
-  const { mutateAsync, isPending } = updateTrainingSite(id);
+  const { mutate, isPending } = updateTrainingSite(id);
 
   const d = trainingSiteData?.data;
 
@@ -45,6 +50,8 @@ const Page = ({ params }) => {
     restrict_view: Boolean(
       d.settings?.restrict_instructors_to_only_view_classes_they_teach,
     ),
+    type: d.type,
+    is_active: Boolean(d.is_active),
     user_id: d.user?.id ?? "",
   };
 
@@ -52,16 +59,18 @@ const Page = ({ params }) => {
     ? `${d.user.name} (${d.user.email})`
     : "";
 
-  const onSubmit = async payload => {
+  const onSubmit = payload => {
     const formData = new FormData();
     Object.entries(payload).forEach(([key, value]) => {
       if (value === null || value === undefined) return;
       formData.append(key, typeof value === "boolean" ? Number(value) : value);
     });
 
-    await mutateAsync(formData, {
+    mutate(formData, {
       onSuccess: res => {
         toast.success(res?.message || "Training site updated successfully!");
+        router.back();
+        queryClient.invalidateQueries(["get-single-training-site", id]);
       },
       onError: err => {
         toast.error(err?.response?.data?.message || "Something went wrong!");

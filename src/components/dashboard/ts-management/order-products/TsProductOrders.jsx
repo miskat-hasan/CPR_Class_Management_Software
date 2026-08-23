@@ -34,7 +34,7 @@ const TsProductOrders = () => {
           asChild
           className="py-[11px] lg:py-[22px] cursor-pointer bg-brown dark:bg-dark-brown hover:bg-brown flex items-center gap-2 text-white"
         >
-          <Link href={"ts_product_orders/add"}>
+          <Link href={"order-tc-product/add"}>
             Add New Order
             <PlusIcon />
           </Link>
@@ -50,9 +50,7 @@ const TsProductOrders = () => {
               <TableHead>
                 <tr>
                   <th className="px-3 md:px-6 py-3 whitespace-nowrap">Date</th>
-                  <th className="px-3 md:px-6 py-3 whitespace-nowrap">
-                    Class
-                  </th>
+                  <th className="px-3 md:px-6 py-3 whitespace-nowrap">Class</th>
                   <th className="px-3 md:px-6 py-3 whitespace-nowrap">
                     Status
                   </th>
@@ -67,7 +65,7 @@ const TsProductOrders = () => {
 
               <tbody>
                 {tsProductOrderData?.data?.data?.length > 0 ? (
-                  tsProductOrderData?.data?.data?.map((item) => (
+                  tsProductOrderData?.data?.data?.map(item => (
                     <TableBodyRow key={item?.id}>
                       <td className="px-3 md:px-6 py-4 whitespace-nowrap dark:text-gray-200">
                         {new Date(item?.created_at).toLocaleString()}

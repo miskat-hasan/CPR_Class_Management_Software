@@ -1,7 +1,7 @@
 // src/components/dashboard/site-settings/BasicSiteSettingsForm.jsx
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import FormContainer from "@/components/shared/form/FormContainer";
 import FormInput from "@/components/shared/form/FormInput";
@@ -81,10 +81,12 @@ const BasicSiteSettingsForm = () => {
   });
 
   const { register, reset } = form;
+  const hasReset = useRef(false);
 
   useEffect(() => {
-    if (settingsData?.data) {
+    if (!hasReset.current && settingsData?.data) {
       reset(settingsData.data);
+      hasReset.current = true;
     }
   }, [settingsData, reset]);
 
@@ -271,16 +273,16 @@ const BasicSiteSettingsForm = () => {
         <div className="flex justify-end gap-3 pt-2 border-t dark:border-gray-700">
           <Button
             type="button"
-            variant="outline"
+            variant="secondary"
             onClick={() => reset(settingsData?.data)}
-            className="h-9 text-sm"
+            className="h-9 text-sm cursor-pointer"
           >
             Cancel
           </Button>
           <Button
             type="submit"
             disabled={isPending}
-            className="h-9 text-sm font-medium text-white bg-brown dark:bg-dark-brown hover:bg-brown focus:outline-none disabled:opacity-60"
+            className="h-9 text-sm font-medium text-white focus:outline-none disabled:opacity-60"
           >
             {isPending ? "Saving..." : "Update Settings"}
           </Button>

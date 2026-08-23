@@ -91,12 +91,6 @@ export default function EditCoursePage() {
     });
   };
 
-  console.log({
-    isLoading,
-    courseData,
-    defaultValues,
-  });
-
   if (isLoading || !defaultValues) {
     return (
       <section className="flex flex-col gap-4">

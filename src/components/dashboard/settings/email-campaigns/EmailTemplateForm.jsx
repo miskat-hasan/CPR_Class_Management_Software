@@ -56,8 +56,6 @@ export default function EmailTemplateForm({
   });
   const { register, reset, getValues } = form;
 
-  console.log(defaultValues?.body);
-
   // Reset form + populate editor when defaultValues arrive (edit mode)
   useEffect(() => {
     if (defaultValues) {
