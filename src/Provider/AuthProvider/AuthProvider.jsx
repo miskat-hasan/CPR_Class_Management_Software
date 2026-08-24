@@ -63,6 +63,17 @@ export default function AuthProvider({ children }) {
 
   const selectedTrainingSiteId = activeRole?.training_site_id ?? null;
 
+  const isSiteActive = (() => {
+    if (!selectedTrainingSiteId || !allSitesData?.data || !Array.isArray(allSitesData.data)) {
+      return true; // default to active if data not loaded yet
+    }
+    const matchedSite = allSitesData.data.find(
+      site => String(site.training_site_id ?? site.id) === String(selectedTrainingSiteId)
+    );
+    if (!matchedSite) return true; // site not found in response, allow by default
+    return matchedSite.is_active !== false;
+  })();
+
   useEffect(() => {
     setHydrated(true);
   }, []);
@@ -139,6 +150,7 @@ export default function AuthProvider({ children }) {
         allSitesLoading,
         selectedTrainingSiteId,
         setSelectedTrainingSiteId,
+        isSiteActive,
       }}
     >
       {children}

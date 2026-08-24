@@ -5,57 +5,6 @@ import useAuth from "../useAuth";
 import useClientApi from "../useClientApi";
 import { toast } from "sonner";
 
-// export const useLogin = () => {
-//   const { setToken, setSiteRoles, setActiveRole } = useAuth();
-//   const router = useRouter();
-
-//   return useClientApi({
-//     method: "post",
-//     key: ["login"],
-//     endpoint: "/api/users/login",
-//     onSuccess: (data) => {
-//       if (data?.status) {
-//         const { token, site_roles } = data.data;
-
-//         setToken(token);
-//         setSiteRoles(site_roles ?? []);
-
-//         Cookies.set("token", token, { sameSite: "strict" });
-
-//         const uniqueRoleNames = [...new Set(site_roles.map((sr) => sr.role_name))];
-//         const isMultiRole     = uniqueRoleNames.length > 1;
-
-//         if (isMultiRole) {
-//           router.push("/select-role");
-//         } else {
-//           const activeRole   = site_roles[0];
-//           const allowedSites = site_roles.map((sr) => sr.training_site_id).join(",");
-//           const segment      = roleSegment[activeRole.role_name];
-//           const page         = roleDefaultPage[activeRole.role_name];
-//           const isNoSite     = segment === "student" || segment === "client";
-//           const firstTs      = activeRole.training_site_id;
-
-//           Cookies.set("role",          activeRole.role_name, { sameSite: "strict" });
-//           Cookies.set("allowed_sites", allowedSites,         { sameSite: "strict" });
-
-//           setActiveRole(activeRole);
-
-//           const path = isNoSite
-//             ? `/dashboard/${segment}/${page}`
-//             : `/dashboard/${segment}/${firstTs}/${page}`;
-
-//           router.push(path);
-//         }
-
-//         toast.success(data?.message || "Login Successful");
-//       }
-//     },
-//     onError: (err) => {
-//       toast.error(err?.response?.data?.message || "Something went wrong!");
-//     },
-//   });
-// };
-
 // src/hooks/api/authApi.js
 export const useLogin = ({ setNavigating } = {}) => {
   const { setToken, setSiteRoles, setActiveRole } = useAuth();
