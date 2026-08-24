@@ -7,6 +7,7 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams, usePathname, useRouter } from "next/navigation";
 import useAuth from "@/hooks/useAuth";
+import { useCheckPaymentStatus } from "@/hooks/api/dashboardApi";
 import { useLogout } from "@/hooks/api/authApi";
 import CustomSelect from "../shared/form/CustomSelect";
 import { getSidebarMenu } from "@/config/sidebarConfig";
@@ -27,10 +28,28 @@ const MobileSidebar = ({ onClose, isSidebarOpen }) => {
     setSelectedTrainingSiteId,
   } = useAuth();
 
+  const { data: paymentStatusData } = useCheckPaymentStatus(
+    activeRole?.role_name === "Site Coordinator" ? user?.id : undefined,
+    activeRole?.role_name === "Site Coordinator" ? selectedTrainingSiteId : undefined,
+  );
+  const siteType = paymentStatusData?.data?.site_type;
+
   const { mutateAsync: logoutAsync, isPending: logoutPending } = useLogout();
 
   const role = activeRole?.role_name;
-  const menuItems = getSidebarMenu({ role, ts: selectedTrainingSiteId });
+  const menuItems = getSidebarMenu({ role, ts: selectedTrainingSiteId })
+    ?.map(item => {
+      if (siteType === "free") {
+        return {
+          ...item,
+          submenu: item.submenu?.filter(
+            sub => sub.label !== "Payment Account"
+          ),
+        };
+      }
+      return item;
+    })
+    ?.filter(item => (item.submenu?.length ?? 0) > 0);
 
   // Format accessibleSites for CustomSelect
   const siteOptions = (accessibleSites ?? []).map(sr => ({

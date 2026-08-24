@@ -33,7 +33,13 @@ export default function PaymentOnboardingGuard({ children }) {
     return null; // or a spinner, if you have a standard one for this
   }
 
+  const siteType = statusData?.data?.site_type;
   const isConnected = statusData?.data?.is_connected ?? false;
+
+  // Free sites don't need payment onboarding
+  if (siteType === "free") {
+    return <>{children}</>;
+  }
 
   if (isConnected) {
     return <>{children}</>;

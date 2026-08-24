@@ -26,9 +26,6 @@ export default function AddExternalSKUModal({ open, onClose, onSuccess }) {
           onSuccess?.();
           onClose();
         },
-        onError: err => {
-          toast.error(err?.response?.data?.message || "Something went wrong!");
-        },
       },
     );
   };
