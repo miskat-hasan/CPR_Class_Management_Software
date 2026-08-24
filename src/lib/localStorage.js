@@ -1,30 +1,8 @@
-// export function setItem(key, value) {
-//   try {
-//     window.localStorage.setItem(key, value);
-//   } catch (err) {
-//     console.error("LocalStorage setItem error:", err);
-//   }
-// }
-
-// export function getItem(key) {
-//   if (typeof window === "undefined") {
-//     return undefined;
-//   }
-
-//   try {
-//     const data = window.localStorage.getItem(key);
-//     return data ?? undefined;
-//   } catch (err) {
-//     console.error("LocalStorage getItem error:", err);
-//     return undefined;
-//   }
-// }
-
 // src/lib/localStorage.js
-export const getItem = (key) => {
+export const getItem = key => {
   try {
     const item = localStorage.getItem(key);
-    return item ? JSON.parse(item) : undefined; // ← must JSON.parse
+    return item ? JSON.parse(item) : undefined;
   } catch {
     return undefined;
   }
@@ -32,7 +10,7 @@ export const getItem = (key) => {
 
 export const setItem = (key, value) => {
   try {
-    localStorage.setItem(key, JSON.stringify(value)); // ← must JSON.stringify
+    localStorage.setItem(key, JSON.stringify(value));
   } catch {}
 };
 

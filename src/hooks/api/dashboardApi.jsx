@@ -957,11 +957,13 @@ export const getAllUpcomingClasses = (page = 1, perPage = 10) => {
   });
 };
 export const getAllPastClasses = (page = 1, perPage = 10) => {
+  const { selectedTrainingSiteId } = useAuth();
   return useClientApi({
     method: "get",
     isPrivate: true,
-    key: ["get-all-past-class", page, perPage],
+    key: ["get-all-past-class", page, perPage, selectedTrainingSiteId],
     endpoint: `/api/class/past?page=${page}&per_page=${perPage}`,
+    headers: { "X-Site-Id": selectedTrainingSiteId },
   });
 };
 export const getAllClasses = (page = 1, perPage = 10) => {
@@ -1671,19 +1673,20 @@ export const useGetRegistrationQuestions = (page = 1, perPage = 10) => {
   });
 };
 
-// GET /api/registration-questions/:id
+// GET
 export const useGetSingleRegistrationQuestion = id => {
   const { selectedTrainingSiteId } = useAuth();
   return useClientApi({
     method: "get",
     key: ["get-single-registration-question", id, selectedTrainingSiteId],
     isPrivate: true,
+    enabled: !!id,
     endpoint: `/api/registration-questions/${id}`,
     headers: { "X-Site-Id": selectedTrainingSiteId },
   });
 };
 
-// POST /api/registration-questions
+// POST
 export const useCreateRegistrationQuestion = () => {
   const { selectedTrainingSiteId } = useAuth();
   return useClientApi({
@@ -1694,20 +1697,22 @@ export const useCreateRegistrationQuestion = () => {
   });
 };
 
-// PUT /api/registration-questions/:id
+// PUT
 export const useUpdateRegistrationQuestion = id => {
   return useClientApi({
     method: "put",
     isPrivate: true,
+    enabled: !!id,
     endpoint: `/api/registration-questions/${id}`,
   });
 };
 
-// DELETE /api/registration-questions/:id
+// DELETE
 export const useDeleteRegistrationQuestion = id => {
   return useClientApi({
     method: "delete",
     isPrivate: true,
+    enabled: !!id,
     endpoint: `/api/registration-questions/${id}`,
   });
 };

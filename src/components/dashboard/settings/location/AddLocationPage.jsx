@@ -83,7 +83,7 @@ const AddLocationPage = () => {
   return (
     <section className="flex flex-col gap-2 lg:gap-4">
       {/* Title */}
-      <SectionTitle title="My Account" />
+      <SectionTitle title="Add Location" />
 
       {/* White Form Card */}
       <div className="bg-white dark:bg-black rounded-[14px] p-4 lg:p-8 shadow-sm">
@@ -98,19 +98,6 @@ const AddLocationPage = () => {
                 label="Abbreviation"
                 placeholder="Abbreviation here"
               />
-              {/* <CustomSelect
-                id="Abbreviation"
-                label="Abbreviation"
-                placeholder="Abbreviation"
-                options={[
-                  {
-                    value: "abbreviation 1",
-                    label: "abbreviation 1",
-                  },
-                ]}
-                // onChange={(val) => handleSelectChange("instructor", val)}
-                className="flex-1"
-              /> */}
             </div>
 
             <FormTextarea
@@ -214,7 +201,8 @@ const AddLocationPage = () => {
             <BackButton />
             <Button
               type="submit"
-              className="px-6 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium cursor-pointer text-white bg-brown dark:bg-dark-brown hover:bg-brown "
+              disabled={isPending}
+              className="px-6 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium cursor-pointer text-white bg-brown dark:bg-dark-brown hover:bg-brown disabled:cursor-not-allowed"
             >
               {isPending ? "Saving..." : "Save Changes"}
             </Button>

@@ -8,6 +8,7 @@ import { FaBuilding, FaChevronRight } from "react-icons/fa";
 import { getSidebarMenu } from "@/config/sidebarConfig";
 import { useLogout } from "@/hooks/api/authApi";
 import useAuth from "@/hooks/useAuth";
+import { useCheckPaymentStatus } from "@/hooks/api/dashboardApi";
 import { Logo, DashboardIcon } from "@/components/svg/SvgContainer";
 import SidebarSkeleton from "../skeleton/SidebarSkeleton";
 import { roleSegment, roleDefaultPage } from "@/config";
@@ -27,11 +28,29 @@ export default function Sidebar() {
     selectedTrainingSiteId,
   } = useAuth();
 
+  const { data: paymentStatusData } = useCheckPaymentStatus(
+    activeRole?.role_name === "Site Coordinator" ? user?.id : undefined,
+    activeRole?.role_name === "Site Coordinator" ? selectedTrainingSiteId : undefined,
+  );
+  const siteType = paymentStatusData?.data?.site_type;
+
   const { mutateAsync: logout, isPending: logoutPending } = useLogout();
 
   const role = activeRole?.role_name;
 
-  const menuItems = getSidebarMenu({ role, ts: selectedTrainingSiteId });
+  const menuItems = getSidebarMenu({ role, ts: selectedTrainingSiteId })
+    ?.map(item => {
+      if (siteType === "free") {
+        return {
+          ...item,
+          submenu: item.submenu?.filter(
+            sub => sub.label !== "Payment Account"
+          ),
+        };
+      }
+      return item;
+    })
+    ?.filter(item => (item.submenu?.length ?? 0) > 0);
 
   const [openMenu, setOpenMenu] = useState(null);
 
