@@ -1,3 +1,4 @@
+// src/components/dashboard/courses/external-sku/AddExternalSKUModal.jsx
 "use client";
 
 import { useForm } from "react-hook-form";
@@ -24,9 +25,6 @@ export default function AddExternalSKUModal({ open, onClose, onSuccess }) {
           reset();
           onSuccess?.();
           onClose();
-        },
-        onError: err => {
-          toast.error(err?.response?.data?.message || "Something went wrong!");
         },
       },
     );

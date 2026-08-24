@@ -3,6 +3,7 @@ import "./globals.css";
 import AuthProvider from "@/Provider/AuthProvider/AuthProvider";
 import ReactQueryProvider from "@/Provider/QueryProvider/QueryProvider";
 import { Toaster } from "sonner";
+import NextTopLoader from "nextjs-toploader";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -23,7 +24,7 @@ export default function RootLayout({ children }) {
           dangerouslySetInnerHTML={{
             __html: `
     try {
-      var theme = localStorage.getItem('theme') ?? 'dark';
+      var theme = localStorage.getItem('theme') ?? 'light';
       document.documentElement.classList.toggle('dark', theme === 'dark');
     } catch(e) {}
   `,
@@ -31,6 +32,18 @@ export default function RootLayout({ children }) {
         />
       </head>
       <body className={`${poppins.variable} antialiased overflow-hidden bg-light dark:bg-dark`}>
+        <NextTopLoader
+          color="#b70000"
+          initialPosition={0.08}
+          crawlSpeed={200}
+          height={3}
+          crawl={true}
+          showSpinner={false}
+          easing="ease"
+          speed={200}
+          shadow="0 0 10px #b70000, 0 0 5px #b70000"
+          zIndex={99999}
+        />
         <ReactQueryProvider>
           <Toaster position="top-center" theme="light" />
           <AuthProvider>{children}</AuthProvider>

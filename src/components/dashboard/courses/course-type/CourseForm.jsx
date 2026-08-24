@@ -1,7 +1,7 @@
 // src/components/dashboard/courses/course-type/CourseForm.jsx
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm, Controller, useFieldArray } from "react-hook-form";
 import FormContainer from "@/components/shared/form/FormContainer";
 import FormInput from "@/components/shared/form/FormInput";
@@ -30,7 +30,6 @@ const RichTextEditor = dynamic(() => import("@/components/shared/RichEditor"), {
   ssr: false,
 });
 
-// Options with parent-child relationships
 const OPTION_GROUPS = [
   {
     key: "prompt_for_certification",
@@ -114,9 +113,15 @@ export default function CourseForm({
 }) {
   const descriptionRef = useRef(null);
   const emailBodyRef = useRef(null);
+  const paymentEmailBodyRef = useRef(null);
+
+  // Track which editors have mounted and are ready
+  const [descriptionReady, setDescriptionReady] = useState(false);
+  const [emailBodyReady, setEmailBodyReady] = useState(false);
+  const [paymentEmailBodyReady, setPaymentEmailBodyReady] = useState(false);
 
   const form = useForm({
-    defaultValues: defaultValues ?? {
+    defaultValues: {
       course_name: "",
       mode: "on-site",
       discipline: "",
@@ -142,8 +147,8 @@ export default function CourseForm({
       ceu_credits: "",
       courseConfirmationEmailCCS: "",
       courseConfirmationEmailSubject: "",
-      payloadConfirmationEmailSubject: "",
-      use_email_for_payments: false,
+      paymentConfirmationEmailSubject: "",
+      same_email_body_for_payments: false,
       priceLevel: [
         { price: "", code: "", description: "" },
         { price: "", code: "", description: "" },
@@ -151,7 +156,7 @@ export default function CourseForm({
     },
   });
 
-  const { register, watch, control, setValue, reset } = form;
+  const { register, watch, control, reset } = form;
   const watchFields = watch();
 
   const { fields, append, remove } = useFieldArray({
@@ -159,18 +164,38 @@ export default function CourseForm({
     name: "priceLevel",
   });
 
+  // Reset form fields (non-editor) when defaultValues arrive
   useEffect(() => {
+    if (!defaultValues) {
+      return;
+    }
     if (defaultValues) {
       reset(defaultValues);
-
-      if (descriptionRef.current && defaultValues.description) {
-        descriptionRef.current?.setContents?.(defaultValues.description);
-      }
-      if (emailBodyRef.current && defaultValues.email_body) {
-        emailBodyRef.current?.setContents?.(defaultValues.email_body);
-      }
     }
   }, [defaultValues, reset]);
+
+  // Set description content only once the editor is ready AND data is available
+  useEffect(() => {
+    if (descriptionReady && defaultValues?.description) {
+      descriptionRef.current?.setContents?.(defaultValues.description);
+    }
+  }, [descriptionReady, defaultValues?.description]);
+
+  // Set email body content only once that editor is ready AND data is available
+  useEffect(() => {
+    if (emailBodyReady && defaultValues?.email_body) {
+      emailBodyRef.current?.setContents?.(defaultValues.email_body);
+    }
+  }, [emailBodyReady, defaultValues?.email_body]);
+
+  // payment email body
+  useEffect(() => {
+    if (paymentEmailBodyReady && defaultValues?.payment_confirmation_body) {
+      paymentEmailBodyRef.current?.setContents?.(
+        defaultValues.payment_confirmation_body,
+      );
+    }
+  }, [paymentEmailBodyReady, defaultValues?.payment_confirmation_body]);
 
   // Data fetching
   const { data: disciplineData, isLoading: disciplineLoading } =
@@ -184,42 +209,39 @@ export default function CourseForm({
   const { data: courseImageData, isLoading: courseImageLoading } =
     getAllCourseImages(1, 100);
   const { data: certifyingBodies, isLoading: certifyingLoading } =
-    getAllCertifyingBody();
+    getAllCertifyingBody({ type: "all" });
   const { data: externalSkuData, isLoading: externalSkuLoading } =
     getAllExternalSKU(1, 100);
 
-  // Format options for selects
   const courseImageOptions = (courseImageData?.data?.data ?? []).map(img => ({
     id: img.id,
     name: img.title,
     image: img.image,
   }));
 
-  const certifyingOptions = (certifyingBodies?.data?.data ?? []).map(cb => ({
-    id: cb.id,
-    name: cb.name,
-  }));
-
-  certifyingOptions.push({ id: null, name: "None" });
+  const certifyingOptions = [
+    ...(certifyingBodies?.data?.data ?? []).map(cb => ({
+      id: cb.id,
+      name: cb.name,
+    })),
+    { id: null, name: "None" },
+  ];
 
   const skuOptions = (externalSkuData?.data?.data ?? []).map(sku => ({
     id: sku.id,
     name: `${sku.name} (${sku.code})`,
   }));
 
-  // Add-ons helpers — same pattern as SKU multiselect
   const addOnOptions = (addOnsData?.data?.data ?? []).map(a => ({
     id: a.id,
     name: a.name,
   }));
 
-  // Selected image preview
   const selectedImage = courseImageOptions.find(
     img => String(img.id) === String(watchFields.course_image),
   );
 
   const certBody = watchFields.course_certifying_body_id;
-
   const isARC = certBody === "1";
   const isAHA = certBody === "2";
   const allowReschedule = watchFields.options?.allow_students_reschedule;
@@ -246,8 +268,10 @@ export default function CourseForm({
         .map(e => e.trim())
         .filter(Boolean),
       course_confirmation_email_subject: data.courseConfirmationEmailSubject,
-      payment_confirmation_email_subject: data.payloadConfirmationEmailSubject,
-      use_general_email_body: data.use_email_for_payments ? 1 : 0,
+      payment_confirmation_email_subject: data.paymentConfirmationEmailSubject,
+      use_general_email_body: data.same_email_body_for_payments ? 1 : 0,
+      payment_confirmation_body:
+        paymentEmailBodyRef.current?.getContent?.() ?? "",
       options: data.options,
       price_level_prompt: data.price_level_prompt,
       will_call_prompt: data.will_call_prompt,
@@ -331,15 +355,17 @@ export default function CourseForm({
             </label>
           ))}
         </div>
+
         {isEdit && (
           <div className="flex max-md:flex-col gap-2 font-semibold text-sm text-gray-700 dark:text-gray">
             Direct Schedule Link:
             <Link
               target="_blank"
-              href={`/schedule/${defaultValues?.course_id}`}
+              href={`/schedule?course_id=${defaultValues?.course_id}`}
               className="text-brown"
             >
-              {window.location.origin}/schedule/{defaultValues?.course_id}
+              {typeof window !== "undefined" && window.location.origin}
+              /schedule?course_id={defaultValues?.course_id}
             </Link>
           </div>
         )}
@@ -443,7 +469,7 @@ export default function CourseForm({
           <FormInput name="price" label="Price" placeholder="0.00" />
         )}
 
-        {/* Add-ons — MultiSelect same as SKU */}
+        {/* Add-ons */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <FormTextarea
             name="addonPrompt"
@@ -502,7 +528,6 @@ export default function CourseForm({
           )}
         />
 
-        {/* ARC — Course SKUs multi select */}
         {isARC && (
           <Controller
             name="sku_ids"
@@ -519,7 +544,6 @@ export default function CourseForm({
           />
         )}
 
-        {/* AHA — Card Types */}
         {isAHA && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Controller
@@ -551,7 +575,7 @@ export default function CourseForm({
           </div>
         )}
 
-        {/* Course Image — select + preview */}
+        {/* Course Image */}
         <div className="flex flex-col gap-3">
           <Controller
             name="course_image"
@@ -566,7 +590,6 @@ export default function CourseForm({
               />
             )}
           />
-          {/* Preview */}
           {selectedImage?.image && (
             <div className="flex flex-col gap-1.5">
               <label className="text-sm font-medium text-gray-700 dark:text-gray">
@@ -599,8 +622,6 @@ export default function CourseForm({
                   />
                   {label}
                 </label>
-
-                {/* Children — indented, disabled if parent unchecked */}
                 {children.map(child => {
                   const parentChecked = watchFields.options?.[key];
                   return (
@@ -626,9 +647,8 @@ export default function CourseForm({
             ))}
           </div>
 
-          {/* Reschedule fields — shown when allow_students_reschedule checked */}
           {allowReschedule && (
-            <div className="flex flex-wrap items-center gap-3 ml-0 mt-2 p-3 bg-gray-50 dark:bg-dark border border-gray-200 dark:border-gray-700 rounded-md">
+            <div className="flex flex-wrap items-center gap-3 mt-2 p-3 bg-gray-50 dark:bg-dark border border-gray-200 dark:border-gray-700 rounded-md">
               <div className="flex items-center gap-2">
                 <label className="text-sm text-gray-600 dark:text-gray whitespace-nowrap">
                   Reschedule Price:
@@ -668,7 +688,6 @@ export default function CourseForm({
             </div>
           )}
 
-          {/* Will call prompt — shown when allow_will_call_to_schedule checked */}
           {allowWillCall && (
             <div className="mt-2">
               <FormInput
@@ -687,12 +706,15 @@ export default function CourseForm({
           placeholder="e.g. 3"
         />
 
-        {/* Description */}
+        {/* Description — onReady fires once Quill/TipTap has mounted */}
         <div className="flex flex-col gap-1.5">
           <label className="text-sm font-medium text-gray-700 dark:text-gray">
             Description
           </label>
-          <RichTextEditor ref={descriptionRef} />
+          <RichTextEditor
+            ref={descriptionRef}
+            onReady={() => setDescriptionReady(true)}
+          />
         </div>
 
         {/* Email fields */}
@@ -708,7 +730,7 @@ export default function CourseForm({
               {...register("courseConfirmationEmailCCS")}
               placeholder="admin@example.com, manager@example.com"
               className="border border-gray-300 dark:border-gray-600 dark:bg-black dark:text-gray rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-300"
-            ></textarea>
+            />
           </div>
           <FormInput
             name="courseConfirmationEmailSubject"
@@ -718,26 +740,43 @@ export default function CourseForm({
         </div>
 
         <FormInput
-          name="payloadConfirmationEmailSubject"
+          name="paymentConfirmationEmailSubject"
           label="Payment Confirmation Email Subject"
           placeholder="Payment Received - Course Enrollment"
         />
 
+        {/* Email Body — same onReady pattern */}
         <div className="flex flex-col gap-1.5">
           <label className="text-sm font-medium text-gray-700 dark:text-gray">
             Course Confirmation Email Body
           </label>
-          <RichTextEditor ref={emailBodyRef} />
+          <RichTextEditor
+            ref={emailBodyRef}
+            onReady={() => setEmailBodyReady(true)}
+          />
         </div>
 
         <label className="flex items-center gap-2 text-sm cursor-pointer dark:text-gray w-fit">
           <input
-            {...register("use_email_for_payments")}
+            {...register("same_email_body_for_payments")}
             type="checkbox"
             className="accent-brown"
           />
           Use the same email body for payments / general registrations
         </label>
+
+        {/* Email Body — same onReady pattern */}
+        {watchFields.same_email_body_for_payments ? null : (
+          <div className="flex flex-col gap-1.5">
+            <label className="text-sm font-medium text-gray-700 dark:text-gray">
+              Payment Confirmation Email Body
+            </label>
+            <RichTextEditor
+              ref={paymentEmailBodyRef}
+              onReady={() => setPaymentEmailBodyReady(true)}
+            />
+          </div>
+        )}
 
         {/* Actions */}
         <div className="flex justify-end gap-3 mt-3">

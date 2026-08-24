@@ -8,18 +8,20 @@ import MobileSidebar from "../common/MobileSidebar";
 import useAuth from "@/hooks/useAuth";
 import AdminMobileSidebar from "../common/AdminMobileSidebar";
 import { FaRegUser } from "react-icons/fa";
-import { useParams } from "next/navigation";
+import { usePathname } from "next/navigation";
 import ThemeToggle from "../common/ThemeToggle";
 
 const DashboardTopbar = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const { user, userData, loadingUserData } = useAuth();
+  const { user, loadingUserData } = useAuth();
 
-  const params = useParams();
-  const trainingSiteId = params.ts;
+  const path = usePathname();
+
+  const parts = path.split("/");
+  const roleBasePath = `/${parts[1]}/${parts[2]}`;
 
   const handleSidebar = () => {
-    setIsSidebarOpen((prev) => !prev);
+    setIsSidebarOpen(prev => !prev);
   };
 
   return (
@@ -32,25 +34,14 @@ const DashboardTopbar = () => {
       <div className="flex items-center gap-2.5 py-3">
         <ThemeToggle />
         <Link
-           href={
-            user?.roles?.find((item) => item?.role_name === "Super Admin")
-              ? `/super-admin/${trainingSiteId}/notifications`
-              : `/admin/${trainingSiteId}/notifications`
-          }
+          href={`${roleBasePath}/notifications`}
           className="w-[40px] h-[40px] lg:w-[60px] lg:h-[60px] bg-white dark:bg-black rounded-[14px] flex items-center justify-center dark:text-gray"
         >
           <NotificationIcon />
         </Link>
 
         {/* User Info */}
-        <Link
-          href={
-            user?.roles?.find((item) => item?.role_name === "Super Admin")
-              ? `/super-admin/${trainingSiteId}/manage_profile`
-              : `/admin/${trainingSiteId}/manage_profile`
-          }
-          className="h-auto lg:h-[60px] bg-white dark:bg-black rounded-[14px] flex items-center p-1 w-auto gap-[11px]"
-        >
+        <div className="h-auto lg:h-[60px] bg-white dark:bg-black rounded-[14px] flex items-center p-1 w-auto gap-[11px]">
           {/* Avatar */}
           <div className="w-[30px] h-[30px] lg:w-[50px] lg:h-[50px] overflow-hidden rounded-[11px]">
             {loadingUserData ? (
@@ -90,17 +81,15 @@ const DashboardTopbar = () => {
               )
             )}
           </div>
-        </Link>
+        </div>
       </div>
 
       {/* Mobile Sidebar */}
-      {user?.roles?.find((item) => item?.role_name === "Super Admin") && (
+      {user?.roles?.find(item => item?.role_name === "Super Admin") && (
         <MobileSidebar isSidebarOpen={isSidebarOpen} onClose={handleSidebar} />
       )}
 
-      {user?.roles?.find(
-        (item) => item?.role_name !== "Super Admin",
-      ) && (
+      {user?.roles?.find(item => item?.role_name !== "Super Admin") && (
         <AdminMobileSidebar
           isSidebarOpen={isSidebarOpen}
           onClose={handleSidebar}

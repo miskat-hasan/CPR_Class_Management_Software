@@ -2,37 +2,44 @@
 "use client";
 
 import SectionTitle from "@/components/common/SectionTitle";
+import useSiteAwarePagination from "@/hooks/useSiteAwarePagination";
 import SubSectionTitle from "@/components/common/SubSectionTitle";
 import TableSkeleton from "@/components/skeleton/TableSkeleton";
+import {
+  Table,
+  TableBodyRow,
+  TableButton,
+  TableHead,
+  TableFooter,
+} from "@/components/common/TableElement";
 import FormContainer from "@/components/shared/form/FormContainer";
 import FormInput from "@/components/shared/form/FormInput";
 import { Button } from "@/components/ui/button";
 import { useDeleteUser, useGetAllUsers } from "@/hooks/api/dashboardApi";
 import { PlusIcon, SearchIcon } from "@/components/svg/SvgContainer";
-import { Check, Trash2 } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { CiEdit } from "react-icons/ci";
 import { IoClose } from "react-icons/io5";
 import DeleteUserConfirmModal from "@/components/dashboard/settings/users/DeleteUserConfirmModal";
+import { HiOutlineTrash } from "react-icons/hi";
 
-const UserPage = () => {
+const UserPage = ({ dashboard = "super-admin" }) => {
   const form = useForm();
-  const router = useRouter();
+
   const { reset } = form;
 
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useSiteAwarePagination();
   const [perPage] = useState(10);
   const [enableSearch, setEnableSearch] = useState(false);
   const [searchValue, setSearchValue] = useState("");
   const [selectedUser, setSelectedUser] = useState(null);
 
-  // Paginated — no type="all", no role_id filter (show every user)
   const { data: usersData, isLoading } = useGetAllUsers({
     page,
-    per_page: perPage,
+    perPage,
+    roleIds: [2, 3, 4, 7],
     ...(enableSearch && searchValue ? { search: searchValue } : {}),
   });
 
@@ -54,9 +61,6 @@ const UserPage = () => {
     reset({ search: "" });
   };
 
-  const handleDeleteClick = user => setSelectedUser(user);
-  const handleCancelDelete = () => setSelectedUser(null);
-
   const handleConfirmDelete = id => {
     deleteMutation(
       { endpoint: `/api/site-users/${id}` },
@@ -69,34 +73,32 @@ const UserPage = () => {
 
   return (
     <>
-      <section className="flex flex-col gap-[13.5px] lg:gap-[25px]">
+      <section className="flex flex-col gap-[12.5px] lg:gap-[25px]">
         <div className="flex justify-between">
           <SectionTitle title="Users" />
           <Button
-            onClick={() => router.push("./users/add-user")}
-            className="py-[11px] text-[12px] lg:text-base lg:py-[22px] cursor-pointer bg-brown dark:bg-dark-brown flex items-center gap-2"
+            asChild
+            className="py-[11px] lg:py-[22px] cursor-pointer bg-brown dark:bg-dark-brown flex items-center gap-2"
           >
-            Add User
-            <PlusIcon />
+            <Link href="users/add-user">
+              Add User
+              <PlusIcon />
+            </Link>
           </Button>
         </div>
 
-        {/* Search bar */}
+        {/* Search */}
         <FormContainer form={form} onSubmit={onSubmit}>
           <div className="px-[16px] py-[16px] lg:px-[32px] lg:py-[32px] bg-white dark:bg-black rounded-[16px]">
-            <div className="flex flex-wrap lg:flex-nowrap gap-[10px] xl:gap-[24px]">
+            <div className="flex flex-wrap lg:flex-nowrap gap-[10px] xl:gap-[24px] items-end">
               <div className="flex-1 max-w-[400px]">
-                <FormInput
-                  name="search"
-                  className="w-full"
-                  placeholder="Search users…"
-                />
+                <FormInput name="search" placeholder="Search users…" />
               </div>
               <div className="flex items-end gap-3">
                 <Button
                   type="submit"
-                  className="py-[12px] lg:py-[24px] text-[13px] lg:text-base cursor-pointer bg-brown dark:bg-dark-brown flex items-center gap-2"
                   disabled={enableSearch && isLoading}
+                  className="py-[12px] lg:py-[24px] cursor-pointer bg-brown dark:bg-dark-brown flex items-center gap-2"
                 >
                   <SearchIcon />
                   {enableSearch && isLoading ? "Searching…" : "Search"}
@@ -105,7 +107,7 @@ const UserPage = () => {
                   <button
                     type="button"
                     onClick={handleClearSearch}
-                    className="p-2 rounded-md bg-gray-100 dark:bg-transparent dark:border dark:border-gray-700 hover:bg-gray-200 transition cursor-pointer"
+                    className="p-2 rounded-md bg-gray-100 dark:bg-transparent dark:border dark:border-gray-700 hover:bg-gray-200 dark:hover:bg-gray-800 transition cursor-pointer"
                   >
                     <IoClose size={18} className="dark:text-gray" />
                   </button>
@@ -116,69 +118,57 @@ const UserPage = () => {
         </FormContainer>
 
         {/* Table */}
-        <div className="p-[13px] lg:p-[26px] bg-white dark:bg-black rounded-[14px] flex flex-col gap-[24px]">
-          <div className="flex items-center justify-between">
-            <SubSectionTitle subtitle="All list" />
-          </div>
+        <div className="p-[13px] lg:p-[26px] bg-white dark:bg-black rounded-[14px] flex flex-col gap-[12px] lg:gap-[24px]">
+          <SubSectionTitle subtitle="All list" />
 
           {isLoading ? (
             <TableSkeleton />
           ) : (
             <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                <thead className="bg-gray-50 dark:bg-gray-900">
+              <Table>
+                <TableHead>
                   <tr>
-                    {[
-                      "Name",
-                      "Active",
-                      "Username",
-                      "Training Site & Role",
-                      "Admin",
-                      "Last Activity",
-                      "Action",
-                    ].map(h => (
-                      <th
-                        key={h}
-                        className="py-3 px-4 text-left text-xs font-bold uppercase text-gray-500 dark:text-gray-400"
-                      >
-                        {h}
-                      </th>
-                    ))}
+                    <th className="px-3 md:px-6 py-3 whitespace-nowrap">
+                      Name
+                    </th>
+                    <th className="px-3 md:px-6 py-3 whitespace-nowrap">
+                      Username
+                    </th>
+                    <th className="px-3 md:px-6 py-3 whitespace-nowrap">
+                      Training Site &amp; Role
+                    </th>
+                    <th className="px-3 md:px-6 py-3 whitespace-nowrap">
+                      Admin/Coordinator
+                    </th>
+                    <th className="px-3 md:px-6 py-3 whitespace-nowrap">
+                      Last Activity
+                    </th>
+                    <th className="px-3 md:px-6 py-3 text-center whitespace-nowrap">
+                      Action
+                    </th>
                   </tr>
-                </thead>
-                <tbody className="bg-white dark:bg-black divide-y divide-gray-200 dark:divide-gray-800">
+                </TableHead>
+                <tbody>
                   {usersData?.data?.data?.length > 0 ? (
                     usersData.data.data.map(user => (
-                      <tr
-                        key={user?.id}
-                        className="hover:bg-gray-50 dark:hover:bg-gray-900 transition"
-                      >
+                      <TableBodyRow key={user?.id}>
                         {/* Name + Email */}
-                        <td className="py-4 px-4 whitespace-nowrap">
-                          <div className="font-semibold text-sm text-gray-900 dark:text-white">
+                        <td className="px-3 md:px-6 py-4 whitespace-nowrap">
+                          <p className="font-semibold text-sm dark:text-white">
                             {user?.name}
-                          </div>
-                          <div className="text-xs text-gray-500">
+                          </p>
+                          <p className="text-xs text-gray-500 dark:text-gray-400">
                             {user?.email}
-                          </div>
-                        </td>
-
-                        {/* Active */}
-                        <td className="py-4 px-4 whitespace-nowrap">
-                          {user?.active_user ? (
-                            <Check size={18} className="text-green-600" />
-                          ) : (
-                            <span className="text-gray-400 text-sm">--</span>
-                          )}
+                          </p>
                         </td>
 
                         {/* Username */}
-                        <td className="py-4 px-4 text-sm text-gray-700 dark:text-gray-300">
-                          {user?.user_name ?? "--"}
+                        <td className="px-3 md:px-6 py-4 text-sm">
+                          {user?.user_name ?? "—"}
                         </td>
 
                         {/* Training Site & Role */}
-                        <td className="py-4 px-4">
+                        <td className="px-3 md:px-6 py-4">
                           <div className="flex flex-col gap-1">
                             {user?.user_roles?.length > 0 ? (
                               user.user_roles.map((ur, i) => (
@@ -190,99 +180,86 @@ const UserPage = () => {
                                     {ur?.training_site?.training_center_name}
                                   </span>
                                   <span className="text-gray-400">·</span>
-                                  <span className="text-brown font-medium">
+                                  <span className="text-brown dark:text-dark-brown font-medium">
                                     {ur?.role?.name}
                                   </span>
                                 </span>
                               ))
                             ) : (
-                              <span className="text-gray-400 text-sm">--</span>
+                              <span className="text-gray-400 text-sm">—</span>
                             )}
                           </div>
                         </td>
 
-                        {/* Admin */}
-                        <td className="py-4 px-4 text-sm text-gray-700">
+                        {/* Admin badge */}
+                        <td className="px-3 md:px-6 py-4 whitespace-nowrap">
                           {user?.user_roles?.some(
                             ur => ur?.role?.name === "Admin",
                           ) ? (
-                            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700">
-                              TS
+                            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400">
+                              Admin
+                            </span>
+                          ) : user?.user_roles?.some(
+                              ur => ur?.role?.name === "Site Coordinator",
+                            ) ? (
+                            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400">
+                              Coordinator
                             </span>
                           ) : (
-                            <span className="text-gray-400">--</span>
+                            <span className="text-gray-400">—</span>
                           )}
                         </td>
 
                         {/* Last Activity */}
-                        <td className="py-4 px-4 text-sm text-gray-700 dark:text-gray-300">
+                        <td className="px-3 md:px-6 py-4 text-sm whitespace-nowrap">
                           {user?.last_activity_at ?? (
-                            <span className="text-gray-400">--</span>
+                            <span className="text-gray-400">—</span>
                           )}
                         </td>
 
-                        {/* Action */}
-                        <td className="px-4 py-4 text-center">
-                          <div className="flex items-center gap-2 justify-center">
-                            <Link
-                              href={`./users/${user?.id}/edit`}
-                              className="p-1.5 sm:p-2 bg-gray-100 dark:bg-gray-800 rounded-lg inline-block hover:bg-gray-200 dark:hover:bg-gray-700 transition"
+                        {/* Actions */}
+                        <td className="px-3 md:px-6 py-4 text-center">
+                          <div className="flex items-center justify-center gap-2">
+                            <TableButton
+                              href={`/dashboard/${dashboard}/settings/users/${user?.id}/edit`}
                             >
-                              <CiEdit className="text-gray-600 dark:text-gray-300 size-4" />
-                            </Link>
-                            <button
+                              <CiEdit className="text-gray-600 dark:text-gray text-[16px]" />
+                            </TableButton>
+                            <TableButton
+                              isLink={false}
                               type="button"
-                              onClick={() => handleDeleteClick(user)}
-                              className="p-1.5 sm:p-2 bg-gray-100 dark:bg-gray-800 rounded-lg inline-block hover:bg-red-100 dark:hover:bg-red-900/30 transition cursor-pointer"
+                              onClick={() => setSelectedUser(user)}
                             >
-                              <Trash2 className="text-gray-600 dark:text-gray-300 hover:text-red-600 size-4" />
-                            </button>
+                              <HiOutlineTrash className="text-gray-600 dark:text-gray text-[16px]" />
+                            </TableButton>
                           </div>
                         </td>
-                      </tr>
+                      </TableBodyRow>
                     ))
                   ) : (
                     <tr>
                       <td
                         colSpan="7"
-                        className="text-center py-6 text-gray-500 italic"
+                        className="text-center py-6 text-gray-500 dark:text-gray-400 italic"
                       >
                         No results found
                       </td>
                     </tr>
                   )}
                 </tbody>
-              </table>
+              </Table>
             </div>
           )}
 
           {/* Pagination */}
-          <div className="flex items-center justify-end gap-2 mt-3">
-            {usersData?.data?.links?.map((link, index) => (
-              <button
-                key={index}
-                disabled={link.url === null || link.page === null}
-                onClick={() => link.page && setPage(link.page)}
-                className={`px-3 py-1 text-sm border rounded-md transition ${
-                  link.active
-                    ? "border-brown text-brown bg-brown/5"
-                    : "hover:bg-gray-100 dark:hover:bg-gray-800 dark:border-gray-700"
-                } ${
-                  link.url === null || link.page === null
-                    ? "text-gray-400 cursor-not-allowed"
-                    : "cursor-pointer"
-                }`}
-                dangerouslySetInnerHTML={{ __html: link.label }}
-              />
-            ))}
-          </div>
+          <TableFooter Links={usersData?.data?.links} setPage={setPage} />
         </div>
       </section>
 
       <DeleteUserConfirmModal
         user={selectedUser}
         onConfirm={handleConfirmDelete}
-        onCancel={handleCancelDelete}
+        onCancel={() => setSelectedUser(null)}
         isPending={isDeletePending}
       />
     </>

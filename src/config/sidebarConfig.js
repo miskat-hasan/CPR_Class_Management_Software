@@ -21,7 +21,9 @@ export const getSidebarMenu = ({ role, ts }) => {
   if (role === "Client") {
     return clientMenu();
   }
-  return [];
+  if (role === "Site Coordinator") {
+    return coordinatorMenu(ts);
+  }
 };
 
 const studentMenu = () => [
@@ -29,24 +31,21 @@ const studentMenu = () => [
     label: "Classes",
     submenu: [
       {
-        label: "My Upcoming Classes",
+        label: "Upcoming Classes",
         href: `/dashboard/student/classes/upcoming-classes`,
       },
       {
-        label: "My Past Classes",
+        label: "Past Classes",
         href: `/dashboard/student/classes/past-classes`,
       },
       {
-        label: "Reschedule My Upcoming Classes",
-        href: `/dashboard/student/classes/reschedule-upcoming-classes`,
+        label: "Reschedule",
+        href: `/dashboard/student/classes/reschedule`,
       },
+
       {
-        label: "Reschedule to Another Course",
-        href: `/dashboard/student/classes/reschedule-course`,
-      },
-      {
-        label: "Enroll in New Class",
-        href: `/dashboard/student/classes/enroll-new-class`,
+        label: "Enrollment",
+        href: `/dashboard/student/classes/enrollment`,
       },
     ],
   },
@@ -95,19 +94,19 @@ const superAdminFullMenu = ts => [
     submenu: [
       {
         label: "Upcoming Classes",
-        href: `/dashboard/super-admin/${ts}/class-and-students/upcoming-classes`,
+        href: `/dashboard/super-admin/class-and-students/upcoming-classes`,
       },
       {
         label: "Schedule a Class",
-        href: `/dashboard/super-admin/${ts}/class-and-students/schedule-class`,
+        href: `/dashboard/super-admin/class-and-students/schedule-class`,
       },
       {
         label: "Past Classes",
-        href: `/dashboard/super-admin/${ts}/class-and-students/past-classes`,
+        href: `/dashboard/super-admin/class-and-students/past-classes`,
       },
       {
         label: "Student Search",
-        href: `/dashboard/super-admin/${ts}/class-and-students/student-search`,
+        href: `/dashboard/super-admin/class-and-students/student-search`,
       },
     ],
   },
@@ -116,11 +115,11 @@ const superAdminFullMenu = ts => [
     submenu: [
       {
         label: "Manage Clients",
-        href: `/dashboard/super-admin/${ts}/clients/manage_clients`,
+        href: `/dashboard/super-admin/clients/manage-clients`,
       },
       {
         label: "Add Clients",
-        href: `/dashboard/super-admin/${ts}/clients/add_client`,
+        href: `/dashboard/super-admin/clients/add-client`,
       },
     ],
   },
@@ -129,11 +128,11 @@ const superAdminFullMenu = ts => [
     submenu: [
       {
         label: "Instructor Records",
-        href: `/dashboard/super-admin/${ts}/instructors/instructor-records`,
+        href: `/dashboard/super-admin/instructors/instructor-records`,
       },
       {
         label: "Add Instructor",
-        href: `/dashboard/super-admin/${ts}/instructors/add-instructor`,
+        href: `/dashboard/super-admin/instructors/add-instructor`,
       },
     ],
   },
@@ -142,32 +141,19 @@ const superAdminFullMenu = ts => [
     submenu: [
       {
         label: "Training Sites",
-        href: `/dashboard/super-admin/${ts}/training-center/training-sites`,
+        href: `/dashboard/super-admin/training-center/training-sites`,
       },
       {
         label: "Training Site Rosters",
-        href: `/dashboard/super-admin/${ts}/training-center/training-site-rosters`,
+        href: `/dashboard/super-admin/training-center/training-site-rosters`,
       },
       {
         label: "TC Products",
-        href: `/dashboard/super-admin/${ts}/training-center/tc-products`,
+        href: `/dashboard/super-admin/training-center/tc-products`,
       },
       {
         label: "TC Product Orders",
-        href: `/dashboard/super-admin/${ts}/training-center/tc-product-orders`,
-      },
-    ],
-  },
-  {
-    label: "Credit Card Services",
-    submenu: [
-      {
-        label: "Merchant Track",
-        href: `/dashboard/super-admin/${ts}/credit_card_services/merchant_track`,
-      },
-      {
-        label: "Payment Report",
-        href: `/dashboard/super-admin/${ts}/credit_card_services/payment_report`,
+        href: `/dashboard/super-admin/training-center/tc-product-orders`,
       },
     ],
   },
@@ -176,65 +162,65 @@ const superAdminFullMenu = ts => [
     submenu: [
       {
         label: "Course Type",
-        href: `/dashboard/super-admin/${ts}/courses/course-type`,
+        href: `/dashboard/super-admin/courses/course-type`,
       },
       {
         label: "Product Add-ons",
-        href: `/dashboard/super-admin/${ts}/courses/product-add-ons`,
+        href: `/dashboard/super-admin/courses/product-add-ons`,
       },
       {
         label: "Online Keycodes",
-        href: `/dashboard/super-admin/${ts}/courses/online-keycodes`,
+        href: `/dashboard/super-admin/courses/online-keycodes`,
       },
       {
         label: "External SKUs",
-        href: `/dashboard/super-admin/${ts}/courses/external-sku`,
+        href: `/dashboard/super-admin/courses/external-sku`,
       },
       {
         label: "Discipline",
-        href: `/dashboard/super-admin/${ts}/courses/discipline`,
+        href: `/dashboard/super-admin/courses/discipline`,
       },
       {
         label: "Course Certifying Body",
-        href: `/dashboard/super-admin/${ts}/courses/certifying-body`,
+        href: `/dashboard/super-admin/courses/certifying-body`,
       },
       {
         label: "Course Image",
-        href: `/dashboard/super-admin/${ts}/courses/course-image`,
+        href: `/dashboard/super-admin/courses/course-image`,
       },
     ],
   },
   {
     label: "Settings",
     submenu: [
-      { label: "Users", href: `/dashboard/super-admin/${ts}/settings/users` },
+      { label: "Users", href: `/dashboard/super-admin/settings/users` },
       {
         label: "Certificates",
-        href: `/dashboard/super-admin/${ts}/settings/certificates`,
+        href: `/dashboard/super-admin/settings/certificates`,
       },
       {
         label: "Locations",
-        href: `/dashboard/super-admin/${ts}/settings/location`,
+        href: `/dashboard/super-admin/settings/location`,
       },
       {
         label: "Promo Codes",
-        href: `/dashboard/super-admin/${ts}/settings/promo-codes`,
+        href: `/dashboard/super-admin/settings/promo-codes`,
       },
       {
         label: "Email Campaigns",
-        href: `/dashboard/super-admin/${ts}/settings/email-campaigns`,
+        href: `/dashboard/super-admin/settings/email-campaigns`,
       },
       {
         label: "Test Messaging",
-        href: `/dashboard/super-admin/${ts}/settings/text-messaging`,
+        href: `/dashboard/super-admin/settings/text-messaging`,
       },
       {
-        label: "Card Settings",
-        href: `/dashboard/super-admin/${ts}/settings/cards-settings`,
+        label: "Payment Account",
+        href: `/dashboard/super-admin/settings/payment-account`,
       },
       {
         label: "Site Settings",
-        href: `/dashboard/super-admin/${ts}/settings/site-settings`,
+        href: `/dashboard/super-admin/settings/site-settings`,
       },
     ],
   },
@@ -243,27 +229,27 @@ const superAdminFullMenu = ts => [
     submenu: [
       {
         label: "Activity Reports",
-        href: `/dashboard/super-admin/${ts}/reports/activity_reports`,
+        href: `/dashboard/super-admin/reports/activity-reports`,
       },
       {
         label: "Class Report",
-        href: `/dashboard/super-admin/${ts}/reports/class_reports`,
+        href: `/dashboard/super-admin/reports/class-reports`,
       },
       {
         label: "Product Add-on Report",
-        href: `/dashboard/super-admin/${ts}/reports/product_addon_report`,
+        href: `/dashboard/super-admin/reports/product-addon-report`,
       },
       {
         label: "Promo Code Report",
-        href: `/dashboard/super-admin/${ts}/reports/promo_code_report`,
+        href: `/dashboard/super-admin/reports/promo-code-report`,
       },
       {
         label: "Registration Report",
-        href: `/dashboard/super-admin/${ts}/reports/registration_report`,
+        href: `/dashboard/super-admin/reports/registration-report`,
       },
       {
         label: "Event Log",
-        href: `/dashboard/super-admin/${ts}/reports/event_log`,
+        href: `/dashboard/super-admin/reports/event-log`,
       },
     ],
   },
@@ -272,11 +258,11 @@ const superAdminFullMenu = ts => [
     submenu: [
       {
         label: "Support Request",
-        href: `/dashboard/super-admin/${ts}/help/support_request`,
+        href: `/dashboard/super-admin/help/support-request`,
       },
       {
         label: "Whats New",
-        href: `/dashboard/super-admin/${ts}/help/whats_new`,
+        href: `/dashboard/super-admin/help/whats-new`,
       },
     ],
   },
@@ -284,15 +270,23 @@ const superAdminFullMenu = ts => [
 
 const superAdminSiteMenu = ts => [
   {
-    label: "Classes",
+    label: "Classes and Students",
     submenu: [
       {
-        label: "Classes",
-        href: `/dashboard/super-admin/${ts}/class_and_students/classes`,
+        label: "Upcoming Classes",
+        href: `/dashboard/super-admin/class-and-students/upcoming-classes`,
+      },
+      {
+        label: "Schedule a Class",
+        href: `/dashboard/super-admin/class-and-students/schedule-class`,
+      },
+      {
+        label: "Past Classes",
+        href: `/dashboard/super-admin/class-and-students/past-classes`,
       },
       {
         label: "Student Search",
-        href: `/dashboard/super-admin/${ts}/class_and_students/student_search`,
+        href: `/dashboard/super-admin/class-and-students/student-search`,
       },
     ],
   },
@@ -301,11 +295,11 @@ const superAdminSiteMenu = ts => [
     submenu: [
       {
         label: "Manage Clients",
-        href: `/dashboard/super-admin/${ts}/clients/manage_clients`,
+        href: `/dashboard/super-admin/clients/manage-clients`,
       },
       {
         label: "Add Clients",
-        href: `/dashboard/super-admin/${ts}/clients/add_client`,
+        href: `/dashboard/super-admin/clients/add-client`,
       },
     ],
   },
@@ -314,71 +308,88 @@ const superAdminSiteMenu = ts => [
     submenu: [
       {
         label: "Instructor Records",
-        href: `/dashboard/super-admin/${ts}/instructors/instructor-records`,
+        href: `/dashboard/super-admin/instructors/instructor-records`,
       },
       {
         label: "Add Instructor",
-        href: `/dashboard/super-admin/${ts}/instructors/add-instructor`,
+        href: `/dashboard/super-admin/instructors/add-instructor`,
       },
     ],
   },
   {
-    label: "Training Site",
+    label: "TS Management",
     submenu: [
       {
         label: "Training Site Rosters",
-        href: `/dashboard/super-admin/${ts}/training_center/training_site_rosters`,
+        href: `/dashboard/super-admin/training-center/training-site-rosters`,
       },
       {
         label: "TS Products",
-        href: `/dashboard/super-admin/${ts}/training_center/tc_products`,
+        href: `/dashboard/super-admin/training-center/tc-products`,
       },
       {
         label: "TS Product Orders",
-        href: `/dashboard/super-admin/${ts}/training_center/tc_product_orders`,
+        href: `/dashboard/super-admin/training-center/tc-product-orders`,
+      },
+    ],
+  },
+  {
+    label: "Courses",
+    submenu: [
+      {
+        label: "Course Type",
+        href: `/dashboard/super-admin/courses/course-type`,
       },
       {
-        label: "Order TC Product",
-        href: `/dashboard/super-admin/${ts}/class_and_students/ts_product_orders`,
+        label: "Product Add-ons",
+        href: `/dashboard/super-admin/courses/product-add-ons`,
+      },
+      {
+        label: "Online Keycodes",
+        href: `/dashboard/super-admin/courses/online-keycodes`,
+      },
+      {
+        label: "External SKUs",
+        href: `/dashboard/super-admin/courses/external-sku`,
+      },
+      {
+        label: "Discipline",
+        href: `/dashboard/super-admin/courses/discipline`,
+      },
+      {
+        label: "Course Image",
+        href: `/dashboard/super-admin/courses/course-image`,
       },
     ],
   },
   {
     label: "Settings",
     submenu: [
+      { label: "Users", href: `/dashboard/super-admin/settings/users` },
       {
-        label: "Course Type",
-        href: `/dashboard/super-admin/${ts}/settings/course-type`,
-      },
-      {
-        label: "Product Add-ons",
-        href: `/dashboard/super-admin/${ts}/settings/product-add-ons`,
-      },
-      {
-        label: "Online Keycodes",
-        href: `/dashboard/super-admin/${ts}/settings/online-keycodes`,
-      },
-      {
-        label: "Promo Codes",
-        href: `/dashboard/super-admin/${ts}/settings/promo-codes`,
+        label: "Certificates",
+        href: `/dashboard/super-admin/settings/certificates`,
       },
       {
         label: "Locations",
-        href: `/dashboard/super-admin/${ts}/settings/location`,
+        href: `/dashboard/super-admin/settings/location`,
       },
       {
-        label: "Card Settings",
-        href: `/dashboard/super-admin/${ts}/settings/cards-settings`,
+        label: "Promo Codes",
+        href: `/dashboard/super-admin/settings/promo-codes`,
       },
       {
-        label: "Certificates",
-        href: `/dashboard/super-admin/${ts}/settings/certificates`,
+        label: "Email Campaigns",
+        href: `/dashboard/super-admin/settings/email-campaigns`,
       },
       {
-        label: "External SKUs",
-        href: `/dashboard/super-admin/${ts}/settings/external-sku`,
+        label: "Test Messaging",
+        href: `/dashboard/super-admin/settings/text-messaging`,
       },
-      { label: "Users", href: `/dashboard/super-admin/${ts}/settings/users` },
+      {
+        label: "Site Settings",
+        href: `/dashboard/super-admin/settings/site-settings`,
+      },
     ],
   },
   {
@@ -386,27 +397,27 @@ const superAdminSiteMenu = ts => [
     submenu: [
       {
         label: "Activity Reports",
-        href: `/dashboard/super-admin/${ts}/reports/activity_reports`,
+        href: `/dashboard/super-admin/reports/activity-reports`,
       },
       {
         label: "Class Report",
-        href: `/dashboard/super-admin/${ts}/reports/class_reports`,
+        href: `/dashboard/super-admin/reports/class-reports`,
       },
       {
         label: "Product Add-on Report",
-        href: `/dashboard/super-admin/${ts}/reports/product_addon_report`,
+        href: `/dashboard/super-admin/reports/product-addon-report`,
       },
       {
         label: "Promo Code Report",
-        href: `/dashboard/super-admin/${ts}/reports/promo_code_report`,
+        href: `/dashboard/super-admin/reports/promo-code-report`,
       },
       {
         label: "Registration Report",
-        href: `/dashboard/super-admin/${ts}/reports/registration_report`,
+        href: `/dashboard/super-admin/reports/registration-report`,
       },
       {
         label: "Event Log",
-        href: `/dashboard/super-admin/${ts}/reports/event_log`,
+        href: `/dashboard/super-admin/reports/event-log`,
       },
     ],
   },
@@ -414,16 +425,192 @@ const superAdminSiteMenu = ts => [
     label: "Help",
     submenu: [
       {
-        label: "TS Support Request",
-        href: `/dashboard/super-admin/${ts}/help/support_request`,
-      },
-      {
-        label: "TC Support Request",
-        href: `/dashboard/super-admin/${ts}/help/support_request`,
+        label: "Support Request",
+        href: `/dashboard/super-admin/help/support-request`,
       },
       {
         label: "Whats New",
-        href: `/dashboard/super-admin/${ts}/help/whats_new`,
+        href: `/dashboard/super-admin/help/whats-new`,
+      },
+    ],
+  },
+];
+
+const coordinatorMenu = ts => [
+  {
+    label: "Classes and Students",
+    submenu: [
+      {
+        label: "Upcoming Classes",
+        href: `/dashboard/site-coordinator/class-and-students/upcoming-classes`,
+      },
+      {
+        label: "Schedule a Class",
+        href: `/dashboard/site-coordinator/class-and-students/schedule-class`,
+      },
+      {
+        label: "Past Classes",
+        href: `/dashboard/site-coordinator/class-and-students/past-classes`,
+      },
+      {
+        label: "Student Search",
+        href: `/dashboard/site-coordinator/class-and-students/student-search`,
+      },
+    ],
+  },
+  {
+    label: "Clients",
+    submenu: [
+      {
+        label: "Manage Clients",
+        href: `/dashboard/site-coordinator/clients/manage-clients`,
+      },
+      {
+        label: "Add Clients",
+        href: `/dashboard/site-coordinator/clients/add-client`,
+      },
+    ],
+  },
+  {
+    label: "Instructors",
+    submenu: [
+      {
+        label: "Instructor Records",
+        href: `/dashboard/site-coordinator/instructors/instructor-records`,
+      },
+      {
+        label: "Add Instructor",
+        href: `/dashboard/site-coordinator/instructors/add-instructor`,
+      },
+    ],
+  },
+  {
+    label: "TS Management",
+    submenu: [
+      {
+        label: "Training Site Rosters",
+        href: `/dashboard/site-coordinator/ts-management/training-site-rosters`,
+      },
+      {
+        label: "TS Products",
+        href: `/dashboard/site-coordinator/ts-management/tc-products`,
+      },
+      {
+        label: "TS Product Orders",
+        href: `/dashboard/site-coordinator/ts-management/ts-product-orders`,
+      },
+      {
+        label: "Order TC Product",
+        href: `/dashboard/site-coordinator/ts-management/order-tc-product`,
+      },
+      {
+        label: "Course Documents",
+        href: `/dashboard/site-coordinator/ts-management/course-documents`,
+      },
+    ],
+  },
+  {
+    label: "Courses",
+    submenu: [
+      {
+        label: "Course Type",
+        href: `/dashboard/site-coordinator/courses/course-type`,
+      },
+      {
+        label: "Product Add-ons",
+        href: `/dashboard/site-coordinator/courses/product-add-ons`,
+      },
+      {
+        label: "Online Keycodes",
+        href: `/dashboard/site-coordinator/courses/online-keycodes`,
+      },
+      {
+        label: "External SKUs",
+        href: `/dashboard/site-coordinator/courses/external-sku`,
+      },
+      {
+        label: "Discipline",
+        href: `/dashboard/site-coordinator/courses/discipline`,
+      },
+      {
+        label: "Course Image",
+        href: `/dashboard/site-coordinator/courses/course-image`,
+      },
+    ],
+  },
+  {
+    label: "Settings",
+    submenu: [
+      { label: "Users", href: `/dashboard/site-coordinator/settings/users` },
+      {
+        label: "Certificates",
+        href: `/dashboard/site-coordinator/settings/certificates`,
+      },
+      {
+        label: "Locations",
+        href: `/dashboard/site-coordinator/settings/location`,
+      },
+      {
+        label: "Promo Codes",
+        href: `/dashboard/site-coordinator/settings/promo-codes`,
+      },
+      {
+        label: "Email Campaigns",
+        href: `/dashboard/site-coordinator/settings/email-campaigns`,
+      },
+      {
+        label: "Test Messaging",
+        href: `/dashboard/site-coordinator/settings/text-messaging`,
+      },
+      {
+        label: "Payment Account",
+        href: `/dashboard/site-coordinator/settings/payment-account`,
+      },
+      {
+        label: "Site Settings",
+        href: `/dashboard/site-coordinator/settings/site-settings`,
+      },
+    ],
+  },
+  {
+    label: "Reports",
+    submenu: [
+      {
+        label: "Activity Reports",
+        href: `/dashboard/site-coordinator/reports/activity-reports`,
+      },
+      {
+        label: "Class Report",
+        href: `/dashboard/site-coordinator/reports/class-reports`,
+      },
+      {
+        label: "Product Add-on Report",
+        href: `/dashboard/site-coordinator/reports/product-addon-report`,
+      },
+      {
+        label: "Promo Code Report",
+        href: `/dashboard/site-coordinator/reports/promo-code-report`,
+      },
+      {
+        label: "Registration Report",
+        href: `/dashboard/site-coordinator/reports/registration-report`,
+      },
+      {
+        label: "Event Log",
+        href: `/dashboard/site-coordinator/reports/event-log`,
+      },
+    ],
+  },
+  {
+    label: "Help",
+    submenu: [
+      {
+        label: "Support Request",
+        href: `/dashboard/site-coordinator/help/support-request`,
+      },
+      {
+        label: "Whats New",
+        href: `/dashboard/site-coordinator/help/whats-new`,
       },
     ],
   },
@@ -431,15 +618,23 @@ const superAdminSiteMenu = ts => [
 
 const adminMenu = ts => [
   {
-    label: "Classes",
+    label: "Classes and Students",
     submenu: [
       {
-        label: "Classes",
-        href: `/dashboard/admin/${ts}/class_and_students/classes`,
+        label: "Upcoming Classes",
+        href: `/dashboard/admin/class-and-students/upcoming-classes`,
+      },
+      {
+        label: "Schedule a Class",
+        href: `/dashboard/admin/class-and-students/schedule-class`,
+      },
+      {
+        label: "Past Classes",
+        href: `/dashboard/admin/class-and-students/past-classes`,
       },
       {
         label: "Student Search",
-        href: `/dashboard/admin/${ts}/class_and_students/student_search`,
+        href: `/dashboard/admin/class-and-students/student-search`,
       },
     ],
   },
@@ -448,11 +643,11 @@ const adminMenu = ts => [
     submenu: [
       {
         label: "Manage Clients",
-        href: `/dashboard/admin/${ts}/clients/manage_clients`,
+        href: `/dashboard/admin/clients/manage-clients`,
       },
       {
         label: "Add Clients",
-        href: `/dashboard/admin/${ts}/clients/add_client`,
+        href: `/dashboard/admin/clients/add-client`,
       },
     ],
   },
@@ -461,71 +656,96 @@ const adminMenu = ts => [
     submenu: [
       {
         label: "Instructor Records",
-        href: `/dashboard/admin/${ts}/instructors/instructor_records`,
+        href: `/dashboard/admin/instructors/instructor-records`,
       },
       {
         label: "Add Instructor",
-        href: `/dashboard/admin/${ts}/instructors/add_instructor`,
+        href: `/dashboard/admin/instructors/add-instructor`,
       },
     ],
   },
   {
-    label: "Training Site",
+    label: "TS Management",
     submenu: [
       {
         label: "Training Site Rosters",
-        href: `/dashboard/admin/${ts}/training_center/training_site_rosters`,
+        href: `/dashboard/admin/ts-management/training-site-rosters`,
       },
       {
         label: "TS Products",
-        href: `/dashboard/admin/${ts}/training_center/tc_products`,
+        href: `/dashboard/admin/ts-management/ts-products`,
       },
       {
         label: "TS Product Orders",
-        href: `/dashboard/admin/${ts}/training_center/tc_product_orders`,
+        href: `/dashboard/admin/ts-management/ts-product-orders`,
       },
       {
         label: "Order TC Product",
-        href: `/dashboard/admin/${ts}/class_and_students/ts_product_orders`,
+        href: `/dashboard/admin/ts-management/order-tc-product`,
+      },
+      {
+        label: "Course Documents",
+        href: `/dashboard/admin/ts-management/course-documents`,
+      },
+    ],
+  },
+  {
+    label: "Courses",
+    submenu: [
+      {
+        label: "Course Type",
+        href: `/dashboard/admin/courses/course-type`,
+      },
+      {
+        label: "Product Add-ons",
+        href: `/dashboard/admin/courses/product-add-ons`,
+      },
+      {
+        label: "Online Keycodes",
+        href: `/dashboard/admin/courses/online-keycodes`,
+      },
+      {
+        label: "External SKUs",
+        href: `/dashboard/admin/courses/external-sku`,
+      },
+      {
+        label: "Discipline",
+        href: `/dashboard/admin/courses/discipline`,
+      },
+      {
+        label: "Course Image",
+        href: `/dashboard/admin/courses/course-image`,
       },
     ],
   },
   {
     label: "Settings",
     submenu: [
+      { label: "Users", href: `/dashboard/admin/settings/users` },
       {
-        label: "Course Type",
-        href: `/dashboard/admin/${ts}/settings/course-type`,
-      },
-      {
-        label: "Product Add-ons",
-        href: `/dashboard/admin/${ts}/settings/product-add-ons`,
-      },
-      {
-        label: "Online Keycodes",
-        href: `/dashboard/admin/${ts}/settings/online-keycodes`,
-      },
-      {
-        label: "Promo Codes",
-        href: `/dashboard/admin/${ts}/settings/promo-codes`,
+        label: "Certificates",
+        href: `/dashboard/admin/settings/certificates`,
       },
       {
         label: "Locations",
-        href: `/dashboard/admin/${ts}/settings/location`,
+        href: `/dashboard/admin/settings/location`,
       },
       {
-        label: "Card Settings",
-        href: `/dashboard/admin/${ts}/settings/cards-settings`,
+        label: "Promo Codes",
+        href: `/dashboard/admin/settings/promo-codes`,
       },
       {
-        label: "Certificates",
-        href: `/dashboard/admin/${ts}/settings/certificates`,
+        label: "Email Campaigns",
+        href: `/dashboard/admin/settings/email-campaigns`,
       },
       {
-        label: "External SKUs",
-        href: `/dashboard/admin/${ts}/settings/external-sku`,
+        label: "Test Messaging",
+        href: `/dashboard/admin/settings/text-messaging`,
       },
-      { label: "Users", href: `/dashboard/admin/${ts}/settings/users` },
+      {
+        label: "Site Settings",
+        href: `/dashboard/admin/settings/site-settings`,
+      },
     ],
   },
   {
@@ -533,27 +753,27 @@ const adminMenu = ts => [
     submenu: [
       {
         label: "Activity Reports",
-        href: `/dashboard/admin/${ts}/reports/activity_reports`,
+        href: `/dashboard/admin/reports/activity-reports`,
       },
       {
         label: "Class Report",
-        href: `/dashboard/admin/${ts}/reports/class_reports`,
+        href: `/dashboard/admin/reports/class-reports`,
       },
       {
         label: "Product Add-on Report",
-        href: `/dashboard/admin/${ts}/reports/product_addon_report`,
+        href: `/dashboard/admin/reports/product-addon-report`,
       },
       {
         label: "Promo Code Report",
-        href: `/dashboard/admin/${ts}/reports/promo_code_report`,
+        href: `/dashboard/admin/reports/promo-code-report`,
       },
       {
         label: "Registration Report",
-        href: `/dashboard/admin/${ts}/reports/registration_report`,
+        href: `/dashboard/admin/reports/registration-report`,
       },
       {
         label: "Event Log",
-        href: `/dashboard/admin/${ts}/reports/event_log`,
+        href: `/dashboard/admin/reports/event-log`,
       },
     ],
   },
@@ -561,16 +781,12 @@ const adminMenu = ts => [
     label: "Help",
     submenu: [
       {
-        label: "TS Support Request",
-        href: `/dashboard/admin/${ts}/help/support_request`,
-      },
-      {
-        label: "TC Support Request",
-        href: `/dashboard/admin/${ts}/help/support_request`,
+        label: "Support Request",
+        href: `/dashboard/admin/help/support-request`,
       },
       {
         label: "Whats New",
-        href: `/dashboard/admin/${ts}/help/whats_new`,
+        href: `/dashboard/admin/help/whats-new`,
       },
     ],
   },
@@ -578,62 +794,40 @@ const adminMenu = ts => [
 
 const instructorMenu = ts => [
   {
-    label: "Classes",
+    label: "Classes and Students",
     submenu: [
       {
-        label: "Classes",
-        href: `/dashboard/instructor/${ts}/class_and_students/classes`,
+        label: "Upcoming Classes",
+        href: `/dashboard/instructor/class-and-students/upcoming-classes`,
+      },
+      {
+        label: "Schedule a Class",
+        href: `/dashboard/instructor/class-and-students/schedule-class`,
+      },
+      {
+        label: "Past Classes",
+        href: `/dashboard/instructor/class-and-students/past-classes`,
       },
       {
         label: "Student Search",
-        href: `/dashboard/instructor/${ts}/class_and_students/student_search`,
+        href: `/dashboard/instructor/class-and-students/student-search`,
       },
     ],
   },
   {
-    label: "Clients",
-    submenu: [
-      {
-        label: "Manage Clients",
-        href: `/dashboard/instructor/${ts}/clients/manage_clients`,
-      },
-      {
-        label: "Add Clients",
-        href: `/dashboard/instructor/${ts}/clients/add_client`,
-      },
-    ],
-  },
-  {
-    label: "Instructors",
-    submenu: [
-      {
-        label: "Instructor Records",
-        href: `/dashboard/instructor/${ts}/instructors/instructor_records`,
-      },
-      {
-        label: "Add Instructor",
-        href: `/dashboard/instructor/${ts}/instructors/add_instructor`,
-      },
-    ],
-  },
-  {
-    label: "Training Site",
+    label: "TS Management",
     submenu: [
       {
         label: "Training Site Rosters",
-        href: `/dashboard/instructor/${ts}/training_center/training_site_rosters`,
+        href: `/dashboard/instructor/ts-management/training-site-rosters`,
       },
       {
-        label: "TS Products",
-        href: `/dashboard/instructor/${ts}/training_center/tc_products`,
+        label: "Order TS Product",
+        href: `/dashboard/instructor/ts-management/order-ts-product`,
       },
       {
-        label: "TS Product Orders",
-        href: `/dashboard/instructor/${ts}/training_center/tc_product_orders`,
-      },
-      {
-        label: "Order TC Product",
-        href: `/dashboard/instructor/${ts}/class_and_students/ts_product_orders`,
+        label: "Course Documents",
+        href: `/dashboard/instructor/ts-management/course-documents`,
       },
     ],
   },
@@ -641,65 +835,12 @@ const instructorMenu = ts => [
     label: "Settings",
     submenu: [
       {
-        label: "Course Type",
-        href: `/dashboard/instructor/${ts}/settings/course-type`,
-      },
-      {
-        label: "Product Add-ons",
-        href: `/dashboard/instructor/${ts}/settings/product-add-ons`,
-      },
-      {
-        label: "Online Keycodes",
-        href: `/dashboard/instructor/${ts}/settings/online-keycodes`,
-      },
-      {
-        label: "Promo Codes",
-        href: `/dashboard/instructor/${ts}/settings/promo-codes`,
-      },
-      {
         label: "Locations",
-        href: `/dashboard/instructor/${ts}/settings/location`,
+        href: `/dashboard/instructor/settings/location`,
       },
       {
-        label: "Card Settings",
-        href: `/dashboard/instructor/${ts}/settings/cards-settings`,
-      },
-      {
-        label: "Certificates",
-        href: `/dashboard/instructor/${ts}/settings/certificates`,
-      },
-      {
-        label: "External SKUs",
-        href: `/dashboard/instructor/${ts}/settings/external-sku`,
-      },
-    ],
-  },
-  {
-    label: "Reports",
-    submenu: [
-      {
-        label: "Activity Reports",
-        href: `/dashboard/instructor/${ts}/reports/activity_reports`,
-      },
-      {
-        label: "Class Report",
-        href: `/dashboard/instructor/${ts}/reports/class_reports`,
-      },
-      {
-        label: "Product Add-on Report",
-        href: `/dashboard/instructor/${ts}/reports/product_addon_report`,
-      },
-      {
-        label: "Promo Code Report",
-        href: `/dashboard/instructor/${ts}/reports/promo_code_report`,
-      },
-      {
-        label: "Registration Report",
-        href: `/dashboard/instructor/${ts}/reports/registration_report`,
-      },
-      {
-        label: "Event Log",
-        href: `/dashboard/instructor/${ts}/reports/event_log`,
+        label: "My Instructor Profile",
+        href: `/dashboard/instructor/settings/location`,
       },
     ],
   },
@@ -707,16 +848,12 @@ const instructorMenu = ts => [
     label: "Help",
     submenu: [
       {
-        label: "TS Support Request",
-        href: `/dashboard/instructor/${ts}/help/support_request`,
-      },
-      {
-        label: "TC Support Request",
-        href: `/dashboard/instructor/${ts}/help/support_request`,
+        label: "Support Request",
+        href: `/dashboard/instructor/help/support-request`,
       },
       {
         label: "Whats New",
-        href: `/dashboard/instructor/${ts}/help/whats_new`,
+        href: `/dashboard/instructor/help/whats-new`,
       },
     ],
   },
@@ -724,41 +861,23 @@ const instructorMenu = ts => [
 
 const assistantMenu = ts => [
   {
-    label: "Classes",
+    label: "Classes and Students",
     submenu: [
       {
-        label: "Classes",
-        href: `/dashboard/instructor-assistant/${ts}/class_and_students/classes`,
+        label: "Upcoming Classes",
+        href: `/dashboard/instructor/class-and-students/upcoming-classes`,
+      },
+      {
+        label: "Schedule a Class",
+        href: `/dashboard/instructor/class-and-students/schedule-class`,
+      },
+      {
+        label: "Past Classes",
+        href: `/dashboard/instructor/class-and-students/past-classes`,
       },
       {
         label: "Student Search",
-        href: `/dashboard/instructor-assistant/${ts}/class_and_students/student_search`,
-      },
-    ],
-  },
-  {
-    label: "Clients",
-    submenu: [
-      {
-        label: "Manage Clients",
-        href: `/dashboard/instructor-assistant/${ts}/clients/manage_clients`,
-      },
-      {
-        label: "Add Clients",
-        href: `/dashboard/instructor-assistant/${ts}/clients/add_client`,
-      },
-    ],
-  },
-  {
-    label: "Instructors",
-    submenu: [
-      {
-        label: "Instructor Records",
-        href: `/dashboard/instructor-assistant/${ts}/instructors/instructor_records`,
-      },
-      {
-        label: "Add Instructor",
-        href: `/dashboard/instructor-assistant/${ts}/instructors/add_instructor`,
+        href: `/dashboard/instructor/class-and-students/student-search`,
       },
     ],
   },
@@ -767,19 +886,15 @@ const assistantMenu = ts => [
     submenu: [
       {
         label: "Training Site Rosters",
-        href: `/dashboard/instructor-assistant/${ts}/training_center/training_site_rosters`,
+        href: `/dashboard/instructor/training-center/training-site-rosters`,
       },
       {
-        label: "TS Products",
-        href: `/dashboard/instructor-assistant/${ts}/training_center/tc_products`,
+        label: "Order TS Product",
+        href: `/dashboard/instructor/training-center/order-ts-product`,
       },
       {
-        label: "TS Product Orders",
-        href: `/dashboard/instructor-assistant/${ts}/training_center/tc_product_orders`,
-      },
-      {
-        label: "Order TC Product",
-        href: `/dashboard/instructor-assistant/${ts}/class_and_students/ts_product_orders`,
+        label: "Course Documents",
+        href: `/dashboard/instructor/training-center/course-documents`,
       },
     ],
   },
@@ -787,65 +902,12 @@ const assistantMenu = ts => [
     label: "Settings",
     submenu: [
       {
-        label: "Course Type",
-        href: `/dashboard/instructor-assistant/${ts}/settings/course-type`,
-      },
-      {
-        label: "Product Add-ons",
-        href: `/dashboard/instructor-assistant/${ts}/settings/product-add-ons`,
-      },
-      {
-        label: "Online Keycodes",
-        href: `/dashboard/instructor-assistant/${ts}/settings/online-keycodes`,
-      },
-      {
-        label: "Promo Codes",
-        href: `/dashboard/instructor-assistant/${ts}/settings/promo-codes`,
-      },
-      {
         label: "Locations",
-        href: `/dashboard/instructor-assistant/${ts}/settings/location`,
+        href: `/dashboard/instructor/settings/location`,
       },
       {
-        label: "Card Settings",
-        href: `/dashboard/instructor-assistant/${ts}/settings/cards-settings`,
-      },
-      {
-        label: "Certificates",
-        href: `/dashboard/instructor-assistant/${ts}/settings/certificates`,
-      },
-      {
-        label: "External SKUs",
-        href: `/dashboard/instructor-assistant/${ts}/settings/external-sku`,
-      },
-    ],
-  },
-  {
-    label: "Reports",
-    submenu: [
-      {
-        label: "Activity Reports",
-        href: `/dashboard/instructor-assistant/${ts}/reports/activity_reports`,
-      },
-      {
-        label: "Class Report",
-        href: `/dashboard/instructor-assistant/${ts}/reports/class_reports`,
-      },
-      {
-        label: "Product Add-on Report",
-        href: `/dashboard/instructor-assistant/${ts}/reports/product_addon_report`,
-      },
-      {
-        label: "Promo Code Report",
-        href: `/dashboard/instructor-assistant/${ts}/reports/promo_code_report`,
-      },
-      {
-        label: "Registration Report",
-        href: `/dashboard/instructor-assistant/${ts}/reports/registration_report`,
-      },
-      {
-        label: "Event Log",
-        href: `/dashboard/instructor-assistant/${ts}/reports/event_log`,
+        label: "My Instructor Profile",
+        href: `/dashboard/instructor/settings/location`,
       },
     ],
   },
@@ -854,15 +916,15 @@ const assistantMenu = ts => [
     submenu: [
       {
         label: "TS Support Request",
-        href: `/dashboard/instructor-assistant/${ts}/help/support_request`,
+        href: `/dashboard/instructor/help/support-request`,
       },
       {
         label: "TC Support Request",
-        href: `/dashboard/instructor-assistant/${ts}/help/support_request`,
+        href: `/dashboard/instructor/help/support-request`,
       },
       {
         label: "Whats New",
-        href: `/dashboard/instructor-assistant/${ts}/help/whats_new`,
+        href: `/dashboard/instructor/help/whats-new`,
       },
     ],
   },

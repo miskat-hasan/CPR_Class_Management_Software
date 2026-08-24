@@ -24,15 +24,20 @@ export const Roles = [
     id: 6,
     name: "Client",
   },
+  {
+    id: 7,
+    name: "Site Coordinator",
+  },
 ];
 
 export const roleDefaultPage = {
   "Super Admin": "class-and-students/upcoming-classes",
-  Admin: "class-and-students/classes",
-  Instructor: "class-and-students/classes",
+  Admin: "class-and-students/upcoming-classes",
+  Instructor: "class-and-students/upcoming-classes",
   "Instructor Assistant": "class-and-students/classes",
   Student: "classes/upcoming-classes",
   Client: "class-and-students/upcoming-classes",
+  "Site Coordinator": "class-and-students/upcoming-classes",
 };
 
 export const roleSegment = {
@@ -42,4 +47,5 @@ export const roleSegment = {
   "Instructor Assistant": "instructor-assistant",
   Student: "student",
   Client: "client",
+  "Site Coordinator": "site-coordinator",
 };

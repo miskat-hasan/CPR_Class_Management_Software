@@ -7,15 +7,15 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams, usePathname, useRouter } from "next/navigation";
 import useAuth from "@/hooks/useAuth";
+import { useCheckPaymentStatus } from "@/hooks/api/dashboardApi";
 import { useLogout } from "@/hooks/api/authApi";
 import CustomSelect from "../shared/form/CustomSelect";
 import { getSidebarMenu } from "@/config/sidebarConfig";
-import { roleSegment } from "@/config";
+import { roleSegment, roleDefaultPage } from "@/config";
 
 const MobileSidebar = ({ onClose, isSidebarOpen }) => {
   const pathname = usePathname();
   const router = useRouter();
-  const { ts } = useParams();
 
   const [openMenu, setOpenMenu] = useState(null);
 
@@ -24,13 +24,32 @@ const MobileSidebar = ({ onClose, isSidebarOpen }) => {
     activeRole,
     accessibleSites,
     allSitesLoading,
+    selectedTrainingSiteId,
     setSelectedTrainingSiteId,
   } = useAuth();
+
+  const { data: paymentStatusData } = useCheckPaymentStatus(
+    activeRole?.role_name === "Site Coordinator" ? user?.id : undefined,
+    activeRole?.role_name === "Site Coordinator" ? selectedTrainingSiteId : undefined,
+  );
+  const siteType = paymentStatusData?.data?.site_type;
 
   const { mutateAsync: logoutAsync, isPending: logoutPending } = useLogout();
 
   const role = activeRole?.role_name;
-  const menuItems = getSidebarMenu({ role, ts });
+  const menuItems = getSidebarMenu({ role, ts: selectedTrainingSiteId })
+    ?.map(item => {
+      if (siteType === "free") {
+        return {
+          ...item,
+          submenu: item.submenu?.filter(
+            sub => sub.label !== "Payment Account"
+          ),
+        };
+      }
+      return item;
+    })
+    ?.filter(item => (item.submenu?.length ?? 0) > 0);
 
   // Format accessibleSites for CustomSelect
   const siteOptions = (accessibleSites ?? []).map(sr => ({
@@ -40,30 +59,24 @@ const MobileSidebar = ({ onClose, isSidebarOpen }) => {
 
   // Auto-open active menu on pathname change
   useEffect(() => {
-    if (!menuItems.length) return;
+    if (!menuItems?.length) return;
     for (const item of menuItems) {
       if (item.submenu?.some(sub => pathname.startsWith(sub.href))) {
         setOpenMenu(item.label);
         return;
       }
     }
-  }, [pathname, menuItems.length]);
-
-  // Close sidebar on route change
-  useEffect(() => {
-    onClose();
-  }, [pathname]);
+  }, [pathname, menuItems?.length]);
 
   const handleSiteChange = val => {
     setSelectedTrainingSiteId(val);
 
+    // Always land back on the role's default page after switching sites.
     const segment = roleSegment[role];
-    const isSuperAdminOnMaster = role === "Super Admin" && String(val) === "1";
-    const page = isSuperAdminOnMaster
-      ? "class_and_students/upcoming_classes"
-      : "class_and_students/classes";
-
-    router.push(`/dashboard/${segment}/${val}/${page}`);
+    const page = roleDefaultPage[role];
+    if (segment && page) {
+      router.push(`/dashboard/${segment}/${page}`);
+    }
   };
 
   const handleLogout = async () => {
@@ -109,7 +122,7 @@ const MobileSidebar = ({ onClose, isSidebarOpen }) => {
           {!isNoSiteRole && (
             <CustomSelect
               id="mobile-training-site"
-              value={ts}
+              value={selectedTrainingSiteId}
               options={siteOptions}
               isLoading={allSitesLoading}
               onChange={handleSiteChange}
@@ -161,6 +174,7 @@ const MobileSidebar = ({ onClose, isSidebarOpen }) => {
                             <li key={sub.label}>
                               <Link
                                 href={sub.href}
+                                onClick={() => onClose()}
                                 className={`flex items-center pl-8 pr-4 py-2.5 text-xs relative ${
                                   active
                                     ? "text-gray-900 dark:text-white font-semibold"

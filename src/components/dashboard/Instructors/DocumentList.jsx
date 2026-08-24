@@ -1,20 +1,23 @@
+// src/components/dashboard/Instructors/DocumentList.jsx
+"use client";
+
 import SectionTitle from "@/components/common/SectionTitle";
-import FormContainer from "@/components/shared/form/FormContainer";
+import TableSkeleton from "@/components/skeleton/TableSkeleton";
 import {
-  deleteDocument,
-  getAllDocuments,
-  storeDocument,
-} from "@/hooks/api/dashboardApi";
-import { Button } from "@nolesh/react-file-manager";
+  Table,
+  TableBodyRow,
+  TableHead,
+} from "@/components/common/TableElement";
+import FormContainer from "@/components/shared/form/FormContainer";
+import { Button } from "@/components/ui/button";
+import { deleteDocument, storeDocument } from "@/hooks/api/dashboardApi";
 import { useQueryClient } from "@tanstack/react-query";
 import { Download, Loader2, PlusIcon, Trash2 } from "lucide-react";
-import Link from "next/link";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import Swal from "sweetalert2";
 
-const DocumentList = ({ instructorId, documentData }) => {
+const DocumentList = ({ instructorId, documentData, isLoading }) => {
   const [selectedItem, setSelectedItem] = useState(null);
 
   const form = useForm({
@@ -22,7 +25,6 @@ const DocumentList = ({ instructorId, documentData }) => {
   });
 
   const { reset, watch, register } = form;
-  // const { data: documentData, isLoading: documentLoading } = getAllDocuments();
 
   const {
     mutateAsync: storeDocumentMutation,
@@ -33,7 +35,7 @@ const DocumentList = ({ instructorId, documentData }) => {
 
   const queryClient = useQueryClient();
 
-  const documentOnSubmit = (data) => {
+  const documentOnSubmit = data => {
     const formData = new FormData();
     formData.append("instructor_id", instructorId);
     if (data.documentFile?.[0]) {
@@ -41,131 +43,141 @@ const DocumentList = ({ instructorId, documentData }) => {
     }
 
     storeDocumentMutation(formData, {
-      onSuccess: (data) => {
+      onSuccess: data => {
         toast.success(data?.message || "Document added successfully");
         reset();
         queryClient.invalidateQueries("get-single-instructor");
       },
-      onError: (err) => {
-       toast.error(err?.response?.data?.message || "Something went wrong!");
+      onError: err => {
+        toast.error(err?.response?.data?.message || "Something went wrong!");
       },
     });
   };
 
-  // delete document mutation
   const { mutate: deleteDocumentMutation, isPending: deleteDocumentPending } =
     deleteDocument();
 
-  const handleDelete = (id) => {
+  const handleDelete = id => {
     setSelectedItem(id);
-
     deleteDocumentMutation({ endpoint: `/api/documents/delete?id=${id}` });
   };
 
   return (
-    <div>
-      <div className="mt-8">
-        <FormContainer form={form} onSubmit={documentOnSubmit}>
-          <div className="flex items-center justify-between mb-3">
-            <SectionTitle title={"Documents"} />
-            <label className="py-[7px] cursor-pointer rounded-sm text-white px-3 text-sm bg-brown dark:bg-dark-brown flex items-center gap-2">
-              <input
-                {...register("documentFile")}
-                type="file"
-                className="hidden"
-              />
-              Add Document
-              <PlusIcon size={16} />
-            </label>
-          </div>
-          <div className="bg-white dark:bg-black rounded-[14px] p-4 border border-gray-200 shadow-sm">
+    <div className="mt-8 flex flex-col gap-[12.5px] lg:gap-[25px]">
+      <FormContainer form={form} onSubmit={documentOnSubmit}>
+        <div className="flex items-center justify-between mb-3">
+          <SectionTitle title={"Documents"} />
+          <label className="py-[7px] cursor-pointer rounded-sm text-white px-3 text-sm bg-brown dark:bg-dark-brown flex items-center gap-2">
+            <input
+              {...register("documentFile")}
+              type="file"
+              className="hidden"
+            />
+            Add Document
+            <PlusIcon size={16} />
+          </label>
+        </div>
+
+        {isLoading ? (
+          <TableSkeleton columns={2} rows={2} />
+        ) : (
+          <div className="p-[13px] lg:p-[26px] bg-white dark:bg-black rounded-[14px] flex flex-col gap-[24px]">
             <div className="overflow-x-auto">
-              <table className="min-w-[700px] w-full text-sm sm:text-base text-left text-gray-700">
-                <thead className="bg-gray-50 text-black text-[14px] sm:text-[16px] font-semibold">
+              <Table>
+                <TableHead>
                   <tr>
-                    <th className="px-3 sm:px-6 py-3">Filename</th>
-                    <th className="px-3 sm:px-6 py-3 text-center">Action</th>
+                    <th className="px-3 md:px-6 py-3 whitespace-nowrap">
+                      Filename
+                    </th>
+                    <th className="px-3 md:px-6 py-3 text-center whitespace-nowrap">
+                      Action
+                    </th>
                   </tr>
-                </thead>
+                </TableHead>
 
                 <tbody>
                   {documentPathWatch?.[0]?.name && (
-                    <tr
-                      // key={item.id}
-                      className="border-b hover:bg-gray-50 transition-all"
-                    >
-                      <td className="px-3 sm:px-6 py-3 whitespace-nowrap">
-                        {documentPathWatch?.[0]?.name}
+                    <TableBodyRow>
+                      <td className="px-3 md:px-6 py-4 whitespace-nowrap">
+                        {documentPathWatch[0].name}
                       </td>
-                      <td className="px-3 sm:px-6 py-3 text-center">
-                        <div className="flex items-center gap-1 justify-center">
+                      <td className="px-3 md:px-6 py-4 text-center">
+                        <div className="flex items-center gap-2 justify-center">
                           <Button
+                            type="button"
                             onClick={() => reset()}
-                            className="px-6 py-2 bg-transparent cursor-pointer border border-gray-300 rounded-md text-sm font-medium text-black hover:bg-gray-50"
+                            className="px-4 py-2 text-sm rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-black text-gray-700 dark:text-gray hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer"
                           >
                             Cancel
                           </Button>
                           <Button
                             type="submit"
-                            className="px-6 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium cursor-pointer text-white bg-brown dark:bg-dark-brown hover:bg-brown "
                             disabled={storeDocumentLoading}
+                            className="px-6 py-2 text-sm font-medium rounded-md text-white bg-brown dark:bg-dark-brown hover:bg-brown-hover cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                           >
                             {storeDocumentLoading ? "Saving ..." : "Save"}
                           </Button>
                         </div>
                       </td>
-                    </tr>
+                    </TableBodyRow>
                   )}
-                  {documentPathWatch?.[0]?.name || documentData?.length > 0 ? (
-                    documentData?.map((item, index) => (
-                      <tr
-                        key={item.id}
-                        className="border-b hover:bg-gray-50 transition-all"
-                      >
-                        <td className="px-3 sm:px-6 py-3 whitespace-nowrap">
+
+                  {documentData?.length > 0 ? (
+                    documentData.map(item => (
+                      <TableBodyRow key={item.id}>
+                        <td className="px-3 md:px-6 py-4 whitespace-nowrap">
                           {item.document_path}
                         </td>
-                        <td className="px-3 sm:px-6 py-3 text-center">
+                        <td className="px-3 md:px-6 py-4 text-center">
                           <div className="flex items-center gap-1 justify-center">
                             <button
                               type="button"
-                              className="p-1.5 sm:p-2 bg-gray-100 rounded-lg inline-block hover:bg-gray-200 transition"
+                              className="p-1.5 sm:p-2 bg-gray-100 dark:bg-gray-800 rounded-lg inline-block hover:bg-gray-200 dark:hover:bg-gray-700 transition cursor-pointer"
                             >
-                              <Download size={16} />
+                              <Download
+                                size={16}
+                                className="text-gray-600 dark:text-gray"
+                              />
                             </button>
                             <button
                               type="button"
                               onClick={() => handleDelete(item?.id)}
-                              className="p-1.5 sm:p-2 bg-gray-100 rounded-lg cursor-pointer inline-block hover:bg-gray-200 transition disabled:opacity-60 disabled:cursor-not-allowed"
                               disabled={deleteDocumentPending}
+                              className="p-1.5 sm:p-2 bg-gray-100 dark:bg-gray-800 rounded-lg cursor-pointer inline-block hover:bg-gray-200 dark:hover:bg-gray-700 transition disabled:opacity-60 disabled:cursor-not-allowed"
                             >
                               {deleteDocumentPending &&
                               selectedItem === item?.id ? (
-                                <Loader2 size={16} className="animate-spin" />
+                                <Loader2
+                                  size={16}
+                                  className="animate-spin text-gray-600 dark:text-gray"
+                                />
                               ) : (
-                                <Trash2 size={16} />
+                                <Trash2
+                                  size={16}
+                                  className="text-gray-600 dark:text-gray"
+                                />
                               )}
                             </button>
                           </div>
                         </td>
-                      </tr>
+                      </TableBodyRow>
                     ))
-                  ) : (
+                  ) : !documentPathWatch?.[0]?.name ? (
                     <tr>
                       <td
-                        colSpan="5"
+                        colSpan="2"
                         className="text-center py-6 text-gray-500 italic"
                       >
                         No results found
                       </td>
                     </tr>
-                  )}
+                  ) : null}
                 </tbody>
-              </table>
+              </Table>
             </div>
           </div>
-        </FormContainer>
-      </div>
+        )}
+      </FormContainer>
     </div>
   );
 };

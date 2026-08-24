@@ -1,58 +1,88 @@
+// src/components/dashboard/Sidebar.jsx
 "use client";
 
-import { useParams, usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { FaChevronRight } from "react-icons/fa";
+import { FaBuilding, FaChevronRight } from "react-icons/fa";
 import { getSidebarMenu } from "@/config/sidebarConfig";
 import { useLogout } from "@/hooks/api/authApi";
 import useAuth from "@/hooks/useAuth";
-import CustomSelect from "@/components/shared/form/CustomSelect";
+import { useCheckPaymentStatus } from "@/hooks/api/dashboardApi";
 import { Logo, DashboardIcon } from "@/components/svg/SvgContainer";
 import SidebarSkeleton from "../skeleton/SidebarSkeleton";
-import { roleSegment } from "@/config";
+import { roleSegment, roleDefaultPage } from "@/config";
+import TrainingSiteSwitcher from "./TrainingSiteSwitcher";
 
 export default function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
-  const { ts } = useParams();
 
-  const { user, loading, activeRole, accessibleSites, allSitesLoading } =
-    useAuth();
+  const {
+    user,
+    loading,
+    activeRole,
+    accessibleSites,
+    allSitesLoading,
+    setActiveRole,
+    selectedTrainingSiteId,
+  } = useAuth();
+
+  const { data: paymentStatusData } = useCheckPaymentStatus(
+    activeRole?.role_name === "Site Coordinator" ? user?.id : undefined,
+    activeRole?.role_name === "Site Coordinator" ? selectedTrainingSiteId : undefined,
+  );
+  const siteType = paymentStatusData?.data?.site_type;
 
   const { mutateAsync: logout, isPending: logoutPending } = useLogout();
 
   const role = activeRole?.role_name;
 
-  const menuItems = getSidebarMenu({ role, ts });
+  const menuItems = getSidebarMenu({ role, ts: selectedTrainingSiteId })
+    ?.map(item => {
+      if (siteType === "free") {
+        return {
+          ...item,
+          submenu: item.submenu?.filter(
+            sub => sub.label !== "Payment Account"
+          ),
+        };
+      }
+      return item;
+    })
+    ?.filter(item => (item.submenu?.length ?? 0) > 0);
 
   const [openMenu, setOpenMenu] = useState(null);
 
   useEffect(() => {
-    if (!menuItems.length) return;
+    if (!menuItems?.length) return;
     for (const item of menuItems) {
-      if (item.submenu?.some((sub) => pathname.startsWith(sub.href))) {
+      if (item.submenu?.some(sub => pathname.startsWith(sub.href))) {
         setOpenMenu(item.label);
         return;
       }
     }
-  }, [pathname, menuItems.length]);
+  }, [pathname, menuItems?.length]);
 
-  const handleSiteChange = (val) => {
-    const isSuperAdminOnMaster = role === "Super Admin" && String(val) === "1";
+  const handleSiteChange = val => {
+    const matchedSite = accessibleSites.find(
+      sr => String(sr.training_site_id ?? sr.id) === String(val),
+    );
+
+    setActiveRole({ ...activeRole, ...matchedSite, training_site_id: val });
+
     const segment = roleSegment[role];
-    const page = isSuperAdminOnMaster
-      ? "class_and_students/upcoming_classes"
-      : "class_and_students/classes";
-
-    router.push(`/dashboard/${segment}/${val}/${page}`);
+    const page = roleDefaultPage[role];
+    if (segment && page) {
+      router.push(`/dashboard/${segment}/${page}`);
+    }
   };
 
   if (loading || !user) return <SidebarSkeleton />;
 
-  const siteOptions = accessibleSites.map((sr) => ({
-    id: sr.id,
-    name: sr.training_center_name,
+  const siteOptions = accessibleSites.map(sr => ({
+    id: sr.training_site_id ?? sr.id,
+    name: sr.training_center_name ?? sr.training_site_name,
   }));
 
   return (
@@ -63,14 +93,35 @@ export default function Sidebar() {
       </div>
 
       <div className="flex flex-col gap-2">
-        {!["Client", "Student"].includes(role) && (
-          <CustomSelect
-            value={ts}
+        {["Super Admin"].includes(role) && (
+          <TrainingSiteSwitcher
+            value={selectedTrainingSiteId}
             options={siteOptions}
             isLoading={allSitesLoading}
             onChange={handleSiteChange}
-            placeholder="Select training site"
           />
+        )}
+
+        {[
+          "Site Coordinator",
+          "Admin",
+          "Instructor",
+          "Instructor Assistant",
+          "Client",
+        ].includes(role) && (
+          <div className="flex items-center gap-3 px-4 py-3 rounded-[10px] bg-gray-50 dark:bg-[#1B1D1E] border border-gray-100 dark:border-[#25282A]">
+            <span className="flex items-center justify-center h-9 w-9 shrink-0 rounded-full bg-brown/10 dark:bg-dark-brown/20 text-brown dark:text-dark-brown">
+              <FaBuilding className="h-4 w-4" />
+            </span>
+            <div className="flex flex-col gap-1 min-w-0">
+              <h6 className="text-sm font-semibold text-dark dark:text-gray truncate">
+                {activeRole?.training_site_name}
+              </h6>
+              <span className="w-fit text-[11px] font-medium leading-none px-2 py-1 rounded-full bg-brown/10 dark:bg-dark-brown/20 text-brown dark:text-dark-brown">
+                {role}
+              </span>
+            </div>
+          </div>
         )}
 
         <div className="flex items-center gap-3 px-5 py-2.5">
@@ -80,16 +131,18 @@ export default function Sidebar() {
 
         <nav>
           <ul className="flex flex-col">
-            {menuItems.map((item) => {
+            {menuItems?.map(item => {
               const isOpen = openMenu === item.label;
               return (
                 <li key={item.label} className="text-sm font-semibold">
                   <button
                     onClick={() =>
-                      setOpenMenu((p) => (p === item.label ? null : item.label))
+                      setOpenMenu(p => (p === item.label ? null : item.label))
                     }
                     className={`w-full flex items-center justify-between cursor-pointer px-5 py-3 rounded-[10px] transition-colors ${
-                      isOpen ? "bg-brown dark:bg-dark-brown text-white" : "text-dark dark:text-gray hover:bg-gray-100 dark:hover:bg-dark"
+                      isOpen
+                        ? "bg-brown dark:bg-dark-brown text-white"
+                        : "text-dark dark:text-gray hover:bg-gray-100 dark:hover:bg-dark"
                     }`}
                   >
                     <span>{item.label}</span>
@@ -102,12 +155,13 @@ export default function Sidebar() {
                     className={`overflow-hidden transition-all ${isOpen ? "max-h-screen" : "max-h-0"}`}
                   >
                     <ul className="bg-gray-50 dark:bg-[#1B1D1E] rounded-[10px] pt-1">
-                      {item.submenu.map((sub) => {
+                      {item?.submenu?.map(sub => {
                         const active = pathname === sub.href;
                         return (
-                          <li key={sub.label}>
+                          <li key={sub?.label}>
                             <Link
                               href={sub.href}
+                              prefetch={true}
                               className={`flex items-center pl-16 pr-6 py-2.5 text-xs relative ${
                                 active
                                   ? "text-gray-900 dark:text-gray font-semibold"
@@ -131,6 +185,8 @@ export default function Sidebar() {
             <button
               onClick={() => logout()}
               disabled={logoutPending}
+              type="button"
+              key="logout"
               className="text-sm font-semibold mt-10 px-5 py-2.5 bg-brown dark:bg-dark-brown rounded-[10px] text-white cursor-pointer mb-4 hover:bg-black dark:hover:bg-brown transition duration-300 disabled:bg-gray-400 disabled:cursor-not-allowed"
             >
               {logoutPending ? "Logging out..." : "Log Out"}

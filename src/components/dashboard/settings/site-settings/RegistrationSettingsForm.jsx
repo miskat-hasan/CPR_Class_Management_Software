@@ -1,7 +1,7 @@
 // src/components/dashboard/site-settings/RegistrationSettingsForm.jsx
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import FormContainer from "@/components/shared/form/FormContainer";
 import FormInput from "@/components/shared/form/FormInput";
@@ -16,8 +16,6 @@ import dynamic from "next/dynamic";
 const RichTextEditor = dynamic(() => import("@/components/shared/RichEditor"), {
   ssr: false,
 });
-
-// const SCHEDULE_PAGE_FORMATS = ["Class List", "Calendar", "Dual Calendar"];
 
 const OPTIONS = [
   {
@@ -91,6 +89,14 @@ const SectionHeading = ({ children }) => (
   </h4>
 );
 
+// Helper: attempt setContents, retrying until the ref is ready
+const trySetContents = (ref, html) => {
+  if (!html) return;
+  if (ref.current) {
+    ref.current.setContents(html);
+  }
+};
+
 const RegistrationSettingsForm = () => {
   const { data: settingsData, isLoading } = useGetSiteSettings(
     "registration_settings",
@@ -101,6 +107,12 @@ const RegistrationSettingsForm = () => {
   const termsRef = useRef(null);
   const textingPrivacyRef = useRef(null);
   const customSidebarRef = useRef(null);
+
+  // One ready flag per editor — flipped to true inside onReady callback
+  const [scheduleReady, setScheduleReady] = useState(false);
+  const [termsReady, setTermsReady] = useState(false);
+  const [textingReady, setTextingReady] = useState(false);
+  const [sidebarReady, setSidebarReady] = useState(false);
 
   const form = useForm({
     defaultValues: {
@@ -122,50 +134,55 @@ const RegistrationSettingsForm = () => {
     },
   });
 
-  const { register, reset, watch } = form;
+  const { register, reset } = form;
+
+  // Reset RHF fields whenever data arrives
+  useEffect(() => {
+    if (!settingsData?.data) return;
+    const d = settingsData.data;
+    reset({
+      ...d,
+      options: {
+        ...Object.fromEntries(OPTIONS.map(o => [o.key, false])),
+        ...d.options,
+      },
+      registration_toggles: {
+        ...Object.fromEntries(REGISTRATION_TOGGLES.map(t => [t.key, false])),
+        ...d.registration_toggles,
+      },
+    });
+  }, [settingsData, reset]);
+
+  // Each editor gets its own effect: fires when BOTH the editor is ready AND data exists
+  useEffect(() => {
+    if (scheduleReady && settingsData?.data?.schedule_page_text_html) {
+      trySetContents(
+        schedulePageTextRef,
+        settingsData.data.schedule_page_text_html,
+      );
+    }
+  }, [scheduleReady, settingsData?.data?.schedule_page_text_html]);
 
   useEffect(() => {
-    if (settingsData?.data) {
-      const d = settingsData.data;
-
-      reset({
-        ...d,
-        options: {
-          ...Object.fromEntries(OPTIONS.map(o => [o.key, false])),
-          ...d.options,
-        },
-        registration_toggles: {
-          ...Object.fromEntries(REGISTRATION_TOGGLES.map(t => [t.key, false])),
-          ...d.registration_toggles,
-        },
-      });
-
-      if (schedulePageTextRef.current && d?.schedule_page_text_html) {
-        schedulePageTextRef.current?.setContents?.(
-          d?.schedule_page_text_html ?? "",
-        );
-      }
-      if (termsRef.current && d?.terms_and_conditions_html) {
-        termsRef.current?.setContents?.(d?.terms_and_conditions_html ?? "");
-      }
-      if (textingPrivacyRef.current && d?.texting_privacy_policy) {
-        textingPrivacyRef.current?.setContents?.(
-          d?.texting_privacy_policy ?? "",
-        );
-      }
-
-      if (customSidebarRef.current && d?.custom_sidebar_html) {
-        customSidebarRef.current?.setContents?.(d?.custom_sidebar_html ?? "");
-      }
+    if (termsReady && settingsData?.data?.terms_and_conditions_html) {
+      trySetContents(termsRef, settingsData.data.terms_and_conditions_html);
     }
-  }, [
-    settingsData,
-    reset,
-    customSidebarRef.current,
-    schedulePageTextRef.current,
-    termsRef.current,
-    textingPrivacyRef.current,
-  ]);
+  }, [termsReady, settingsData?.data?.terms_and_conditions_html]);
+
+  useEffect(() => {
+    if (textingReady && settingsData?.data?.texting_privacy_policy) {
+      trySetContents(
+        textingPrivacyRef,
+        settingsData.data.texting_privacy_policy,
+      );
+    }
+  }, [textingReady, settingsData?.data?.texting_privacy_policy]);
+
+  useEffect(() => {
+    if (sidebarReady && settingsData?.data?.custom_sidebar_html) {
+      trySetContents(customSidebarRef, settingsData.data.custom_sidebar_html);
+    }
+  }, [sidebarReady, settingsData?.data?.custom_sidebar_html]);
 
   const onSubmit = data => {
     const payload = {
@@ -187,6 +204,25 @@ const RegistrationSettingsForm = () => {
     });
   };
 
+  const handleCancel = () => {
+    const d = settingsData?.data;
+    reset({
+      ...d,
+      options: {
+        ...Object.fromEntries(OPTIONS.map(o => [o.key, false])),
+        ...d?.options,
+      },
+      registration_toggles: {
+        ...Object.fromEntries(REGISTRATION_TOGGLES.map(t => [t.key, false])),
+        ...d?.registration_toggles,
+      },
+    });
+    trySetContents(schedulePageTextRef, d?.schedule_page_text_html ?? "");
+    trySetContents(termsRef, d?.terms_and_conditions_html ?? "");
+    trySetContents(textingPrivacyRef, d?.texting_privacy_policy ?? "");
+    trySetContents(customSidebarRef, d?.custom_sidebar_html ?? "");
+  };
+
   if (isLoading) {
     return (
       <div className="animate-pulse space-y-4">
@@ -200,12 +236,9 @@ const RegistrationSettingsForm = () => {
     );
   }
 
-  const schedulePageFormat = watch("schedule_page_format");
-
   return (
     <FormContainer form={form} onSubmit={onSubmit}>
       <div className="flex flex-col gap-5">
-        {/* Site Identity */}
         <SectionHeading>Site Identity</SectionHeading>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <FormInput
@@ -214,23 +247,6 @@ const RegistrationSettingsForm = () => {
             placeholder="yoursite"
           />
 
-          {/* Schedule Page Format */}
-          {/* <div className="flex flex-col gap-1.5">
-            <label className="text-sm font-semibold text-gray-700 dark:text-gray">
-              Schedule Page Format
-            </label>
-            <select
-              {...register("schedule_page_format")}
-              className="border border-gray-300 dark:border-gray-600 dark:bg-black dark:text-gray rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-300"
-            >
-              {SCHEDULE_PAGE_FORMATS.map(f => (
-                <option key={f} value={f}>
-                  {f}
-                </option>
-              ))}
-            </select>
-          </div> */}
-          {/* Registration Links — read-only display */}
           {settingsData?.data?.registration_links?.length > 0 && (
             <div className="flex flex-col gap-1.5">
               <label className="text-sm font-semibold text-gray-700 dark:text-gray">
@@ -253,22 +269,19 @@ const RegistrationSettingsForm = () => {
           )}
         </div>
 
-        {/* iCal Feed URL — read-only */}
         {settingsData?.data?.ical_feed_url && (
           <div className="flex flex-col gap-1.5">
             <label className="text-sm font-semibold text-gray-700 dark:text-gray">
               iCal Feed URL
             </label>
-            <p className="text-sm text-blue-600 break-all">
-              <a
-                href={settingsData.data.ical_feed_url}
-                target="_blank"
-                rel="noreferrer"
-                className="hover:underline"
-              >
-                {settingsData.data.ical_feed_url}
-              </a>
-            </p>
+            <a
+              href={settingsData.data.ical_feed_url}
+              target="_blank"
+              rel="noreferrer"
+              className="text-sm text-blue-600 hover:underline break-all"
+            >
+              {settingsData.data.ical_feed_url}
+            </a>
           </div>
         )}
 
@@ -278,11 +291,13 @@ const RegistrationSettingsForm = () => {
             Schedule Page Text
           </label>
           <div className="border border-gray-200 dark:border-gray-700 rounded-md overflow-hidden">
-            <RichTextEditor ref={schedulePageTextRef} />
+            <RichTextEditor
+              ref={schedulePageTextRef}
+              onReady={() => setScheduleReady(true)}
+            />
           </div>
         </div>
 
-        {/* Options */}
         <SectionHeading>Options</SectionHeading>
         <div className="flex flex-col gap-2">
           {OPTIONS.map(({ key, label }) => (
@@ -300,7 +315,6 @@ const RegistrationSettingsForm = () => {
           ))}
         </div>
 
-        {/* Logo & Email */}
         <SectionHeading>Branding &amp; Email</SectionHeading>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <FormInput
@@ -335,7 +349,6 @@ const RegistrationSettingsForm = () => {
           />
         </div>
 
-        {/* Confirmation Script */}
         <div className="flex flex-col gap-1.5">
           <label className="text-sm font-semibold text-gray-700 dark:text-gray">
             Confirmation Script
@@ -354,7 +367,10 @@ const RegistrationSettingsForm = () => {
             Terms and Conditions
           </label>
           <div className="border border-gray-200 dark:border-gray-700 rounded-md overflow-hidden">
-            <RichTextEditor ref={termsRef} />
+            <RichTextEditor
+              ref={termsRef}
+              onReady={() => setTermsReady(true)}
+            />
           </div>
         </div>
 
@@ -364,7 +380,10 @@ const RegistrationSettingsForm = () => {
             Texting Privacy Policy
           </label>
           <div className="border border-gray-200 dark:border-gray-700 rounded-md overflow-hidden">
-            <RichTextEditor ref={textingPrivacyRef} />
+            <RichTextEditor
+              ref={textingPrivacyRef}
+              onReady={() => setTextingReady(true)}
+            />
           </div>
         </div>
 
@@ -374,11 +393,13 @@ const RegistrationSettingsForm = () => {
             Custom Sidebar
           </label>
           <div className="border border-gray-200 dark:border-gray-700 rounded-md overflow-hidden">
-            <RichTextEditor ref={customSidebarRef} />
+            <RichTextEditor
+              ref={customSidebarRef}
+              onReady={() => setSidebarReady(true)}
+            />
           </div>
         </div>
 
-        {/* Registration Toggles */}
         <SectionHeading>Registration Toggles</SectionHeading>
         <div className="flex flex-col gap-2">
           {REGISTRATION_TOGGLES.map(({ key, label }) => (
@@ -396,7 +417,6 @@ const RegistrationSettingsForm = () => {
           ))}
         </div>
 
-        {/* Check-in */}
         <SectionHeading>Check-in</SectionHeading>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <FormInput
@@ -423,37 +443,19 @@ const RegistrationSettingsForm = () => {
           </div>
         </div>
 
-        {/* Actions */}
         <div className="flex justify-end gap-3 pt-2 border-t dark:border-gray-700">
           <Button
             type="button"
-            variant="outline"
-            onClick={() => {
-              reset();
-              setTimeout(() => {
-                const d = settingsData?.data;
-                schedulePageTextRef.current?.setContents?.(
-                  d?.schedule_page_text_html ?? "",
-                );
-                termsRef.current?.setContents?.(
-                  d?.terms_and_conditions_html ?? "",
-                );
-                textingPrivacyRef.current?.setContents?.(
-                  d?.texting_privacy_policy ?? "",
-                );
-                customSidebarRef.current?.setContents?.(
-                  d?.custom_sidebar_html ?? "",
-                );
-              }, 150);
-            }}
-            className="h-9 text-sm"
+            variant="secondary"
+            onClick={handleCancel}
+            className="h-9 text-sm cursor-pointer"
           >
             Cancel
           </Button>
           <Button
             type="submit"
             disabled={isPending}
-            className="h-9 text-sm font-medium text-white bg-brown dark:bg-dark-brown hover:bg-brown focus:outline-none disabled:opacity-60"
+            className="h-9 text-sm font-medium text-white focus:outline-none disabled:opacity-60"
           >
             {isPending ? "Saving..." : "Update Settings"}
           </Button>

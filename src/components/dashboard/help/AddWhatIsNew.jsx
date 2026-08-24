@@ -1,4 +1,5 @@
 "use client";
+import BackButton from "@/components/common/BackButton";
 import SectionTitle from "@/components/common/SectionTitle";
 import FormContainer from "@/components/shared/form/FormContainer";
 import FormInput from "@/components/shared/form/FormInput";
@@ -19,9 +20,9 @@ const AddWhatIsNew = () => {
 
   const { mutate, isPending } = addWhatsNew();
 
-  const onSubmit = (data) => {
+  const onSubmit = data => {
     mutate(data, {
-      onSuccess: (data) => {
+      onSuccess: data => {
         reset({ title: "" });
         toast.success(data?.message);
       },
@@ -36,9 +37,7 @@ const AddWhatIsNew = () => {
           <div className="flex flex-col gap-3 lg:gap-6">
             <FormInput name="title" />
             <div className="flex justify-end gap-4 mt-8">
-              <Button variant="outline" asChild>
-                <Link href="../whats_new">Cancel</Link>
-              </Button>
+              <BackButton />
               <Button
                 type="submit"
                 disabled={isPending}

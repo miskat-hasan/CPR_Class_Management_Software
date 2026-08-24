@@ -9,10 +9,10 @@ export const axiosSecure = axios.create({
 axiosSecure.interceptors.request.use(
   (config) => {
     const token    = getItem("token");
-    const siteId   = getItem("selected_site_id");
+    // const siteId   = getItem("selected_site_id");
 
     if (token)  config.headers["Authorization"] = `Bearer ${token}`;
-    if (siteId) config.headers["X-Site-Id"]     = siteId;
+    // if (siteId) config.headers["X-Site-Id"]     = siteId;
 
     return config;
   },
