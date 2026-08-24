@@ -66,6 +66,7 @@ const SiteCoordinatorModal = ({ onCreated }) => {
     formData.append("state_province_region", data.state_province_region);
     formData.append("zip_postal_code", data.zip_postal_code);
     formData.append("country_id", data.country);
+    formData.append("training_site_id", null);
 
     await mutateAsync(formData, {
       onSuccess: res => {

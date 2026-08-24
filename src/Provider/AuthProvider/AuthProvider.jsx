@@ -65,12 +65,12 @@ export default function AuthProvider({ children }) {
 
   const isSiteActive = (() => {
     if (!selectedTrainingSiteId || !allSitesData?.data || !Array.isArray(allSitesData.data)) {
-      return true; // default to active if data not loaded yet
+      return true;
     }
     const matchedSite = allSitesData.data.find(
       site => String(site.training_site_id ?? site.id) === String(selectedTrainingSiteId)
     );
-    if (!matchedSite) return true; // site not found in response, allow by default
+    if (!matchedSite) return true;
     return matchedSite.is_active !== false;
   })();
 
