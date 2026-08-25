@@ -16,6 +16,7 @@ import {
 import useAuth from "@/hooks/useAuth";
 import { toast } from "sonner";
 import { useDefaultCountry } from "@/hooks/useDefaultCountry";
+import DocumentsSection from "../settings/certificates/DocumentsSection";
 
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
 const Skeleton = ({ className }) => (
@@ -36,17 +37,10 @@ const SectionCard = ({ title, children }) => (
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 const ProfilePage = () => {
-  // useAuth already holds the logged-in user's full record (roles, user_details, etc.) —
-  // this is "my profile", so there's no separate lookup-by-id fetch needed.
-  const { user, isLoading: authLoading } = useAuth();
+  const { user, isLoading: authLoading, activeRole } = useAuth();
 
   const { data: countryData, isLoading: countryLoading } = getAllCountry();
   const countryOptions = countryData?.data ?? [];
-
-  // Role comes back as an array on the user record, not a flat string.
-  const isInstructor = user?.roles?.some(
-    r => r.role_name?.toLowerCase() === "instructor",
-  );
 
   // ── Profile form ──
   const profileForm = useForm({
@@ -83,8 +77,6 @@ const ProfilePage = () => {
   });
 
   const profileDefaults = useMemo(() => {
-    // Profile fields live under user_details, not directly on the user record —
-    // and never pull `password` out of here, it's a hash, not form content.
     const d = user?.user_details;
     if (!d) return null;
 
@@ -189,10 +181,10 @@ const ProfilePage = () => {
 
   return (
     <section className="flex flex-col gap-4">
-      <SectionTitle title="My Account" />
+      <SectionTitle title="My Profile" />
 
       {/* ── 1. General Information ── */}
-      <SectionCard title="1. General Information">
+      <SectionCard title="General Information">
         <FormContainer form={profileForm} onSubmit={onProfileSubmit}>
           <div className="flex flex-col gap-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
@@ -208,25 +200,25 @@ const ProfilePage = () => {
                 rules={{ required: "Last name is required" }}
                 error={errors.last_name?.message}
               />
-                <FormInput
-                  name="username"
-                  label="Username"
-                  rules={{ required: "Username is required" }}
-                  error={errors.username?.message}
-                />
-                <FormInput
-                  name="email"
-                  label="Email Address"
-                  type="email"
-                  rules={{
-                    required: "Email is required",
-                    pattern: {
-                      value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                      message: "Invalid email address",
-                    },
-                  }}
-                  error={errors.email?.message}
-                />
+              <FormInput
+                name="username"
+                label="Username"
+                rules={{ required: "Username is required" }}
+                error={errors.username?.message}
+              />
+              <FormInput
+                name="email"
+                label="Email Address"
+                type="email"
+                rules={{
+                  required: "Email is required",
+                  pattern: {
+                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                    message: "Invalid email address",
+                  },
+                }}
+                error={errors.email?.message}
+              />
               <FormInput
                 name="name_to_print_on_card"
                 label="Name to Print on Card"
@@ -292,7 +284,7 @@ const ProfilePage = () => {
               />
 
               {/* Certifying body IDs — instructor accounts only */}
-              {isInstructor && (
+              {activeRole?.role_name === "Instructor" && (
                 <>
                   <FormInput
                     name="aha_instructor_id"
@@ -326,8 +318,11 @@ const ProfilePage = () => {
         </FormContainer>
       </SectionCard>
 
-      {/* ── 2. Password Change ── */}
-      <SectionCard title="2. Password Change">
+      {/* ── 2. My Certificates ── */}
+      {activeRole?.role_name !== "Student" && <DocumentsSection />}
+
+      {/* ── 3. Password Change ── */}
+      <SectionCard title="Password Change">
         <FormContainer form={passwordForm} onSubmit={onPasswordSubmit}>
           <div className="flex flex-col gap-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">

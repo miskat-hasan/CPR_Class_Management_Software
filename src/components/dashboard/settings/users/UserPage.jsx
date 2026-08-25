@@ -176,11 +176,11 @@ const UserPage = ({ dashboard = "super-admin" }) => {
                                   key={i}
                                   className="inline-flex items-center gap-1 text-xs"
                                 >
-                                  <span className="font-medium text-gray-800 dark:text-gray-200">
+                                  <span className="font-medium text-gray-800 dark:text-gray-200 whitespace-nowrap">
                                     {ur?.training_site?.training_center_name}
                                   </span>
                                   <span className="text-gray-400">·</span>
-                                  <span className="text-brown dark:text-dark-brown font-medium">
+                                  <span className="text-brown dark:text-dark-brown font-medium whitespace-nowrap">
                                     {ur?.role?.name}
                                   </span>
                                 </span>

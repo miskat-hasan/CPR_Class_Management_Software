@@ -1,3 +1,4 @@
+// src/components/dashboard/settings/certificates/DocumentsSection.jsx
 "use client";
 
 import TableSkeleton from "@/components/skeleton/TableSkeleton";
@@ -10,27 +11,27 @@ import {
 } from "@/hooks/api/dashboardApi";
 import { useQueryClient } from "@tanstack/react-query";
 
-import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
 import { HiOutlineDownload } from "react-icons/hi";
 import { HiOutlineTrash } from "react-icons/hi";
 import { toast } from "sonner";
-import SectionTitle from "@/components/common/SectionTitle";
 import {
   Table,
   TableBodyRow,
   TableFooter,
   TableHead,
 } from "@/components/common/TableElement";
-import Link from "next/link";
+import useAuth from "@/hooks/useAuth";
+import UploadDocumentModal from "./UploadDocumentModal";
 
-const CertificatesPage = () => {
+const DocumentsSection = () => {
+  const { activeRole } = useAuth();
+
   const [page, setPage] = useSiteAwarePagination();
   const [perPage, setPerPage] = useState(10);
+  const [openModal, setOpenModal] = useState(false);
   const [selectedFileId, setSelectedFileId] = useState(null);
-
-  const router = useRouter();
 
   // get all certification file
   const {
@@ -90,30 +91,34 @@ const CertificatesPage = () => {
 
   return (
     <section className="flex flex-col gap-[12.5px] lg:gap-[25px]">
-      {/* Header */}
-      <div className="flex justify-between">
-        <SectionTitle title={"Certificates"} />
-        <Button
-          asChild
-          className="py-[11px] lg:py-[22px] cursor-pointer bg-brown dark:bg-dark-brown flex items-center gap-2 dark:hover:bg-brown"
-        >
-          <Link href="certificates/upload">Upload Certificate</Link>
-        </Button>
-      </div>
-
       {/* Table */}
       {certificationFileDataLoading ? (
         <TableSkeleton />
       ) : (
         <div className="p-[13px] lg:p-[26px] bg-white dark:bg-black rounded-[14px] flex flex-col gap-[12px] lg:gap-[24px]">
+          {/* Header */}
+          <div className="flex justify-between border-b dark:border-gray-700 pb-3">
+            <h2 className="text-base font-semibold text-gray-800 dark:text-white">
+              My Certificates
+            </h2>
+            <Button
+              onClick={() => setOpenModal(true)}
+              className="py-[11px] lg:py-[18px] cursor-pointer bg-brown dark:bg-dark-brown flex items-center gap-2 dark:hover:bg-brown"
+            >
+              Upload Certificate
+            </Button>
+          </div>
           <div className="overflow-x-auto">
             <Table>
               <TableHead>
                 <tr>
-                  <th className="px-3 md:px-6 py-3 whitespace-nowrap text-left">
-                    Name/URL
+                  <th className="px-3 md:px-6 py-3 whitespace-nowrap text-left font-medium">
+                    Name
                   </th>
-                  <th className="px-3 md:px-6 py-3 text-right whitespace-nowrap">
+                  <th className="px-3 md:px-6 py-3 whitespace-nowrap text-left font-medium">
+                    File
+                  </th>
+                  <th className="px-3 md:px-6 py-3 text-right whitespace-nowrap font-medium">
                     Action
                   </th>
                 </tr>
@@ -124,7 +129,10 @@ const CertificatesPage = () => {
                   certificationFileData?.data?.map(item => (
                     <TableBodyRow key={item.id}>
                       <td className="px-3 md:px-6 py-4 whitespace-nowrap">
-                        {process.env.NEXT_PUBLIC_SITE_URL + "/" + item.file}
+                        {item.name ?? "--"}
+                      </td>
+                      <td className="px-3 md:px-6 py-4 whitespace-nowrap">
+                        {item.file.split("/").pop()}
                       </td>
 
                       <td className="px-3 md:px-6 py-4 flex gap-2.5 justify-end items-center">
@@ -136,19 +144,23 @@ const CertificatesPage = () => {
                         >
                           <HiOutlineDownload className="text-gray-600 dark:text-gray text-[16px]" />
                         </button>
-                        <button
-                          onClick={() => handleDeleteCertificationFile(item.id)}
-                          className="p-1.5 sm:p-2 bg-gray-100 dark:bg-transparent dark:border dark:border-[#6b6c6d] dark:hover:bg-[#7a2828] rounded-lg hover:bg-gray-200 transition cursor-pointer"
-                        >
-                          <HiOutlineTrash className="text-gray-600 dark:text-gray text-[16px] hover:text-red-600" />
-                        </button>
+                        {activeRole?.role_name === "Super Admin" && (
+                          <button
+                            onClick={() =>
+                              handleDeleteCertificationFile(item.id)
+                            }
+                            className="p-1.5 sm:p-2 bg-gray-100 dark:bg-transparent dark:border dark:border-[#6b6c6d] dark:hover:bg-[#7a2828] rounded-lg hover:bg-gray-200 transition cursor-pointer"
+                          >
+                            <HiOutlineTrash className="text-gray-600 dark:text-gray text-[16px] hover:text-red-600" />
+                          </button>
+                        )}
                       </td>
                     </TableBodyRow>
                   ))
                 ) : (
                   <tr>
                     <td
-                      colSpan="2"
+                      colSpan="3"
                       className="text-center py-6 text-gray-500 italic"
                     >
                       No results found
@@ -168,8 +180,9 @@ const CertificatesPage = () => {
           />
         </div>
       )}
+      <UploadDocumentModal open={openModal} onOpenChange={setOpenModal} />
     </section>
   );
 };
 
-export default CertificatesPage;
+export default DocumentsSection;
