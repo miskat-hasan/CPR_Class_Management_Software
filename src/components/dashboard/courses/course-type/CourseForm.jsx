@@ -220,7 +220,7 @@ export default function CourseForm({
   }));
 
   const certifyingOptions = [
-    ...(certifyingBodies?.data?.data ?? []).map(cb => ({
+    ...(certifyingBodies?.data ?? []).map(cb => ({
       id: cb.id,
       name: cb.name,
     })),
