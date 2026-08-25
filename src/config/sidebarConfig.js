@@ -195,10 +195,6 @@ const superAdminFullMenu = ts => [
     submenu: [
       { label: "Users", href: `/dashboard/super-admin/settings/users` },
       {
-        label: "Certificates",
-        href: `/dashboard/super-admin/settings/certificates`,
-      },
-      {
         label: "Locations",
         href: `/dashboard/super-admin/settings/location`,
       },
@@ -221,6 +217,10 @@ const superAdminFullMenu = ts => [
       {
         label: "Site Settings",
         href: `/dashboard/super-admin/settings/site-settings`,
+      },
+      {
+        label: "My Profile",
+        href: `/dashboard/super-admin/settings/profile`,
       },
     ],
   },
@@ -366,10 +366,6 @@ const superAdminSiteMenu = ts => [
     label: "Settings",
     submenu: [
       { label: "Users", href: `/dashboard/super-admin/settings/users` },
-      {
-        label: "Certificates",
-        href: `/dashboard/super-admin/settings/certificates`,
-      },
       {
         label: "Locations",
         href: `/dashboard/super-admin/settings/location`,
@@ -543,10 +539,6 @@ const coordinatorMenu = ts => [
     submenu: [
       { label: "Users", href: `/dashboard/site-coordinator/settings/users` },
       {
-        label: "Certificates",
-        href: `/dashboard/site-coordinator/settings/certificates`,
-      },
-      {
         label: "Locations",
         href: `/dashboard/site-coordinator/settings/location`,
       },
@@ -569,6 +561,10 @@ const coordinatorMenu = ts => [
       {
         label: "Site Settings",
         href: `/dashboard/site-coordinator/settings/site-settings`,
+      },
+      {
+        label: "My Profile",
+        href: `/dashboard/site-coordinator/settings/profile`,
       },
     ],
   },
@@ -723,10 +719,6 @@ const adminMenu = ts => [
     submenu: [
       { label: "Users", href: `/dashboard/admin/settings/users` },
       {
-        label: "Certificates",
-        href: `/dashboard/admin/settings/certificates`,
-      },
-      {
         label: "Locations",
         href: `/dashboard/admin/settings/location`,
       },
@@ -745,6 +737,10 @@ const adminMenu = ts => [
       {
         label: "Site Settings",
         href: `/dashboard/admin/settings/site-settings`,
+      },
+      {
+        label: "My Profile",
+        href: `/dashboard/admin/settings/profile`,
       },
     ],
   },
@@ -840,7 +836,7 @@ const instructorMenu = ts => [
       },
       {
         label: "My Instructor Profile",
-        href: `/dashboard/instructor/settings/location`,
+        href: `/dashboard/instructor/settings/profile`,
       },
     ],
   },
@@ -865,19 +861,19 @@ const assistantMenu = ts => [
     submenu: [
       {
         label: "Upcoming Classes",
-        href: `/dashboard/instructor/class-and-students/upcoming-classes`,
+        href: `/dashboard/assistant/class-and-students/upcoming-classes`,
       },
       {
         label: "Schedule a Class",
-        href: `/dashboard/instructor/class-and-students/schedule-class`,
+        href: `/dashboard/assistant/class-and-students/schedule-class`,
       },
       {
         label: "Past Classes",
-        href: `/dashboard/instructor/class-and-students/past-classes`,
+        href: `/dashboard/assistant/class-and-students/past-classes`,
       },
       {
         label: "Student Search",
-        href: `/dashboard/instructor/class-and-students/student-search`,
+        href: `/dashboard/assistant/class-and-students/student-search`,
       },
     ],
   },
@@ -886,15 +882,15 @@ const assistantMenu = ts => [
     submenu: [
       {
         label: "Training Site Rosters",
-        href: `/dashboard/instructor/training-center/training-site-rosters`,
+        href: `/dashboard/assistant/training-center/training-site-rosters`,
       },
       {
         label: "Order TS Product",
-        href: `/dashboard/instructor/training-center/order-ts-product`,
+        href: `/dashboard/assistant/training-center/order-ts-product`,
       },
       {
         label: "Course Documents",
-        href: `/dashboard/instructor/training-center/course-documents`,
+        href: `/dashboard/assistant/training-center/course-documents`,
       },
     ],
   },
@@ -903,11 +899,11 @@ const assistantMenu = ts => [
     submenu: [
       {
         label: "Locations",
-        href: `/dashboard/instructor/settings/location`,
+        href: `/dashboard/assistant/settings/location`,
       },
       {
         label: "My Instructor Profile",
-        href: `/dashboard/instructor/settings/location`,
+        href: `/dashboard/assistant/settings/profile`,
       },
     ],
   },
@@ -916,15 +912,15 @@ const assistantMenu = ts => [
     submenu: [
       {
         label: "TS Support Request",
-        href: `/dashboard/instructor/help/support-request`,
+        href: `/dashboard/assistant/help/support-request`,
       },
       {
         label: "TC Support Request",
-        href: `/dashboard/instructor/help/support-request`,
+        href: `/dashboard/assistant/help/support-request`,
       },
       {
         label: "Whats New",
-        href: `/dashboard/instructor/help/whats-new`,
+        href: `/dashboard/assistant/help/whats-new`,
       },
     ],
   },

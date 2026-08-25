@@ -13,7 +13,7 @@ import ThemeToggle from "../common/ThemeToggle";
 
 const DashboardTopbar = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const { user, loadingUserData } = useAuth();
+  const { user, loadingUserData, activeRole } = useAuth();
 
   const path = usePathname();
 
@@ -41,7 +41,12 @@ const DashboardTopbar = () => {
         </Link>
 
         {/* User Info */}
-        <div className="h-auto lg:h-[60px] bg-white dark:bg-black rounded-[14px] flex items-center p-1 w-auto gap-[11px]">
+        <Link
+          href={
+            activeRole === "client" ? "/" : `${roleBasePath}/settings/profile`
+          }
+          className={`h-auto lg:h-[60px] bg-white dark:bg-black rounded-[14px] flex items-center p-1 w-auto gap-[11px] ${activeRole === "client" ? "pointer-events-none" : ""}`}
+        >
           {/* Avatar */}
           <div className="w-[30px] h-[30px] lg:w-[50px] lg:h-[50px] overflow-hidden rounded-[11px]">
             {loadingUserData ? (
@@ -75,13 +80,13 @@ const DashboardTopbar = () => {
                     {user?.name || "—"}
                   </h6>
                   <p className="text-[10px] lg:text-[12px] text-[#8C8C8C]">
-                    ID: {user?.id || "—"}
+                    {activeRole?.role_name || "—"}
                   </p>
                 </>
               )
             )}
           </div>
-        </div>
+        </Link>
       </div>
 
       {/* Mobile Sidebar */}
