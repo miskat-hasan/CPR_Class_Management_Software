@@ -1220,10 +1220,12 @@ export const getTextCampaignSettings = () => {
   });
 };
 export const updateTextCampaignSettings = () => {
+  const { selectedTrainingSiteId } = useAuth();
   return useClientApi({
     method: "put",
     isPrivate: true,
     endpoint: "/api/text-campaigns/settings",
+    headers: { "X-Site-Id": selectedTrainingSiteId },
   });
 };
 export const getAllTextMessages = () => {
@@ -1246,10 +1248,12 @@ export const getSingleTextMessage = id => {
   });
 };
 export const storeTextMessage = () => {
+  const { selectedTrainingSiteId } = useAuth();
   return useClientApi({
     method: "post",
     isPrivate: true,
     endpoint: "/api/text-campaigns/messages",
+    headers: { "X-Site-Id": selectedTrainingSiteId },
   });
 };
 export const updateTextMessage = id => {
