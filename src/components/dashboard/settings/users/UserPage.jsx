@@ -151,7 +151,7 @@ const UserPage = ({ dashboard = "super-admin" }) => {
                 <tbody>
                   {usersData?.data?.data?.length > 0 ? (
                     usersData.data.data.map(user => (
-                      <TableBodyRow key={user?.id}>
+                      <TableBodyRow key={user?.user_id}>
                         {/* Name + Email */}
                         <td className="px-3 md:px-6 py-4 whitespace-nowrap">
                           <p className="font-semibold text-sm dark:text-white">
@@ -221,7 +221,7 @@ const UserPage = ({ dashboard = "super-admin" }) => {
                         <td className="px-3 md:px-6 py-4 text-center">
                           <div className="flex items-center justify-center gap-2">
                             <TableButton
-                              href={`/dashboard/${dashboard}/settings/users/${user?.id}/edit`}
+                              href={`/dashboard/${dashboard}/settings/users/${user?.user_id}/edit`}
                             >
                               <CiEdit className="text-gray-600 dark:text-gray text-[16px]" />
                             </TableButton>

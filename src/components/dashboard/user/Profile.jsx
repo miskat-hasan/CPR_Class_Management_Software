@@ -16,7 +16,7 @@ import {
 import useAuth from "@/hooks/useAuth";
 import { toast } from "sonner";
 import { useDefaultCountry } from "@/hooks/useDefaultCountry";
-import DocumentsSection from "../settings/certificates/DocumentsSection";
+import UserDocumentsSection from "../settings/documents/UserDocumentsSection";
 
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
 const Skeleton = ({ className }) => (
@@ -319,7 +319,9 @@ const ProfilePage = () => {
       </SectionCard>
 
       {/* ── 2. My Certificates ── */}
-      {activeRole?.role_name !== "Student" && <DocumentsSection />}
+      {activeRole?.role_name !== "Student" && (
+        <UserDocumentsSection userId={user?.id} title={"My Documents"} />
+      )}
 
       {/* ── 3. Password Change ── */}
       <SectionCard title="Password Change">
