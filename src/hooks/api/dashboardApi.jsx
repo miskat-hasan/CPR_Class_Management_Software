@@ -1798,3 +1798,30 @@ export const useSavePaymentCredentials = () => {
     endpoint: "/api/payment-onboarding/save-credentials",
   });
 };
+
+// ============= user documents ============
+export const useGetUserDocuments = ({ userId, perPage = 10 }) => {
+  return useClientApi({
+    method: "get",
+    isPrivate: true,
+    enabled: !!userId,
+    key: ["user-documents", userId, perPage],
+    endpoint: `/api/user-documents?user_id=${userId}&per_page=${perPage}`,
+  });
+};
+
+export const useStoreUserDocument = () => {
+  return useClientApi({
+    method: "post",
+    isPrivate: true,
+    endpoint: "/api/user-documents/store",
+  });
+};
+
+export const useDeleteUserDocument = ({ id }) => {
+  return useClientApi({
+    method: "delete",
+    isPrivate: true,
+    endpoint: `/api/user-documents/${id}`,
+  });
+};

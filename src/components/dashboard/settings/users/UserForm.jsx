@@ -23,6 +23,7 @@ import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { FaPlus } from "react-icons/fa";
 import { toast } from "sonner";
 import { useDefaultCountry } from "@/hooks/useDefaultCountry";
+import UserDocumentsSection from "../documents/UserDocumentsSection";
 
 const ASSIGNABLE_ROLES = {
   "Super Admin": ["Admin", "Instructor", "Instructor Assistant"],
@@ -580,6 +581,7 @@ const UserForm = ({ mode, id }) => {
           </div>
         </FormContainer>
       </div>
+      {isEdit && <UserDocumentsSection userId={id} />}
     </section>
   );
 };
