@@ -23,6 +23,7 @@ import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { FaPlus } from "react-icons/fa";
 import { toast } from "sonner";
 import { useDefaultCountry } from "@/hooks/useDefaultCountry";
+import UserDocumentsSection from "../documents/UserDocumentsSection";
 
 const ASSIGNABLE_ROLES = {
   "Super Admin": ["Admin", "Instructor", "Instructor Assistant"],
@@ -145,7 +146,7 @@ const UserForm = ({ mode, id }) => {
     const raw = userData?.data;
     if (!raw) return;
 
-    const user = raw.instructor ?? raw;
+    const user = raw?.user_details ?? raw;
     const userRoles = raw.user_roles ?? [];
 
     const coordinatorRow = userRoles.find(ur => {
@@ -165,7 +166,7 @@ const UserForm = ({ mode, id }) => {
                 "",
             ),
             siteName:
-              coordinatorRow?.training_site?.name ??
+              coordinatorRow?.training_site?.training_center_name ??
               trainingSiteNameById.get(
                 String(
                   coordinatorRow?.training_site_id ??
@@ -195,7 +196,7 @@ const UserForm = ({ mode, id }) => {
     reset({
       firstName: user.first_name ?? "",
       lastName: user.last_name ?? "",
-      username: user.username ?? "",
+      username: raw.username ?? "",
       mobilePhone: user.mobile_phone ?? "",
       address1: user.address_line_1 ?? "",
       address2: user.address_line_2 ?? "",
@@ -207,7 +208,7 @@ const UserForm = ({ mode, id }) => {
       ahaInstructorId: user.aha_instructor_id ?? "",
       hsiInstructorId: user.hsi_instructor_id ?? "",
       rclcUsername: user.rclc_username ?? "",
-      emailAddress: user.email ?? "",
+      emailAddress: raw.email ?? "",
       password: "",
       trainingSites: siteRoles,
       roleIds: existingRoleIds,
@@ -580,6 +581,7 @@ const UserForm = ({ mode, id }) => {
           </div>
         </FormContainer>
       </div>
+      {isEdit && <UserDocumentsSection userId={id} title={"User Documents"}/>}
     </section>
   );
 };

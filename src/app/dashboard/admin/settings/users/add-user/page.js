@@ -1,11 +1,7 @@
-import AddUser from "@/components/dashboard/settings/users/AddUser";
+"use client";
 
-const AddUserPage = () => {
-  return (
-    <div>
-      <AddUser />
-    </div>
-  );
-};
+import UserForm from "@/components/dashboard/settings/users/UserForm";
+
+const AddUserPage = () => <UserForm mode="add" />;
 
 export default AddUserPage;

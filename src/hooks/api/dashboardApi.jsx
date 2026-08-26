@@ -1277,43 +1277,53 @@ export const sendTestTextMessage = () => {
 // ==================== REPORTS ====================
 
 export const getClassReport = (page = 1, perPage = 10) => {
+  const { selectedTrainingSiteId } = useAuth();
   return useClientApi({
     method: "get",
     isPrivate: true,
-    key: ["get-class-report", page, perPage],
+    key: ["get-class-report", selectedTrainingSiteId, page, perPage],
     endpoint: `/api/reports/class-report?page=${page}&per_page=${perPage}`,
+    headers: { "X-Site-Id": selectedTrainingSiteId },
   });
 };
 export const getEventLog = (page = 1, perPage = 10) => {
+  const { selectedTrainingSiteId } = useAuth();
   return useClientApi({
     method: "get",
     isPrivate: true,
-    key: ["get-event-log", page, perPage],
+    key: ["get-event-log", selectedTrainingSiteId, page, perPage],
     endpoint: `/api/reports/event-log?page=${page}&per_page=${perPage}`,
+    headers: { "X-Site-Id": selectedTrainingSiteId },
   });
 };
 export const getProductAddOnsReport = (page = 1, perPage = 10) => {
+  const { selectedTrainingSiteId } = useAuth();
   return useClientApi({
     method: "get",
     isPrivate: true,
-    key: ["get-product-add-ons-report", page, perPage],
+    key: ["get-product-add-ons-report", selectedTrainingSiteId, page, perPage],
     endpoint: `/api/reports/addon-report?page=${page}&per_page=${perPage}`,
+    headers: { "X-Site-Id": selectedTrainingSiteId },
   });
 };
 export const getRegistrationReport = () => {
+  const { selectedTrainingSiteId } = useAuth();
   return useClientApi({
     method: "get",
     isPrivate: true,
-    key: ["get-registration-report"],
+    key: ["get-registration-report", selectedTrainingSiteId],
     endpoint: "/api/reports/registration",
+    headers: { "X-Site-Id": selectedTrainingSiteId },
   });
 };
 export const getPromoCodeReport = () => {
+  const { selectedTrainingSiteId } = useAuth();
   return useClientApi({
     method: "get",
     isPrivate: true,
-    key: ["get-promo-code-report"],
+    key: ["get-promo-code-report", selectedTrainingSiteId],
     endpoint: "/api/reports/promo-code",
+    headers: { "X-Site-Id": selectedTrainingSiteId },
   });
 };
 export const useExportInstructorByDisciplinePDF = () => {
@@ -1347,43 +1357,53 @@ export const useExportStudentDiscipline = () => {
   });
 };
 export const useGetInstructorByDiscipline = () => {
+  const { selectedTrainingSiteId } = useAuth();
   return useClientApi({
     method: "get",
     isPrivate: true,
-    key: ["get-instructor-by-discipline"],
+    key: ["get-instructor-by-discipline", selectedTrainingSiteId],
     endpoint: "/api/reports/instructors-and-discipline",
+    headers: { "X-Site-Id": selectedTrainingSiteId },
   });
 };
 export const useGetClassAndStudentReport = () => {
+  const { selectedTrainingSiteId } = useAuth();
   return useClientApi({
     method: "get",
     isPrivate: true,
-    key: ["get-class-and-student"],
+    key: ["get-class-and-student", selectedTrainingSiteId],
     endpoint: "/api/reports/classes-and-students",
+    headers: { "X-Site-Id": selectedTrainingSiteId },
   });
 };
 export const useGetClassAndStudentByDiscipline = () => {
+  const { selectedTrainingSiteId } = useAuth();
   return useClientApi({
     method: "get",
     isPrivate: true,
-    key: ["get-class-and-student-by-discipline"],
+    key: ["get-class-and-student-by-discipline", selectedTrainingSiteId],
     endpoint: "/api/reports/classes-students-discipline",
+    headers: { "X-Site-Id": selectedTrainingSiteId },
   });
 };
 export const useGetPaymentReport = () => {
+  const { selectedTrainingSiteId } = useAuth();
   return useClientApi({
     method: "get",
     isPrivate: true,
-    key: ["get-payment-report"],
+    key: ["get-payment-report", selectedTrainingSiteId],
     endpoint: "/api/report/payment-report",
+    headers: { "X-Site-Id": selectedTrainingSiteId },
   });
 };
 export const useGetDailyVolumeReport = () => {
+  const { selectedTrainingSiteId } = useAuth();
   return useClientApi({
     method: "get",
     isPrivate: true,
-    key: ["get-daily-volume-report"],
+    key: ["get-daily-volume-report", selectedTrainingSiteId],
     endpoint: "/api/report/daily-volume-report",
+    headers: { "X-Site-Id": selectedTrainingSiteId },
   });
 };
 
@@ -1796,5 +1816,31 @@ export const useSavePaymentCredentials = () => {
     method: "post",
     isPrivate: true,
     endpoint: "/api/payment-onboarding/save-credentials",
+  });
+};
+
+// ============= user documents ============
+export const useGetUserDocuments = ({ userId, perPage = 10 }) => {
+  return useClientApi({
+    method: "get",
+    isPrivate: true,
+    enabled: !!userId,
+    key: ["user-documents", userId, perPage],
+    endpoint: `/api/user-documents?user_id=${userId}&per_page=${perPage}`,
+  });
+};
+
+export const useStoreUserDocument = () => {
+  return useClientApi({
+    method: "post",
+    isPrivate: true,
+    endpoint: "/api/user-documents/store",
+  });
+};
+
+export const useDeleteUserDocument = () => {
+  return useClientApi({
+    method: "delete",
+    isPrivate: true,
   });
 };

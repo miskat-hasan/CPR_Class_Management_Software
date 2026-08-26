@@ -1,12 +1,11 @@
-// src/app/dashboard/super-admin/[ts]/settings/users/[id]/edit/page.js
-import EditUser from "@/components/dashboard/settings/users/EditUser";
+"use client";
+
+import UserForm from "@/components/dashboard/settings/users/UserForm";
+import { useParams } from "next/navigation";
 
 const EditUserPage = () => {
-  return (
-    <div>
-      <EditUser />
-    </div>
-  );
+  const { id } = useParams();
+  return <UserForm mode="edit" id={id} />;
 };
 
 export default EditUserPage;
