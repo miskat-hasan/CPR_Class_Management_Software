@@ -581,7 +581,7 @@ const UserForm = ({ mode, id }) => {
           </div>
         </FormContainer>
       </div>
-      {isEdit && <UserDocumentsSection userId={id} />}
+      {isEdit && <UserDocumentsSection userId={id} title={"User Documents"}/>}
     </section>
   );
 };

@@ -321,7 +321,7 @@ const ProfilePage = () => {
 
       {/* ── 2. My Certificates ── */}
       {activeRole?.role_name !== "Student" && (
-        <UserDocumentsSection userId={user?.id} />
+        <UserDocumentsSection userId={user?.id} title={"My Documents"} />
       )}
 
       {/* ── 3. Password Change ── */}

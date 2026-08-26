@@ -75,9 +75,11 @@ const DocumentRow = ({ item }) => {
   );
 };
 
-const UserDocumentsSection = ({ userId }) => {
+const UserDocumentsSection = ({ userId, title = "Documents" }) => {
   const [perPage, setPerPage] = useState(10);
   const [openModal, setOpenModal] = useState(false);
+
+  const { activeRole } = useAuth();
 
   const { data: documentsData, isLoading: documentsLoading } =
     useGetUserDocuments({
@@ -93,14 +95,17 @@ const UserDocumentsSection = ({ userId }) => {
         <div className="p-[13px] lg:p-[26px] bg-white dark:bg-black rounded-[14px] flex flex-col gap-[12px] lg:gap-[24px]">
           <div className="flex justify-between border-b dark:border-gray-700 pb-3">
             <h2 className="text-base font-semibold text-gray-800 dark:text-white">
-              My Documents
+              {title}
             </h2>
-            <Button
-              onClick={() => setOpenModal(true)}
-              className="py-[11px] lg:py-[18px] cursor-pointer bg-brown dark:bg-dark-brown flex items-center gap-2 dark:hover:bg-brown"
-            >
-              Upload Document
-            </Button>
+            {activeRole.role_name === "Super Admin" &&
+              title !== "My Documents" && (
+                <Button
+                  onClick={() => setOpenModal(true)}
+                  className="py-[11px] lg:py-[18px] cursor-pointer bg-brown dark:bg-dark-brown flex items-center gap-2 dark:hover:bg-brown"
+                >
+                  Upload Document
+                </Button>
+              )}
           </div>
 
           <div className="overflow-x-auto">
