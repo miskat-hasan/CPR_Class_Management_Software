@@ -70,7 +70,7 @@ export default function TextMessagingPage() {
     updateSettings(
       {
         data: {
-          phone: data.phone,
+          phone_number: data.phone,
           auto_reply: data.autoReply,
           forward_mail: data.forwardMail,
         },
