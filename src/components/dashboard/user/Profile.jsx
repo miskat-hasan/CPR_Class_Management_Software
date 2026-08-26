@@ -16,7 +16,6 @@ import {
 import useAuth from "@/hooks/useAuth";
 import { toast } from "sonner";
 import { useDefaultCountry } from "@/hooks/useDefaultCountry";
-import DocumentsSection from "../settings/certificates/DocumentsSection";
 import UserDocumentsSection from "../settings/documents/UserDocumentsSection";
 
 // ─── Skeleton ─────────────────────────────────────────────────────────────────

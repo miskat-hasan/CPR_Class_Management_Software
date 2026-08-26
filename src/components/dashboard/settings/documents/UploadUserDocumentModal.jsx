@@ -91,7 +91,8 @@ const UploadUserDocumentModal = ({ open, onOpenChange, userId }) => {
                 </div>
                 <p className="text-[10px] md:text-sm text-gray-700 dark:text-gray max-w-xl leading-relaxed text-center">
                   Select a <b>.pdf, .doc, or .docx</b> file and click{" "}
-                  <b>Upload.</b>
+                  <b>Upload.</b> Existing files with the same name will be
+                  overwritten.
                 </p>
                 <input
                   id="user-document-upload"
