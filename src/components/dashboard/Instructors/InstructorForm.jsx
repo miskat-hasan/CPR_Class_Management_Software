@@ -9,13 +9,11 @@ import FormInput from "@/components/shared/form/FormInput";
 import { Button } from "@/components/ui/button";
 import {
   createInstructor,
-  updateInstructor,
   getAllCountry,
   getallTrainingsite,
-  getSingleInstructor,
+  useUpdateUser,
 } from "@/hooks/api/dashboardApi";
 import { LucideTrash2 } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useEffect, useMemo } from "react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { FaPlus } from "react-icons/fa";
@@ -44,8 +42,7 @@ const DEFAULT_VALUES = {
   trainingSites: [{ tsite_id: "" }],
 };
 
-const InstructorForm = ({ mode = "add", instructorId }) => {
-  const router = useRouter();
+const InstructorForm = ({ mode = "add", id, instructorData, isLoading }) => {
   const isEdit = mode === "edit";
 
   const defaultValues = useMemo(() => DEFAULT_VALUES, []);
@@ -66,10 +63,9 @@ const InstructorForm = ({ mode = "add", instructorId }) => {
     countryLoading: countryDataLoading,
     fieldName: "country",
   });
+
   const { data: trainingSiteData, isLoading: trainingSiteLoading } =
     getallTrainingsite({ type: "all" });
-  const { data: instructorData, isLoading: instructorLoading } =
-    getSingleInstructor(isEdit ? instructorId : undefined);
 
   const { fields, append, remove } = useFieldArray({
     control,
@@ -78,15 +74,17 @@ const InstructorForm = ({ mode = "add", instructorId }) => {
 
   const { mutate: storeInstructorMutation, isPending: storeInstructorPending } =
     createInstructor();
+
   const { mutate: editInstructorMutation, isPending: editInstructorPending } =
-    updateInstructor(instructorId);
+    useUpdateUser(id);
 
   const isPending = isEdit ? editInstructorPending : storeInstructorPending;
 
   useEffect(() => {
     if (!isEdit) return;
     if (instructorData?.data && countryData?.data && trainingSiteData?.data) {
-      const d = instructorData.data;
+      const raw = instructorData.data;
+      const d = raw?.user_details;
 
       const trainingSites =
         d?.site_roles?.length > 0
@@ -99,7 +97,7 @@ const InstructorForm = ({ mode = "add", instructorId }) => {
         ...DEFAULT_VALUES,
         firstName: d?.first_name ?? "",
         lastName: d?.last_name ?? "",
-        username: d?.username ?? "",
+        username: raw?.username ?? "",
         mobilePhone: d?.mobile_phone ?? "",
         address1: d?.address_line_1 ?? "",
         address2: d?.address_line_2 ?? "",
@@ -111,7 +109,7 @@ const InstructorForm = ({ mode = "add", instructorId }) => {
         ahaInstructorId: d?.aha_instructor_id ?? "",
         hsiInstructorId: d?.hsi_instructor_id ?? "",
         rclcUsername: d?.rclc_username ?? "",
-        emailAddress: d?.email ?? "",
+        emailAddress: raw?.email ?? "",
         password: "",
         trainingSites,
       });
@@ -180,10 +178,7 @@ const InstructorForm = ({ mode = "add", instructorId }) => {
     );
   };
 
-  if (
-    isEdit &&
-    (instructorLoading || countryDataLoading || trainingSiteLoading)
-  ) {
+  if (isEdit && (countryDataLoading || trainingSiteLoading)) {
     return (
       <section className="flex flex-col gap-4">
         <SectionTitle title="Edit Instructor" />

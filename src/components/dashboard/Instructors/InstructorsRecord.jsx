@@ -11,7 +11,7 @@ import {
   TableFooter,
   TableHead,
 } from "@/components/common/TableElement";
-import { getAllInstructor, useGetAllUsers } from "@/hooks/api/dashboardApi";
+import { getAllInstructor } from "@/hooks/api/dashboardApi";
 import { CiEdit } from "react-icons/ci";
 import React, { useState } from "react";
 
@@ -89,7 +89,7 @@ const InstructorRecord = () => {
                       </td>
                       <td className="px-3 md:px-6 py-4 text-center whitespace-nowrap">
                         <div className="flex items-center justify-center">
-                          <TableButton href={`instructor-records/${item?.id}`}>
+                          <TableButton href={`instructor-records/${item?.user_id}`}>
                             <CiEdit className="text-gray-600 text-[16px] dark:text-gray" />
                           </TableButton>
                         </div>

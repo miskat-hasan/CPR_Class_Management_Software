@@ -1,11 +1,13 @@
 "use client";
 import SectionTitle from "@/components/common/SectionTitle";
+import useSiteAwarePagination from "@/hooks/useSiteAwarePagination";
 import TableSkeleton from "@/components/skeleton/TableSkeleton";
-import { Table, TableHead, TableBodyRow } from "@/components/common/TableElement";
+import { Table, TableHead, TableBodyRow, TableFooter } from "@/components/common/TableElement";
 import { getPromoCodeReport } from "@/hooks/api/dashboardApi";
 
 const PromoCodeReport = () => {
-  const { data, isLoading } = getPromoCodeReport();
+  const [page, setPage] = useSiteAwarePagination();
+  const { data, isLoading } = getPromoCodeReport(page);
 
   return (
     <div className="flex flex-col gap-[12.5px] lg:gap-[25px]">
@@ -77,7 +79,6 @@ const PromoCodeReport = () => {
 
       {/* Table */}
       <div className="p-[13px] lg:p-[26px] bg-white dark:bg-black rounded-[14px] flex flex-col gap-[24px]">
-        {/* <SubSectionTitle subtitle="All Lists" /> */}
         {isLoading ? (
           <TableSkeleton />
         ) : (
@@ -103,8 +104,8 @@ const PromoCodeReport = () => {
                 </tr>
               </TableHead>
               <tbody>
-                {data?.data?.length > 0 ? (
-                  data?.data?.map((item) => (
+                {data?.data?.data?.length > 0 ? (
+                  data?.data?.data?.map((item) => (
                     <TableBodyRow key={item.id}>
                       <td className="px-3 sm:px-6 py-4 text-gray-800 dark:text-gray-200 whitespace-nowrap">
                         {item.student}
@@ -126,7 +127,7 @@ const PromoCodeReport = () => {
                 ) : (
                   <tr>
                     <td
-                      colSpan="7"
+                      colSpan="5"
                       className="text-center py-6 text-gray-500 italic"
                     >
                       No results found
@@ -137,6 +138,11 @@ const PromoCodeReport = () => {
             </Table>
           </div>
         )}
+
+        <TableFooter
+          Links={data?.data?.links}
+          setPage={setPage}
+        />
       </div>
     </div>
   );

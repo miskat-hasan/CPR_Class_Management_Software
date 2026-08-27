@@ -198,32 +198,11 @@ export const createInstructor = () => {
     isPrivate: true,
     endpoint: "/api/instructors/store",
     headers: { "X-Site-Id": selectedTrainingSiteId },
-    onSuccess: data =>
-      toast.success(data?.message || "Instructor Created Successfully"),
     onError: error =>
       toast.error(error?.response?.data?.message || "Something went wrong!"),
   });
 };
 
-export const updateInstructor = id => {
-  return useClientApi({
-    method: "post",
-    isPrivate: true,
-    endpoint: `/api/instructors/${id}/update`,
-  });
-};
-
-export const getSingleInstructor = id => {
-  const { selectedTrainingSiteId } = useAuth();
-  return useClientApi({
-    method: "get",
-    key: ["get-single-instructor", id, selectedTrainingSiteId],
-    isPrivate: true,
-    enabled: !!id,
-    headers: { "X-Site-Id": selectedTrainingSiteId },
-    endpoint: `/api/single-instructors?id=${id}`,
-  });
-};
 export const getAllInstructor = ({
   type,
   page = 1,
@@ -419,6 +398,21 @@ export const getSingleCertification = id => {
     endpoint: `/api/certifications/show?id=${id}`,
   });
 };
+
+export const getAllCertifications = ({
+  instructorId,
+  page = 1,
+  perPage = 10,
+} = {}) => {
+  return useClientApi({
+    method: "get",
+    key: ["get-all-certifications", instructorId, page, perPage],
+    isPrivate: true,
+    enabled: !!instructorId,
+    endpoint: `/api/certifications/index?instructor_id=${instructorId}&page=${page}&per_page=${perPage}`,
+  });
+};
+
 export const storeDocument = () => {
   return useClientApi({
     method: "post",
@@ -505,10 +499,12 @@ export const getAllProductAddOns = ({ type, page = 1, perPage = 10 } = {}) => {
 // ==================== PROMO CODES ====================
 
 export const storePromoCode = () => {
+  const { selectedTrainingSiteId } = useAuth();
   return useClientApi({
     method: "post",
     isPrivate: true,
     endpoint: "/api/promo-codes/store",
+    headers: { "X-Site-Id": selectedTrainingSiteId },
   });
 };
 export const getSinglePromoCode = id => {
@@ -1310,23 +1306,23 @@ export const getProductAddOnsReport = (page = 1, perPage = 10) => {
     headers: { "X-Site-Id": selectedTrainingSiteId },
   });
 };
-export const getRegistrationReport = () => {
+export const getRegistrationReport = (page = 1, perPage = 10) => {
   const { selectedTrainingSiteId } = useAuth();
   return useClientApi({
     method: "get",
     isPrivate: true,
-    key: ["get-registration-report", selectedTrainingSiteId],
-    endpoint: "/api/reports/registration",
+    key: ["get-registration-report", selectedTrainingSiteId, page, perPage],
+    endpoint: `/api/reports/registration?page=${page}&per_page=${perPage}`,
     headers: { "X-Site-Id": selectedTrainingSiteId },
   });
 };
-export const getPromoCodeReport = () => {
+export const getPromoCodeReport = (page = 1, perPage = 10) => {
   const { selectedTrainingSiteId } = useAuth();
   return useClientApi({
     method: "get",
     isPrivate: true,
-    key: ["get-promo-code-report", selectedTrainingSiteId],
-    endpoint: "/api/reports/promo-code",
+    key: ["get-promo-code-report", selectedTrainingSiteId, page, perPage],
+    endpoint: `/api/reports/promo-code?page=${page}&per_page=${perPage}`,
     headers: { "X-Site-Id": selectedTrainingSiteId },
   });
 };
@@ -1360,33 +1356,43 @@ export const useExportStudentDiscipline = () => {
       toast.error(err?.response?.data?.message || "Something went wrong!"),
   });
 };
-export const useGetInstructorByDiscipline = () => {
+export const useGetInstructorByDiscipline = (page = 1, perPage = 10) => {
   const { selectedTrainingSiteId } = useAuth();
   return useClientApi({
     method: "get",
     isPrivate: true,
-    key: ["get-instructor-by-discipline", selectedTrainingSiteId],
-    endpoint: "/api/reports/instructors-and-discipline",
+    key: [
+      "get-instructor-by-discipline",
+      selectedTrainingSiteId,
+      page,
+      perPage,
+    ],
+    endpoint: `/api/reports/instructors-and-discipline?page=${page}&per_page=${perPage}`,
     headers: { "X-Site-Id": selectedTrainingSiteId },
   });
 };
-export const useGetClassAndStudentReport = () => {
+export const useGetClassAndStudentReport = (page = 1, perPage = 10) => {
   const { selectedTrainingSiteId } = useAuth();
   return useClientApi({
     method: "get",
     isPrivate: true,
-    key: ["get-class-and-student", selectedTrainingSiteId],
-    endpoint: "/api/reports/classes-and-students",
+    key: ["get-class-and-student", selectedTrainingSiteId, page, perPage],
+    endpoint: `/api/reports/classes-and-students?page=${page}&per_page=${perPage}`,
     headers: { "X-Site-Id": selectedTrainingSiteId },
   });
 };
-export const useGetClassAndStudentByDiscipline = () => {
+export const useGetClassAndStudentByDiscipline = (page = 1, perPage = 10) => {
   const { selectedTrainingSiteId } = useAuth();
   return useClientApi({
     method: "get",
     isPrivate: true,
-    key: ["get-class-and-student-by-discipline", selectedTrainingSiteId],
-    endpoint: "/api/reports/classes-students-discipline",
+    key: [
+      "get-class-and-student-by-discipline",
+      selectedTrainingSiteId,
+      page,
+      perPage,
+    ],
+    endpoint: `/api/reports/classes-students-discipline?page=${page}&per_page=${perPage}`,
     headers: { "X-Site-Id": selectedTrainingSiteId },
   });
 };

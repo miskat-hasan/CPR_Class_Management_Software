@@ -3,6 +3,8 @@
 import React from "react";
 import { Download, Loader2 } from "lucide-react";
 import SectionTitle from "@/components/common/SectionTitle";
+import { TableFooter } from "@/components/common/TableElement";
+import useSiteAwarePagination from "@/hooks/useSiteAwarePagination";
 import {
   useExportClassByStudentPDF,
   useExportInstructorByDisciplinePDF,
@@ -15,25 +17,32 @@ import {
 const ActivityReport = () => {
   /* ---------------- Skeleton ---------------- */
   const Skeleton = ({ className }) => (
-    <div className={`animate-pulse bg-gray-200 dark:bg-gray-800 rounded-md ${className}`} />
+    <div
+      className={`animate-pulse bg-gray-200 dark:bg-gray-800 rounded-md ${className}`}
+    />
   );
+
+  /* ---------------- Pagination ---------------- */
+  const [instructorPage, setInstructorPage] = useSiteAwarePagination();
+  const [classStudentPage, setClassStudentPage] = useSiteAwarePagination();
+  const [disciplinePage, setDisciplinePage] = useSiteAwarePagination();
 
   /* ---------------- API ---------------- */
 
   const {
     data: instructorByDisciplineData,
     isLoading: instructorByDisciplineDataLoading,
-  } = useGetInstructorByDiscipline();
+  } = useGetInstructorByDiscipline(instructorPage);
 
   const {
     data: classAndStudentReport,
     isLoading: classAndStudentReportLoading,
-  } = useGetClassAndStudentReport();
+  } = useGetClassAndStudentReport(classStudentPage);
 
   const {
     data: classAndStudentByDiscipline,
     isLoading: classAndStudentByDisciplineLoading,
-  } = useGetClassAndStudentByDiscipline();
+  } = useGetClassAndStudentByDiscipline(disciplinePage);
 
   /* ---------------- EXPORTS ---------------- */
 
@@ -42,9 +51,9 @@ const ActivityReport = () => {
     isPending: instructorByDisciplinePDFPending,
   } = useExportInstructorByDisciplinePDF();
 
-  const handleInstructorByDisciplineExcel = (slug) => {
+  const handleInstructorByDisciplineExcel = slug => {
     instructorByDisciplinePDFMutation(slug, {
-      onSuccess: (blob) => {
+      onSuccess: blob => {
         const file = new Blob([blob], {
           type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         });
@@ -68,9 +77,9 @@ const ActivityReport = () => {
     isPending: classByStudentPDFDownloadPending,
   } = useExportClassByStudentPDF();
 
-  const handleClassByStudentPDF = (slug) => {
+  const handleClassByStudentPDF = slug => {
     classByStudentPDFDownloadMutation(slug, {
-      onSuccess: (blob) => {
+      onSuccess: blob => {
         const file = new Blob([blob], {
           type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         });
@@ -94,9 +103,9 @@ const ActivityReport = () => {
     isPending: exportStudentDisciplinePending,
   } = useExportStudentDiscipline();
 
-  const handleExportStudentDiscipline = (slug) => {
+  const handleExportStudentDiscipline = slug => {
     exportStudentDisciplineMutation(slug, {
-      onSuccess: (blob) => {
+      onSuccess: blob => {
         const file = new Blob([blob], {
           type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         });
@@ -122,7 +131,6 @@ const ActivityReport = () => {
       <SectionTitle title={"Activity Report"} />
 
       <div className="space-y-3 lg:space-y-6">
-
         {/* ================= Instructor by Discipline ================= */}
         <div className="bg-white dark:bg-black rounded-lg overflow-hidden">
           <div className="flex justify-between items-center p-4 border-b dark:border-gray-800">
@@ -159,20 +167,21 @@ const ActivityReport = () => {
                       <Skeleton className="h-4 w-12 ml-auto" />
                     </div>
                   ))
-                : instructorByDisciplineData?.data?.disciplines?.map(
-                    (item, index) => (
-                      <div
-                        key={index}
-                        className="grid grid-cols-2 py-2 border-b dark:border-gray-800 last:border-0 text-gray-800 dark:text-gray-200"
-                      >
-                        <span>{item?.name}</span>
-                        <span className="text-right">
-                          {item?.instructors}
-                        </span>
-                      </div>
-                    )
-                  )}
+                : instructorByDisciplineData?.data?.data?.map((item, index) => (
+                    <div
+                      key={index}
+                      className="grid grid-cols-2 py-2 border-b dark:border-gray-800 last:border-0 text-gray-800 dark:text-gray-200"
+                    >
+                      <span>{item?.name}</span>
+                      <span className="text-right">{item?.instructors}</span>
+                    </div>
+                  ))}
             </div>
+
+            <TableFooter
+              Links={instructorByDisciplineData?.data?.links}
+              setPage={setInstructorPage}
+            />
           </div>
         </div>
 
@@ -212,21 +221,22 @@ const ActivityReport = () => {
                       <Skeleton className="h-4 w-10 ml-auto" />
                     </div>
                   ))
-                : classAndStudentReport?.data?.map((item, index) => (
+                : classAndStudentReport?.data?.data?.map((item, index) => (
                     <div
                       key={index}
                       className="grid grid-cols-3 py-2 border-b dark:border-gray-800 last:border-0 text-gray-800 dark:text-gray-200"
                     >
                       <span>{item?.course_type}</span>
-                      <span className="text-center">
-                        {item?.classes}
-                      </span>
-                      <span className="text-right">
-                        {item?.students}
-                      </span>
+                      <span className="text-center">{item?.classes}</span>
+                      <span className="text-right">{item?.students}</span>
                     </div>
                   ))}
             </div>
+
+            <TableFooter
+              Links={classAndStudentReport?.data?.links}
+              setPage={setClassStudentPage}
+            />
           </div>
         </div>
 
@@ -268,26 +278,26 @@ const ActivityReport = () => {
                       <Skeleton className="h-4 w-10 ml-auto" />
                     </div>
                   ))
-                : classAndStudentByDiscipline?.data?.map(
+                : classAndStudentByDiscipline?.data?.data?.map(
                     (item, index) => (
                       <div
                         key={index}
                         className="grid grid-cols-3 py-2 border-b dark:border-gray-800 last:border-0 text-gray-800 dark:text-gray-200"
                       >
                         <span>{item?.discipline}</span>
-                        <span className="text-center">
-                          {item?.classes}
-                        </span>
-                        <span className="text-right">
-                          {item?.students}
-                        </span>
+                        <span className="text-center">{item?.classes}</span>
+                        <span className="text-right">{item?.students}</span>
                       </div>
-                    )
+                    ),
                   )}
             </div>
+
+            <TableFooter
+              Links={classAndStudentByDiscipline?.data?.links}
+              setPage={setDisciplinePage}
+            />
           </div>
         </div>
-
       </div>
     </main>
   );
