@@ -37,7 +37,7 @@ export default function EditTextMessagePage() {
       {
         onSuccess: res => {
           toast.success(res?.message || "Message updated successfully");
-          router.push(`/dashboard/super-admin/settings/text-messaging`);
+          router.back();
         },
         onError: err => {
           toast.error(err?.response?.data?.message || "Something went wrong!");

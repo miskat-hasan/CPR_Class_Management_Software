@@ -38,10 +38,10 @@ const CertificationModal = ({
   const queryClient = useQueryClient();
 
   const form = useForm({ defaultValues: DEFAULT_VALUES });
-  const { control, reset } = form;
+  const { control, reset, formState: { errors } } = form;
 
   const { data: allDiscipline, isLoading: loadingDiscipline } =
-    getAllDiscipline();
+    getAllDiscipline({type: "all"});
 
   const { data: singleCertification, isLoading: loadingSingleCertification } =
     getSingleCertification(isEdit && open ? certificationId : undefined);
@@ -144,14 +144,34 @@ const CertificationModal = ({
                     label="Discipline"
                     isLoading={loadingDiscipline}
                     placeholder="Chose Discipline"
-                    options={allDiscipline?.data?.data}
+                    options={allDiscipline?.data}
+                    error={errors.discipline?.message}
                     className="flex-1"
                   />
                 )}
               />
               <div className="flex gap-6">
-                <FormInput name="initial" label="Initial Date" type="date" />
-                <FormInput name="expires" label="Expires Date" type="date" />
+                <FormInput
+                  name="initial"
+                  label="Initial Date"
+                  type="date"
+                  rules={{ required: "Initial date is required" }}
+                />
+                <FormInputn                  name="expires"
+                  label="Expires Date"
+                  type="date"
+                  rules={{
+                    required: "Expires date is required",
+                    validate: value => {
+                      const initialDate = form.getValues("initial");
+                      if (!initialDate) return true;
+                      if (new Date(value) < new Date(initialDate)) {
+                        return "Expires date cannot be before initial date";
+                      }
+                      return true;
+                    },
+                  }}
+                />
               </div>
             </div>
 

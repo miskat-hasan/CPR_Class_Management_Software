@@ -16,7 +16,7 @@ export default function AddTextMessagePage() {
       {
         onSuccess: res => {
           toast.success(res?.message || "Message added successfully");
-          router.push(`/dashboard/super-admin/settings/text-messaging`);
+          router.back();
         },
         onError: err => {
           toast.error(err?.response?.data?.message || "Something went wrong!");

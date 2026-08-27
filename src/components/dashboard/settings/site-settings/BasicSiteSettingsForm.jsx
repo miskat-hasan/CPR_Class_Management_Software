@@ -44,7 +44,7 @@ const SectionHeading = ({ children }) => (
 const BasicSiteSettingsForm = () => {
   const { data: settingsData, isLoading } = useGetSiteSettings("basic_setting");
   const { mutate: updateSettings, isPending } = useUpdateSiteSettings();
-
+  
   const form = useForm({
     defaultValues: {
       company_name: "",
@@ -79,16 +79,16 @@ const BasicSiteSettingsForm = () => {
       allow_tc_admins_to_issue_training_site_inventory: false,
     },
   });
-
+  
   const { register, reset } = form;
   const hasReset = useRef(false);
 
-  useEffect(() => {
-    if (!hasReset.current && settingsData?.data) {
-      reset(settingsData.data);
-      hasReset.current = true;
-    }
-  }, [settingsData, reset]);
+useEffect(() => {
+  if (!hasReset.current && settingsData?.data) {
+    reset({ ...settingsData.data });
+    hasReset.current = true;
+  }
+}, [settingsData, reset]);
 
   const onSubmit = data => {
     updateSettings(
@@ -274,7 +274,7 @@ const BasicSiteSettingsForm = () => {
           <Button
             type="button"
             variant="secondary"
-            onClick={() => reset(settingsData?.data)}
+            onClick={() => reset({ ...settingsData?.data })}
             className="h-9 text-sm cursor-pointer"
           >
             Cancel

@@ -1,13 +1,15 @@
 "use client";
 import SectionTitle from "@/components/common/SectionTitle";
-import SubSectionTitle from "@/components/common/SubSectionTitle";
+import useSiteAwarePagination from "@/hooks/useSiteAwarePagination";
 import TableSkeleton from "@/components/skeleton/TableSkeleton";
-import { Table, TableHead, TableBodyRow } from "@/components/common/TableElement";
+import { Table, TableHead, TableBodyRow, TableFooter } from "@/components/common/TableElement";
 import { getRegistrationReport } from "@/hooks/api/dashboardApi";
 
 // ===== Component =====
 const RegistrationReport = () => {
-  const { data, isLoading } = getRegistrationReport();
+  const [page, setPage] = useSiteAwarePagination();
+  const { data, isLoading } = getRegistrationReport(page);
+
   return (
     <div className="flex flex-col gap-[12.5px] lg:gap-[25px]">
       {/* Header */}
@@ -78,7 +80,6 @@ const RegistrationReport = () => {
 
       {/* Table */}
       <div className="p-[13px] lg:p-[26px] bg-white dark:bg-black rounded-[14px] flex flex-col gap-[24px]">
-        {/* <SubSectionTitle subtitle="All Lists" /> */}
         {isLoading ? (
           <TableSkeleton />
         ) : (
@@ -107,8 +108,8 @@ const RegistrationReport = () => {
                 </tr>
               </TableHead>
               <tbody>
-                {data?.data?.registrations?.length > 0 ? (
-                  data?.data?.registrations?.map((item) => (
+                {data?.data?.registrations?.data?.length > 0 ? (
+                  data?.data?.registrations?.data?.map(item => (
                     <TableBodyRow key={item.id}>
                       <td className="px-3 sm:px-6 py-4 text-gray-800 dark:text-gray-200 whitespace-nowrap">
                         {item.student_name}
@@ -133,7 +134,7 @@ const RegistrationReport = () => {
                 ) : (
                   <tr>
                     <td
-                      colSpan="5"
+                      colSpan="6"
                       className="text-center py-6 text-gray-500 italic"
                     >
                       No results found
@@ -142,8 +143,19 @@ const RegistrationReport = () => {
                 )}
               </tbody>
             </Table>
+            {data?.data?.total_due_sum && (
+              <div className="flex items-center dark:text-gray-200 text-gray-800 gap-4 justify-end mt-3 mx-3">
+                <div>Total: </div>
+                <div>{data?.data?.total_due_sum}</div>
+              </div>
+            )}
           </div>
         )}
+
+        <TableFooter
+          Links={data?.data?.registrations?.links}
+          setPage={setPage}
+        />
       </div>
     </div>
   );
