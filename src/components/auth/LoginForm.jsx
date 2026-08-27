@@ -58,7 +58,7 @@ export default function LoginForm() {
         <FormContainer form={form} onSubmit={onSubmit}>
           <FormInput
             name="login"
-            label="Email"
+            label="Email/Username"
             placeholder="Enter Your Email or Username"
             rules={{
               required: "Email/Username is required",

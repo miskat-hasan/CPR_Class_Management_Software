@@ -15,7 +15,7 @@ const AddPromoCodesPage = () => {
     mutate(formData, {
       onSuccess: data => {
         toast.success(data?.message || "Promo Code added successfully");
-        router.push("../promo_codes");
+        router.back();
       },
       onError: error => {
         toast.error(error?.response?.data?.message || "Something went wrong!");

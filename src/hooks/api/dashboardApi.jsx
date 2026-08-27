@@ -1748,9 +1748,12 @@ export const useDeleteRegistrationQuestion = id => {
 };
 
 // course schedule data (public api)
-export const useGetCourseSchedule = (siteId = 1, filters = {}) => {
+export const useGetCourseSchedule = (siteId, filters = {}) => {
+  // When instructor_id or location_id is present, don't send training_site_id
+  const hasInstructorOrLocation = !!(filters.instructor_id || filters.location_id);
+
   const params = {
-    training_site_id: siteId,
+    ...(!hasInstructorOrLocation && siteId ? { training_site_id: siteId } : {}),
     ...(filters.search ? { search: filters.search } : {}),
     ...(filters.course_id ? { course_id: filters.course_id } : {}),
     ...(filters.location_id ? { location_id: filters.location_id } : {}),
