@@ -21,9 +21,8 @@ import {
 const PromoCodesPage = () => {
   const [page, setPage] = useSiteAwarePagination();
   const [perPage, setPerPage] = useState(10);
-  const router = useRouter();
 
-  const { data: promoCodeData, isLoading } = getAllPromoCode({page, perPage});
+  const { data: promoCodeData, isLoading } = getAllPromoCode({ page, perPage });
 
   return (
     <section className="flex flex-col gap-[12.5px] lg:gap-[25px] ">
@@ -50,7 +49,7 @@ const PromoCodesPage = () => {
                 <tr>
                   <th className="px-3 md:px-6 py-3 whitespace-nowrap">Code</th>
                   <th className="px-3 md:px-6 py-3 whitespace-nowrap">
-                    Description
+                    Company
                   </th>
                   <th className="px-3 md:px-6 py-3 whitespace-nowrap">Start</th>
                   <th className="px-3 md:px-6 py-3 whitespace-nowrap">End</th>
@@ -74,7 +73,7 @@ const PromoCodesPage = () => {
                         {item.code}
                       </td>
                       <td className="px-3 md:px-6 py-4 whitespace-nowrap">
-                        {item.description}
+                        {item.client.company}
                       </td>
                       <td className="px-3 md:px-6 py-4 whitespace-nowrap">
                         {item.start_date}

@@ -26,7 +26,7 @@ const EditTsProductPage = ({ params }) => {
     },
   });
 
-  const { reset, register, control } = form;
+  const { reset, register, control, formState: { errors } } = form;
 
   // get ts product data
   const { data: productData, isLoading } = useGetSingleTCProduct(id);
@@ -99,6 +99,7 @@ const EditTsProductPage = ({ params }) => {
                   label="Price Level"
                   placeholder="Select Price Level"
                   options={priceLevel}
+                  error={errors.price_label?.message}
                 />
               )}
             />

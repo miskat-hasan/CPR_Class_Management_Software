@@ -1,31 +1,95 @@
 // src/components/enrollment/SchedulePageContent.jsx
 "use client";
 
-import { useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useGetCourseSchedule } from "@/hooks/api/dashboardApi";
-import Schedule, { EMPTY_FILTERS, TRAINING_SITE_ID } from "@/components/enrollment/Schedule";
+import Schedule, { EMPTY_FILTERS } from "@/components/enrollment/Schedule";
+
+const STORAGE_KEY = "scheduleFilters";
+
+/** Read locked filter params from sessionStorage. */
+function getStoredFilters() {
+  if (typeof window === "undefined") return {};
+  try {
+    return JSON.parse(sessionStorage.getItem(STORAGE_KEY) || "{}");
+  } catch {
+    return {};
+  }
+}
 
 export default function SchedulePageContent() {
+  const router = useRouter();
   const searchParams = useSearchParams();
 
-  const initialFromUrl = {
-    ...EMPTY_FILTERS,
-    course_id: searchParams.get("course_id") ?? "",
-    instructor_id: searchParams.get("instructor_id") ?? "",
-    location_id: searchParams.get("location_id") ?? "",
+  // ── Read locked params from sessionStorage (safe on server: returns {}) ──
+  const stored = getStoredFilters();
+
+  const hiddenFilters = {
+    course_id: stored.course_id || "",
+    instructor_id: stored.instructor_id || "",
+    location_id: stored.location_id || "",
   };
 
-  const [filters, setFilters] = useState(initialFromUrl);
-  const [appliedFilters, setAppliedFilters] = useState(initialFromUrl);
+  const tsId = stored.ts_id || "1";
+
+  const [filters, setFilters] = useState({
+    ...EMPTY_FILTERS,
+    ...hiddenFilters,
+  });
+  const [appliedFilters, setAppliedFilters] = useState({
+    ...EMPTY_FILTERS,
+    ...hiddenFilters,
+  });
   const [page, setPage] = useState(1);
 
-  const { data, isLoading } = useGetCourseSchedule(TRAINING_SITE_ID, {
+  // ── Step 1: On mount, capture any URL params → sessionStorage → redirect ──
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    const tsId = searchParams.get("ts_id");
+    const courseId = searchParams.get("course_id");
+    const instructorId = searchParams.get("instructor_id");
+    const locationId = searchParams.get("location_id");
+
+    const hasUrlParams = tsId || courseId || instructorId || locationId;
+
+    if (hasUrlParams) {
+      // Persist the locked params
+      const locked = {
+        ...(tsId ? { ts_id: tsId } : {}),
+        ...(courseId ? { course_id: courseId } : {}),
+        ...(instructorId ? { instructor_id: instructorId } : {}),
+        ...(locationId ? { location_id: locationId } : {}),
+      };
+      sessionStorage.setItem(STORAGE_KEY, JSON.stringify(locked));
+
+      // Redirect to clean URL
+      router.replace("/schedule");
+      return;
+    }
+
+    setReady(true);
+  }, [searchParams, router]);
+
+  // ── Clear course filter:
+  const handleClearCourseFilter = () => {
+    const current = getStoredFilters();
+    delete current.course_id;
+    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(current));
+
+    setFilters(prev => ({ ...prev, course_id: "" }));
+    setAppliedFilters(prev => ({ ...prev, course_id: "" }));
+  };
+
+  const { data, isLoading } = useGetCourseSchedule(tsId, {
     ...appliedFilters,
     page,
   });
 
   const settings = data?.data?.settings;
+
+  if (!ready) return null;
 
   return (
     <div className="flex flex-col lg:flex-row gap-6 items-start">
@@ -44,6 +108,8 @@ export default function SchedulePageContent() {
           setAppliedFilters={setAppliedFilters}
           page={page}
           setPage={setPage}
+          hiddenFilters={hiddenFilters}
+          onClearCourseFilter={handleClearCourseFilter}
         />
       </div>
 

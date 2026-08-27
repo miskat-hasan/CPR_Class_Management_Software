@@ -35,7 +35,7 @@ const EditTsProductOrder = () => {
     },
   });
 
-  const { control, reset } = form;
+  const { control, reset, formState: { errors } } = form;
 
   useEffect(() => {
     if (orderDetails && status) {
@@ -293,6 +293,7 @@ const EditTsProductOrder = () => {
                   label="Status:"
                   placeholder="Select Status"
                   options={status}
+                  error={errors.status?.message}
                   className={"max-w-[400px]"}
                 />
               )}

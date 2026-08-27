@@ -1,10 +1,10 @@
-import TextMessagingPage from "@/components/dashboard/settings/text-messaging/TextMessagingPage";
 import React from "react";
+import AddTextMessagePage from "@/components/dashboard/settings/text-messaging/AddTextMessagePage";
 
 const Page = () => {
   return (
     <div>
-      <TextMessagingPage />
+      <AddTextMessagePage />
     </div>
   );
 };

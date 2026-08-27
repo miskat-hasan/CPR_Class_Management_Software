@@ -2,7 +2,6 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { useSearchParams } from "next/navigation";
 import { ChevronDown, ChevronUp, MapPin, Clock, Users, X } from "lucide-react";
 import CustomSelect from "@/components/shared/form/CustomSelect";
 import CustomInput from "@/components/shared/form/CustomInput";
@@ -62,7 +61,7 @@ const ExpandableHtml = ({ html, className = "", collapsedHeight = 110 }) => {
 
 // ─── Filter bar ───────────────────────────────────────────────────────────────
 
-const FilterBar = ({ filters, onChange, onClear, onApply, courses }) => {
+const FilterBar = ({ filters, onChange, onClear, onApply, courses, hiddenFilters, onClearCourseFilter }) => {
   const { data: coursesData, isLoading: coursesLoading } = getAllCourses({
     type: "all",
   });
@@ -104,6 +103,12 @@ const FilterBar = ({ filters, onChange, onClear, onApply, courses }) => {
     ([k, v]) => k !== "page" && v !== "",
   );
 
+  const showCourseFilter = !hiddenFilters.course_id;
+  const showInstructorFilter = !hiddenFilters.instructor_id;
+  const showLocationFilter = !hiddenFilters.location_id;
+
+  const lockedCourseId = hiddenFilters.course_id;
+
   return (
     <div className="border border-gray-200 dark:border-zinc-700 rounded-lg overflow-hidden mb-5 mt-10">
       {/* Search */}
@@ -118,35 +123,57 @@ const FilterBar = ({ filters, onChange, onClear, onApply, courses }) => {
 
       {/* Filter rows */}
       <div className="divide-y divide-gray-200 dark:divide-zinc-700 bg-white dark:bg-black">
-        <div className="px-4 py-3">
-          <CustomSelect
-            label="Filter scheduled classes by location:"
-            placeholder="All Locations"
-            value={filters.location_id}
-            onChange={v => onChange("location_id", v)}
-            options={locationOptions}
-          />
-        </div>
+        {showLocationFilter && (
+          <div className="px-4 py-3">
+            <CustomSelect
+              label="Filter scheduled classes by location:"
+              placeholder="All Locations"
+              value={filters.location_id}
+              onChange={v => onChange("location_id", v)}
+              options={locationOptions}
+            />
+          </div>
+        )}
 
-        <div className="px-4 py-3">
-          <CustomSelect
-            label="Filter scheduled classes by course type:"
-            placeholder="All Courses"
-            value={filters.course_id}
-            onChange={v => onChange("course_id", v)}
-            options={courseOptions}
-          />
-        </div>
+        {showCourseFilter ? (
+          <div className="px-4 py-3">
+            <CustomSelect
+              label="Filter scheduled classes by course type:"
+              placeholder="All Courses"
+              value={filters.course_id}
+              onChange={v => onChange("course_id", v)}
+              options={courseOptions}
+            />
+          </div>
+        ) : (
+          lockedCourseId && (
+            <div className="px-4 py-3 flex items-center justify-between">
+              <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+                Filtered by course
+              </span>
+              <button
+                type="button"
+                onClick={onClearCourseFilter}
+                className="flex items-center gap-1.5 px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded-md text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition cursor-pointer"
+              >
+                <X className="size-3.5" />
+                Clear Course Filter
+              </button>
+            </div>
+          )
+        )}
 
-        <div className="px-4 py-3">
-          <CustomSelect
-            label="Filter scheduled classes by instructor:"
-            placeholder="All Instructors"
-            value={filters.instructor_id}
-            onChange={v => onChange("instructor_id", v)}
-            options={instructorOptions}
-          />
-        </div>
+        {showInstructorFilter && (
+          <div className="px-4 py-3">
+            <CustomSelect
+              label="Filter scheduled classes by instructor:"
+              placeholder="All Instructors"
+              value={filters.instructor_id}
+              onChange={v => onChange("instructor_id", v)}
+              options={instructorOptions}
+            />
+          </div>
+        )}
 
         <div className="px-4 py-3 flex flex-col gap-1.5">
           <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
@@ -355,12 +382,8 @@ const EMPTY_FILTERS = {
   to_time: "",
 };
 
-// training_site_id is always 1 — fixed per business rule, never changes
 const TRAINING_SITE_ID = 1;
 
-// data and isLoading are lifted into the parent (SchedulePageContent) so the
-// API is only called ONCE and both Schedule + the sidebar can read settings
-// from the same response — this is what fixes the duplicate-call bug.
 const Schedule = ({
   data,
   isLoading,
@@ -370,6 +393,8 @@ const Schedule = ({
   setAppliedFilters,
   page,
   setPage,
+  hiddenFilters,
+  onClearCourseFilter,
 }) => {
   const courses = data?.data?.courses?.data ?? [];
   const instructors = data?.data?.instructors ?? [];
@@ -412,6 +437,8 @@ const Schedule = ({
         onClear={handleClear}
         courses={courses}
         instructors={instructors}
+        hiddenFilters={hiddenFilters}
+        onClearCourseFilter={onClearCourseFilter}
       />
 
       {isLoading ? (

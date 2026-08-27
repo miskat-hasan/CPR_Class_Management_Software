@@ -26,9 +26,15 @@ import {
 import { CiEdit } from "react-icons/ci";
 import { HiOutlineTrash } from "react-icons/hi";
 import { Check } from "lucide-react";
+import { usePathname } from "next/navigation";
 
 export default function TextMessagingPage() {
   const [deleteTarget, setDeleteTarget] = useState(null);
+
+    const path = usePathname();
+  
+    const parts = path.split("/");
+    const roleBasePath = `/${parts[1]}/${parts[2]}`;
 
   // Basic settings form
   const settingsForm = useForm({
@@ -70,7 +76,7 @@ export default function TextMessagingPage() {
     updateSettings(
       {
         data: {
-          phone: data.phone,
+          phone_number: data.phone,
           auto_reply: data.autoReply,
           forward_mail: data.forwardMail,
         },
@@ -183,9 +189,7 @@ export default function TextMessagingPage() {
               asChild
               className="py-2 px-4 cursor-pointer bg-brown dark:bg-dark-brown flex items-center gap-2 dark:hover:bg-brown text-sm"
             >
-              <Link
-                href={`/dashboard/super-admin/settings/text-messaging/add`}
-              >
+              <Link href={`${roleBasePath}/settings/text-messaging/add`}>
                 Add New Message <PlusIcon />
               </Link>
             </Button>
