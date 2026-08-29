@@ -3,7 +3,7 @@
 
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import {
   getAllCountry,
@@ -19,6 +19,7 @@ import { useDefaultCountry } from "@/hooks/useDefaultCountry";
 const Page = () => {
   const { id } = useParams();
   const [step, setStep] = useState(1);
+  const router = useRouter();
 
   const form = useForm({
     defaultValues: {
@@ -120,11 +121,10 @@ const Page = () => {
     submitEnrollment(formData, {
       onSuccess: res => {
         const paymentUrl = res?.data?.payment_url;
-        if (paymentUrl) {
-          // Hosted payment page — full redirect, not a Next.js route
+        if (res?.data?.site_type === "paid") {
           window.location.href = paymentUrl;
         } else {
-          toast.error("Payment link is missing. Please try again.");
+          router.push(`/enroll/registration-confirmed?type=${"free"}`);
         }
       },
     });
