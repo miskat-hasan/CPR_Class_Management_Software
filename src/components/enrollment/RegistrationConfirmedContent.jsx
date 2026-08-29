@@ -6,11 +6,11 @@ import { useSearchParams } from "next/navigation";
 
 const RegistrationConfirmedContent = () => {
   const searchParams = useSearchParams();
-
   // Backend isn't wired up yet — these will come through as query params
   // once the payment API redirects here (e.g. order id, confirmation #).
   const orderId = searchParams.get("order_id");
   const confirmationNumber = searchParams.get("confirmation_number");
+  const type = searchParams.get("type");
 
   return (
     <div className="min-h-[70vh] flex items-center justify-center px-4 py-8">
@@ -37,8 +37,10 @@ const RegistrationConfirmedContent = () => {
         </h1>
 
         <p className="text-sm text-gray-600 dark:text-zinc-400">
-          Thank you! Your payment was successful and your seat is reserved. A
-          confirmation email with your class details is on its way to your
+          Thank you! {" "}
+          {type !== "free" &&
+            "Your payment was successful and your seat is reserved."}
+          A confirmation email with your class details is on its way to your
           inbox.
         </p>
 
