@@ -19,6 +19,8 @@ import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { FaPlus } from "react-icons/fa";
 import { toast } from "sonner";
 import { useDefaultCountry } from "@/hooks/useDefaultCountry";
+import useAuth from "@/hooks/useAuth";
+import { usePathname, useRouter } from "next/navigation";
 
 const INSTRUCTOR_ROLE_ID = 3;
 
@@ -44,6 +46,17 @@ const DEFAULT_VALUES = {
 
 const InstructorForm = ({ mode = "add", id, instructorData, isLoading }) => {
   const isEdit = mode === "edit";
+
+  const pathname = usePathname();
+
+  const router = useRouter();
+
+  const segments = pathname.split("/").filter(Boolean);
+  segments.pop();
+
+  const basePath = `/${segments.join("/")}/`;
+
+  const { selectedTrainingSiteId } = useAuth();
 
   const defaultValues = useMemo(() => DEFAULT_VALUES, []);
   const form = useForm({ defaultValues });
@@ -147,7 +160,10 @@ const InstructorForm = ({ mode = "add", id, instructorData, isLoading }) => {
       rclc_username: values.rclcUsername,
       email: values.emailAddress,
       site_roles: values.trainingSites.map(ts => ({
-        training_site_id: Number(ts.tsite_id),
+        training_site_id:
+          selectedTrainingSiteId === "1"
+            ? Number(ts.tsite_id)
+            : selectedTrainingSiteId,
         role_id: INSTRUCTOR_ROLE_ID,
       })),
     };
@@ -169,6 +185,8 @@ const InstructorForm = ({ mode = "add", id, instructorData, isLoading }) => {
                   ? "Instructor updated successfully!"
                   : "Instructor added successfully!"),
             );
+            router.push(isEdit ? basePath : basePath + "/instructor-records");
+            reset();
           }
         },
         onError: err => {
@@ -312,75 +330,77 @@ const InstructorForm = ({ mode = "add", id, instructorData, isLoading }) => {
             />
 
             {/* Training Sites */}
-            <div className="col-span-1 bg-neutral-50 dark:bg-dark border dark:border-gray-700 px-2 pt-2 pb-4 rounded-md">
-              <h6 className="text-lg mb-1 text-black dark:text-gray">
-                Training Sites
-              </h6>
-              <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">
-                Instructor role will be assigned to each selected site.
-              </p>
+            {selectedTrainingSiteId == "1" && (
+              <div className="col-span-1 bg-neutral-50 dark:bg-dark border dark:border-gray-700 px-2 pt-2 pb-4 rounded-md">
+                <h6 className="text-lg mb-1 text-black dark:text-gray">
+                  Training Sites
+                </h6>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">
+                  Instructor role will be assigned to each selected site.
+                </p>
 
-              {fields.map((field, index) => {
-                const currentVal = watchedSites?.[index]?.tsite_id;
-                const isDuplicate =
-                  currentVal &&
-                  selectedSiteIds.filter(
-                    id => String(id) === String(currentVal),
-                  ).length > 1;
+                {fields.map((field, index) => {
+                  const currentVal = watchedSites?.[index]?.tsite_id;
+                  const isDuplicate =
+                    currentVal &&
+                    selectedSiteIds.filter(
+                      id => String(id) === String(currentVal),
+                    ).length > 1;
 
-                return (
-                  <div
-                    key={field.id}
-                    className="mt-3 border-b dark:border-gray-700 pb-3"
-                  >
-                    <div className="flex items-center gap-2">
-                      <div className="flex-1">
-                        <Controller
-                          name={`trainingSites.${index}.tsite_id`}
-                          control={control}
-                          rules={{ required: "Training site is required" }}
-                          render={({ field }) => (
-                            <CustomSelect
-                              {...field}
-                              placeholder="Select site"
-                              isLoading={trainingSiteLoading}
-                              options={trainingSiteData?.data}
-                              error={
-                                errors?.trainingSites?.[index]?.tsite_id
-                                  ?.message
-                              }
-                            />
-                          )}
-                        />
+                  return (
+                    <div
+                      key={field.id}
+                      className="mt-3 border-b dark:border-gray-700 pb-3"
+                    >
+                      <div className="flex items-center gap-2">
+                        <div className="flex-1">
+                          <Controller
+                            name={`trainingSites.${index}.tsite_id`}
+                            control={control}
+                            rules={{ required: "Training site is required" }}
+                            render={({ field }) => (
+                              <CustomSelect
+                                {...field}
+                                placeholder="Select site"
+                                isLoading={trainingSiteLoading}
+                                options={trainingSiteData?.data}
+                                error={
+                                  errors?.trainingSites?.[index]?.tsite_id
+                                    ?.message
+                                }
+                              />
+                            )}
+                          />
+                        </div>
+
+                        {fields.length > 1 && (
+                          <div
+                            onClick={() => remove(index)}
+                            className="bg-neutral-200 dark:bg-gray-700 p-2 rounded-md cursor-pointer hover:bg-neutral-300 dark:hover:bg-gray-600 shrink-0"
+                          >
+                            <LucideTrash2 className="size-4 text-gray-700 dark:text-gray" />
+                          </div>
+                        )}
                       </div>
 
-                      {fields.length > 1 && (
-                        <div
-                          onClick={() => remove(index)}
-                          className="bg-neutral-200 dark:bg-gray-700 p-2 rounded-md cursor-pointer hover:bg-neutral-300 dark:hover:bg-gray-600 shrink-0"
-                        >
-                          <LucideTrash2 className="size-4 text-gray-700 dark:text-gray" />
-                        </div>
+                      {isDuplicate && (
+                        <p className="text-xs text-red-500 dark:text-red-400 mt-1">
+                          This training site is already selected.
+                        </p>
                       )}
                     </div>
+                  );
+                })}
 
-                    {isDuplicate && (
-                      <p className="text-xs text-red-500 dark:text-red-400 mt-1">
-                        This training site is already selected.
-                      </p>
-                    )}
-                  </div>
-                );
-              })}
-
-              <div
-                onClick={() => append({ tsite_id: "" })}
-                className="mt-4 px-2 py-1.5 inline-flex items-center gap-1 border dark:border-gray-600 rounded-md text-sm bg-neutral-700 dark:bg-gray-800 text-neutral-100 cursor-pointer hover:bg-neutral-600 dark:hover:bg-gray-700 shadow-sm"
-              >
-                <FaPlus className="size-3" />
-                Add more
+                <div
+                  onClick={() => append({ tsite_id: "" })}
+                  className="mt-4 px-2 py-1.5 inline-flex items-center gap-1 border dark:border-gray-600 rounded-md text-sm bg-neutral-700 dark:bg-gray-800 text-neutral-100 cursor-pointer hover:bg-neutral-600 dark:hover:bg-gray-700 shadow-sm"
+                >
+                  <FaPlus className="size-3" />
+                  Add more
+                </div>
               </div>
-            </div>
+            )}
           </div>
 
           <div className="flex items-center justify-end mt-8 gap-4">
