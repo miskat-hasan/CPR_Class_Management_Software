@@ -9,7 +9,7 @@ import Schedule, { EMPTY_FILTERS } from "@/components/enrollment/Schedule";
 const STORAGE_KEY = "scheduleFilters";
 
 /** Read locked filter params from sessionStorage. */
-function getStoredFilters() {
+export function getStoredFilters() {
   if (typeof window === "undefined") return {};
   try {
     return JSON.parse(sessionStorage.getItem(STORAGE_KEY) || "{}");

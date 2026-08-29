@@ -10,6 +10,9 @@ import {
   getAllCourses,
   getAllInstructor,
   getAllLocation,
+  getAllPublicCourses,
+  getAllPublicInstructors,
+  getAllPublicLocations,
   useGetCourseSchedule,
 } from "@/hooks/api/dashboardApi";
 
@@ -61,17 +64,23 @@ const ExpandableHtml = ({ html, className = "", collapsedHeight = 110 }) => {
 
 // ─── Filter bar ───────────────────────────────────────────────────────────────
 
-const FilterBar = ({ filters, onChange, onClear, onApply, courses, hiddenFilters, onClearCourseFilter }) => {
-  const { data: coursesData, isLoading: coursesLoading } = getAllCourses({
-    type: "all",
-  });
+const FilterBar = ({
+  filters,
+  onChange,
+  onClear,
+  onApply,
+  courses,
+  hiddenFilters,
+  onClearCourseFilter,
+}) => {
+  const { data: coursesData, isLoading: coursesLoading } =
+    getAllPublicCourses();
 
   const { data: instructorData, isLoading: instructorLoading } =
-    getAllInstructor({ type: "all" });
+    getAllPublicInstructors();
 
-  const { data: locationData, isLoading: locationLoading } = getAllLocation({
-    type: "all",
-  });
+  const { data: locationData, isLoading: locationLoading } =
+    getAllPublicLocations();
 
   // "All" option prepended to each list
   const ALL_OPTION = [{ id: "", name: "— All —" }];

@@ -2,6 +2,7 @@ import useClientApi from "../useClientApi";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import useAuth from "../useAuth";
+import { getStoredFilters } from "@/components/enrollment/SchedulePageContent";
 
 // ==================== AUTH / TRAINING SITE ====================
 
@@ -826,6 +827,44 @@ export const getAllCourses = ({ type, page = 1, perPage = 10 } = {}) => {
     key,
     headers: { "X-Site-Id": selectedTrainingSiteId },
     isPrivate: true,
+    endpoint,
+  });
+};
+
+// Without Authentication
+export const getAllPublicCourses = () => {
+  const { ts_id, instructor_id } = getStoredFilters();
+  const endpoint = ts_id
+    ? `/api/courses-public?site_id=${ts_id}&type=all`
+    : `/api/courses-public?instructor_id=${instructor_id}&type=all`;
+  return useClientApi({
+    method: "get",
+    key: ["get-all-public-course", ts_id, instructor_id],
+    endpoint,
+  });
+};
+
+// Without Authentication
+export const getAllPublicInstructors = () => {
+  const { ts_id } = getStoredFilters();
+
+  return useClientApi({
+    method: "get",
+    key: ["get-all-public-instructors", ts_id],
+    enabled: !!ts_id,
+    endpoint: `/api/instructors-public?site_id=${ts_id}&type=all`,
+  });
+};
+
+// Without Authentication
+export const getAllPublicLocations = () => {
+  const { ts_id, instructor_id } = getStoredFilters();
+  const endpoint = ts_id
+    ? `/api/locations-public?site_id=${ts_id}&type=all`
+    : `/api/locations-public?instructor_id=${instructor_id}&type=all`;
+  return useClientApi({
+    method: "get",
+    key: ["get-all-public-locations", ts_id, instructor_id],
     endpoint,
   });
 };
@@ -1750,7 +1789,9 @@ export const useDeleteRegistrationQuestion = id => {
 // course schedule data (public api)
 export const useGetCourseSchedule = (siteId, filters = {}) => {
   // When instructor_id or location_id is present, don't send training_site_id
-  const hasInstructorOrLocation = !!(filters.instructor_id || filters.location_id);
+  const hasInstructorOrLocation = !!(
+    filters.instructor_id || filters.location_id
+  );
 
   const params = {
     ...(!hasInstructorOrLocation && siteId ? { training_site_id: siteId } : {}),
