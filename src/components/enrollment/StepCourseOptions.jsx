@@ -122,7 +122,7 @@ const StepCourseOptions = ({ form, classDetails, addonsList, onNext }) => {
       {/* Course description */}
       {course?.description && (
         <div
-          className="prose dark:prose-invert max-w-none text-sm leading-relaxed mb-5
+          className="prose dark:text-white text-black max-w-none text-sm leading-relaxed mb-5
             [&_ol]:list-decimal [&_ol]:pl-5
             [&_li[data-list=bullet]]:list-disc [&_li[data-list=bullet]]:ml-6"
           dangerouslySetInnerHTML={{

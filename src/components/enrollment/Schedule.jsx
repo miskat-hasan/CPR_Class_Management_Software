@@ -45,7 +45,7 @@ const ExpandableHtml = ({ html, className = "", collapsedHeight = 110 }) => {
     <div>
       <div
         ref={ref}
-        className={`${className} overflow-hidden transition-[max-height] duration-300`}
+        className={`${className} overflow-hidden dark:text-white text-black transition-[max-height] duration-300`}
         style={{ maxHeight: expanded ? "none" : `${collapsedHeight}px` }}
         dangerouslySetInnerHTML={{ __html: stripInlineColors(html) }}
       />

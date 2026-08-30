@@ -38,7 +38,12 @@ const SectionCard = ({ title, children }) => (
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 const ProfilePage = () => {
-  const { user, isLoading: authLoading, activeRole } = useAuth();
+  const {
+    user,
+    isLoading: authLoading,
+    activeRole,
+    selectedTrainingSiteId,
+  } = useAuth();
 
   const { data: countryData, isLoading: countryLoading } = getAllCountry();
   const countryOptions = countryData?.data ?? [];
@@ -191,11 +196,12 @@ const ProfilePage = () => {
             Direct Schedule Link:
             <Link
               target="_blank"
-              href={`/schedule?instructor_id=${user?.instructor_id}`}
+              href={`/schedule?ts_id=${selectedTrainingSiteId}&instructor_id=${user?.instructor_id}`}
               className="text-brown"
             >
               {typeof window !== "undefined" && window.location.origin}
-              /schedule?instructor_id={user?.instructor_id}
+              /schedule?ts_id={selectedTrainingSiteId}&instructor_id=
+              {user?.instructor_id}
             </Link>
           </div>
         )}

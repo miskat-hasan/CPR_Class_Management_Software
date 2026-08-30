@@ -311,7 +311,7 @@ const StepStudentInfo = ({
             <SubSectionTitle subtitle={"Texting Privacy Policy"} />
             <div className="max-h-[300px] overflow-y-auto border rounded-lg p-2 mt-3">
               <div
-                className="prose prose-xs dark:prose-invert max-w-none text-xs leading-relaxed text-gray-500 dark:text-zinc-500 border-t dark:border-zinc-700 pt-3"
+                className="prose prose-xs dark:text-white text-black max-w-none text-xs leading-relaxed text-gray-500 dark:text-zinc-500 border-t dark:border-zinc-700 pt-3"
                 dangerouslySetInnerHTML={{
                   __html: regSettings.texting_privacy_policy
                     ?.replace(
@@ -330,7 +330,7 @@ const StepStudentInfo = ({
             <SubSectionTitle subtitle={"Terms & Conditions"} />
             <div className="max-h-[300px] overflow-y-auto border rounded-lg p-2 mt-3">
               <div
-                className="prose prose-sm dark:prose-invert max-w-none text-sm leading-relaxed mt-5
+                className="prose prose-sm dark:text-white text-black max-w-none text-sm leading-relaxed mt-5
           [&_ol]:list-decimal [&_ol]:pl-5
           [&_li[data-list=bullet]]:list-disc [&_li[data-list=bullet]]:ml-6"
                 dangerouslySetInnerHTML={{
