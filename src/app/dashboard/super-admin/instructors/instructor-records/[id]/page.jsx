@@ -1,6 +1,6 @@
 "use client";
 // src/app/dashboard/super-admin/instructors/instructor-records/[id]/page.jsx
-import InstructorEditPage from "@/components/dashboard/instructors/InstructorEditPage";
+import InstructorEditPage from "@/components/dashboard/instructor/InstructorEditPage";
 import { useParams } from "next/navigation";
 import React from "react";
 
