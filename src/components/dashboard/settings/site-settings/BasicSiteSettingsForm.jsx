@@ -11,6 +11,8 @@ import {
   useUpdateSiteSettings,
 } from "@/hooks/api/dashboardApi";
 import { toast } from "sonner";
+import Link from "next/link";
+import useAuth from "@/hooks/useAuth";
 
 const CHECKBOX_FIELDS = [
   {
@@ -42,9 +44,11 @@ const SectionHeading = ({ children }) => (
 );
 
 const BasicSiteSettingsForm = () => {
+  const { selectedTrainingSiteId } = useAuth();
+
   const { data: settingsData, isLoading } = useGetSiteSettings("basic_setting");
   const { mutate: updateSettings, isPending } = useUpdateSiteSettings();
-  
+
   const form = useForm({
     defaultValues: {
       company_name: "",
@@ -79,16 +83,16 @@ const BasicSiteSettingsForm = () => {
       allow_tc_admins_to_issue_training_site_inventory: false,
     },
   });
-  
+
   const { register, reset } = form;
   const hasReset = useRef(false);
 
-useEffect(() => {
-  if (!hasReset.current && settingsData?.data) {
-    reset({ ...settingsData.data });
-    hasReset.current = true;
-  }
-}, [settingsData, reset]);
+  useEffect(() => {
+    if (!hasReset.current && settingsData?.data) {
+      reset({ ...settingsData.data });
+      hasReset.current = true;
+    }
+  }, [settingsData, reset]);
 
   const onSubmit = data => {
     updateSettings(
@@ -120,6 +124,17 @@ useEffect(() => {
   return (
     <FormContainer form={form} onSubmit={onSubmit}>
       <div className="flex flex-col gap-5">
+        <div className="flex max-md:flex-col gap-2 font-semibold text-sm text-gray-700 dark:text-gray">
+          Direct Schedule Link:
+          <Link
+            target="_blank"
+            href={`/schedule?ts_id=${selectedTrainingSiteId}`}
+            className="text-brown"
+          >
+            {typeof window !== "undefined" && window.location.origin}
+            /schedule?ts_id={selectedTrainingSiteId}
+          </Link>
+        </div>
         {/* Company Info */}
         <SectionHeading>Company Info</SectionHeading>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

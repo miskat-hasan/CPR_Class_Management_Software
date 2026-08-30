@@ -17,9 +17,12 @@ import {
   getAllInstructor,
   getAllLocation,
   getAllCertifyingBody,
+  getAllAssistant,
 } from "@/hooks/api/dashboardApi";
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import useAuth from "@/hooks/useAuth";
+import { FormLabel } from "@/components/ui/form";
 
 const RATIO_OPTIONS = [
   { id: "1:1", name: "1:1" },
@@ -91,9 +94,7 @@ const formatHoursDisplay = totalMinutes => {
 // Validate that at least one class time row is fully filled
 const validateClassTimes = classTimes => {
   if (!Array.isArray(classTimes) || classTimes.length === 0) return false;
-  return classTimes.some(
-    row => row.date && row.timeFrom && row.timeTo,
-  );
+  return classTimes.some(row => row.date && row.timeFrom && row.timeTo);
 };
 
 // Last date among all class time rows (YYYY-MM-DD)
@@ -123,6 +124,9 @@ export default function ClassForm({
   isPastClass = false,
 }) {
   const { id } = useParams();
+
+  const { activeRole, user } = useAuth();
+
   const [documents, setDocuments] = useState([]);
   const [existingDocs, setExistingDocs] = useState([]);
   const [removedDocs, setRemovedDocs] = useState([]);
@@ -163,6 +167,7 @@ export default function ClassForm({
     handleSubmit,
     formState: { errors },
   } = form;
+
   const { fields, append, remove } = useFieldArray({
     control,
     name: "classTimes",
@@ -211,6 +216,10 @@ export default function ClassForm({
   const { data: instructorData, isLoading: instructorLoading } =
     getAllInstructor({ type: "all" });
 
+  const { data: assistantData, isLoading: assistantLoading } = getAllAssistant({
+    type: "all",
+  });
+
   const allCourses = coursesData?.data ?? [];
 
   const filteredCourses = selectedCertifyingBody
@@ -231,6 +240,12 @@ export default function ClassForm({
     id: u.id,
     name: formatName(u),
   }));
+
+  const assistantOptions = (assistantData?.data ?? []).map(u => ({
+    id: u.id,
+    name: formatName(u),
+  }));
+
   const clientOptions = (clientData?.data ?? []).map(u => ({
     id: u.id,
     name: formatName(u),
@@ -271,7 +286,9 @@ export default function ClassForm({
   const handleFormSubmit = data => {
     // Validate class times
     if (!validateClassTimes(data.classTimes)) {
-      setClassTimesError("Please fill in at least one class time (date, from, and to)");
+      setClassTimesError(
+        "Please fill in at least one class time (date, from, and to)",
+      );
       return;
     }
     setClassTimesError("");
@@ -280,7 +297,12 @@ export default function ClassForm({
     formData.append("course_id", data.course);
     formData.append("client_id", data.client ?? "");
     formData.append("location_id", data.location);
-    formData.append("instructor_id", data.instructor);
+    formData.append(
+      "instructor_id",
+      activeRole?.role_name === "Instructor"
+        ? user?.instructor_id
+        : data.instructor,
+    );
     formData.append("price", data.price);
     formData.append("total_hours", data.totalHours);
     formData.append("max_student", data.maxStudents);
@@ -438,21 +460,38 @@ export default function ClassForm({
           )}
         />
         {/* Instructor */}
-        <Controller
-          name="instructor"
-          control={control}
-          rules={{ required: "Instructor is required" }}
-          render={({ field, fieldState }) => (
-            <CustomSelect
-              {...field}
-              label="Instructor"
-              placeholder="Select instructor"
-              isLoading={instructorLoading}
-              options={instructorOptions}
-              error={fieldState.error?.message}
-            />
-          )}
-        />
+        {activeRole?.role_name === "Instructor" && (
+          <div>
+            <FormLabel className="leading-[1.45] font-medium text-sm sm:text-base text-gray-700 dark:text-gray">
+              Instructor
+            </FormLabel>
+            <div className="gap-3 mt-2">
+              <h3 className="text-sm text-black dark:text-white">
+                {user?.name}
+              </h3>
+              <p className="text-xs text-gray-500 dark:text-gray-400">
+                {user?.email}
+              </p>
+            </div>
+          </div>
+        )}
+        {activeRole?.role_name !== "Instructor" && (
+          <Controller
+            name="instructor"
+            control={control}
+            rules={{ required: "Instructor is required" }}
+            render={({ field, fieldState }) => (
+              <CustomSelect
+                {...field}
+                label="Instructor"
+                placeholder="Select instructor"
+                isLoading={instructorLoading}
+                options={instructorOptions}
+                error={fieldState.error?.message}
+              />
+            )}
+          />
+        )}
         {/* Assistants */}
         <div className="md:col-span-2 z-10">
           <Controller
@@ -463,8 +502,8 @@ export default function ClassForm({
                 {...field}
                 label="Assistants"
                 placeholder="Search and select assistants..."
-                isLoading={instructorLoading}
-                options={instructorOptions}
+                isLoading={assistantLoading}
+                options={assistantOptions}
               />
             )}
           />

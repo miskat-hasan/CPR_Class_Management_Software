@@ -17,6 +17,7 @@ import useAuth from "@/hooks/useAuth";
 import { toast } from "sonner";
 import { useDefaultCountry } from "@/hooks/useDefaultCountry";
 import UserDocumentsSection from "../settings/documents/UserDocumentsSection";
+import Link from "next/link";
 
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
 const Skeleton = ({ className }) => (
@@ -185,6 +186,19 @@ const ProfilePage = () => {
 
       {/* ── 1. General Information ── */}
       <SectionCard title="General Information">
+        {activeRole?.role_name === "Instructor" && (
+          <div className="flex max-md:flex-col gap-2 font-semibold text-sm text-gray-700 dark:text-gray">
+            Direct Schedule Link:
+            <Link
+              target="_blank"
+              href={`/schedule?instructor_id=${user?.instructor_id}`}
+              className="text-brown"
+            >
+              {typeof window !== "undefined" && window.location.origin}
+              /schedule?instructor_id={user?.instructor_id}
+            </Link>
+          </div>
+        )}
         <FormContainer form={profileForm} onSubmit={onProfileSubmit}>
           <div className="flex flex-col gap-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">

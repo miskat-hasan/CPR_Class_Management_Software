@@ -1,10 +1,10 @@
-import AddLocationPage from "@/components/dashboard/settings/location/AddLocationPage";
+import LocationForm from "@/components/dashboard/settings/location/LocationForm";
 import React from "react";
 
 const Page = () => {
   return (
     <div>
-      <AddLocationPage />
+      <LocationForm mode="add" />
     </div>
   );
 };

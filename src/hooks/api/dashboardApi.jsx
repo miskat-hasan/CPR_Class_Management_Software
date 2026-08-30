@@ -242,6 +242,44 @@ export const getAllInstructor = ({
   });
 };
 
+export const getAllAssistant = ({
+  type,
+  page = 1,
+  perPage = 10,
+  search,
+} = {}) => {
+  const { selectedTrainingSiteId } = useAuth();
+  const isAll = type === "all";
+
+  let endpoint;
+  if (isAll) {
+    endpoint = "/api/site-users?type=all&role_id[]=4";
+  } else if (search) {
+    endpoint = `/api/site-users?role_id[]=4&page=${page}&per_page=${perPage}&search=${search}`;
+  } else {
+    endpoint = `/api/site-users?role_id[]=4&page=${page}&per_page=${perPage}`;
+  }
+
+  const key = isAll
+    ? ["get-all-assistant", "all", selectedTrainingSiteId]
+    : [
+        "get-all-assistant",
+        "paginated",
+        page,
+        perPage,
+        search ?? null,
+        selectedTrainingSiteId,
+      ];
+
+  return useClientApi({
+    method: "get",
+    key,
+    isPrivate: true,
+    headers: { "X-Site-Id": selectedTrainingSiteId },
+    endpoint,
+  });
+};
+
 // ==================== USERS ====================
 export const useGetAllUsers = ({
   type,

@@ -25,6 +25,7 @@ import { FaPlus } from "react-icons/fa";
 import Image from "next/image";
 import dynamic from "next/dynamic";
 import Link from "next/link";
+import useAuth from "@/hooks/useAuth";
 
 const RichTextEditor = dynamic(() => import("@/components/shared/RichEditor"), {
   ssr: false,
@@ -114,6 +115,8 @@ export default function CourseForm({
   const descriptionRef = useRef(null);
   const emailBodyRef = useRef(null);
   const paymentEmailBodyRef = useRef(null);
+
+  const { selectedTrainingSiteId } = useAuth();
 
   // Track which editors have mounted and are ready
   const [descriptionReady, setDescriptionReady] = useState(false);
@@ -361,11 +364,12 @@ export default function CourseForm({
             Direct Schedule Link:
             <Link
               target="_blank"
-              href={`/schedule?course_id=${defaultValues?.course_id}`}
+              href={`/schedule?ts_id=${selectedTrainingSiteId}&course_id=${defaultValues?.course_id}`}
               className="text-brown"
             >
               {typeof window !== "undefined" && window.location.origin}
-              /schedule?course_id={defaultValues?.course_id}
+              /schedule?ts_id={selectedTrainingSiteId}&course_id=
+              {defaultValues?.course_id}
             </Link>
           </div>
         )}
