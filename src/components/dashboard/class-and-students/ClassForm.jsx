@@ -565,6 +565,7 @@ export default function ClassForm({
           name="price"
           type="number"
           label="Price"
+          min={0}
           placeholder="e.g. 100"
           rules={{ required: "Price is required" }}
         />
@@ -573,6 +574,7 @@ export default function ClassForm({
           type="number"
           label="Max Students"
           placeholder="e.g. 25"
+          min={0}
           rules={{ required: "Max Students is required" }}
         />
         <Controller
@@ -612,6 +614,7 @@ export default function ClassForm({
               type="number"
               {...register("closeRegistrationDays")}
               placeholder="0"
+              min={0}
               className="w-20 border border-gray-300 dark:border-gray-600 dark:bg-black dark:text-gray rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-300"
             />
             <span className="text-sm dark:text-gray">days and</span>
@@ -619,6 +622,8 @@ export default function ClassForm({
               type="number"
               {...register("closeRegistrationHours")}
               placeholder="0"
+              min={0}
+              max={23}
               className="w-20 border border-gray-300 dark:border-gray-600 dark:bg-black dark:text-gray rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-300"
             />
             <span className="text-sm dark:text-gray">

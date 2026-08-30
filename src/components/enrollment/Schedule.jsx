@@ -140,6 +140,7 @@ const FilterBar = ({
               value={filters.location_id}
               onChange={v => onChange("location_id", v)}
               options={locationOptions}
+              isLoading={locationLoading}
             />
           </div>
         )}
@@ -152,6 +153,7 @@ const FilterBar = ({
               value={filters.course_id}
               onChange={v => onChange("course_id", v)}
               options={courseOptions}
+              isLoading={coursesLoading}
             />
           </div>
         ) : (
@@ -180,6 +182,7 @@ const FilterBar = ({
               value={filters.instructor_id}
               onChange={v => onChange("instructor_id", v)}
               options={instructorOptions}
+              isLoading={instructorLoading}
             />
           </div>
         )}
