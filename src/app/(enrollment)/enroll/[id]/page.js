@@ -18,6 +18,7 @@ import { useDefaultCountry } from "@/hooks/useDefaultCountry";
 
 const Page = () => {
   const { id } = useParams();
+  
   const [step, setStep] = useState(1);
   const router = useRouter();
 

@@ -45,7 +45,7 @@ const RadioRow = ({
       {label}
     </div>
     <div className="col-span-2 px-6 py-4 flex items-center gap-6 bg-white dark:bg-black">
-      <label className="flex items-center gap-2 text-sm font-medium cursor-pointer select-none">
+      <label className="flex items-center gap-2 text-sm font-medium cursor-pointer dark:text-white select-none">
         <input
           type="radio"
           value={value1}
@@ -54,7 +54,7 @@ const RadioRow = ({
         />
         {label1}
       </label>
-      <label className="flex items-center gap-2 text-sm font-medium cursor-pointer select-none">
+      <label className="flex items-center gap-2 text-sm font-medium cursor-pointer dark:text-white select-none">
         <input
           type="radio"
           value={value2}

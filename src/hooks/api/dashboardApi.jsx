@@ -1100,8 +1100,10 @@ export const searchStudent = (
   last_name,
   email,
   class_details_id,
+  phone_number,
   is_enabled,
 ) => {
+  const { selectedTrainingSiteId } = useAuth();
   return useClientApi({
     method: "get",
     isPrivate: true,
@@ -1113,11 +1115,14 @@ export const searchStudent = (
       last_name,
       email,
       class_details_id,
+      phone_number,
+      selectedTrainingSiteId,
     ],
     endpoint: `/api/student/search?page=${page}&per_page=${perPage}`,
-    params: { first_name, last_name, email, class_details_id },
+    params: { first_name, last_name, email, class_details_id, phone_number },
     enabled: is_enabled,
     queryOptions: { retry: false },
+    headers: { "X-Site-Id": selectedTrainingSiteId },
   });
 };
 

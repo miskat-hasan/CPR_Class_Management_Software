@@ -38,6 +38,7 @@ const StudentSearch = () => {
     lastName.trim(),
     email.trim().toLowerCase(),
     classId.trim(),
+    phone.trim(),
     searchTriggered,
   );
 
@@ -45,7 +46,7 @@ const StudentSearch = () => {
     setSearchTriggered(false);
   }, [studentData, firstName, lastName, email, phone, classId]);
 
-  const students = studentData?.data?.data?.data ?? [];
+  const students = studentData?.data?.data ?? [];
   const links = studentData?.data?.data?.links ?? [];
   const hasSearched = !searchTriggered && studentData !== undefined;
 

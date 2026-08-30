@@ -1,27 +1,20 @@
 "use client";
 
-import { Suspense } from "react";
-import SchedulePageContent from "@/components/enrollment/SchedulePageContent";
+import useAuth from "@/hooks/useAuth";
+import Link from "next/link";
 
 export default function Page() {
+  const { selectedTrainingSiteId } = useAuth();
   return (
-    <Suspense
-      fallback={
-        <div className="flex gap-6">
-          <div className="flex-1 animate-pulse space-y-4">
-            {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="h-12 bg-gray-100 rounded-lg" />
-            ))}
-          </div>
-          <div className="w-72 animate-pulse space-y-4">
-            {Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="h-12 bg-gray-100 rounded-lg" />
-            ))}
-          </div>
-        </div>
-      }
-    >
-      <SchedulePageContent />
-    </Suspense>
+    <div>
+      To schedule a new class click{" "}
+      <Link
+        href={`/schedule?ts_id=${selectedTrainingSiteId ?? 1}`}
+        target="_blank"
+        className="text-brown"
+      >
+        here
+      </Link>
+    </div>
   );
 }
