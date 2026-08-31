@@ -45,7 +45,7 @@ const RadioRow = ({
       {label}
     </div>
     <div className="col-span-2 px-6 py-4 flex items-center gap-6 bg-white dark:bg-black">
-      <label className="flex items-center gap-2 text-sm font-medium cursor-pointer select-none">
+      <label className="flex items-center gap-2 text-sm font-medium cursor-pointer dark:text-white select-none">
         <input
           type="radio"
           value={value1}
@@ -54,7 +54,7 @@ const RadioRow = ({
         />
         {label1}
       </label>
-      <label className="flex items-center gap-2 text-sm font-medium cursor-pointer select-none">
+      <label className="flex items-center gap-2 text-sm font-medium cursor-pointer dark:text-white select-none">
         <input
           type="radio"
           value={value2}
@@ -122,7 +122,7 @@ const StepCourseOptions = ({ form, classDetails, addonsList, onNext }) => {
       {/* Course description */}
       {course?.description && (
         <div
-          className="prose dark:prose-invert max-w-none text-sm leading-relaxed mb-5
+          className="prose dark:text-white text-black max-w-none text-sm leading-relaxed mb-5
             [&_ol]:list-decimal [&_ol]:pl-5
             [&_li[data-list=bullet]]:list-disc [&_li[data-list=bullet]]:ml-6"
           dangerouslySetInnerHTML={{

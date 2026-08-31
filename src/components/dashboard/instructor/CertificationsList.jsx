@@ -6,22 +6,35 @@ import TableSkeleton from "@/components/skeleton/TableSkeleton";
 import {
   Table,
   TableBodyRow,
+  TableFooter,
   TableHead,
 } from "@/components/common/TableElement";
 import CertificationModal from "./CertificationModal";
+import { getAllCertifications } from "@/hooks/api/dashboardApi";
+import { useState } from "react";
 
-const CertificationsList = ({ instructorId, CertificationData, isLoading }) => {
+const CertificationsList = ({ instructorId, isLoading }) => {
+  const [page, setPage] = useState(1);
+  const [perPage, setPerPage] = useState(10);
+
+  const { data: CertificationData } = getAllCertifications({
+    instructorId,
+    page,
+    perPage,
+  });
+
   return (
-    <div className="flex flex-col gap-[12.5px] lg:gap-[25px] mt-8">
-      <div className="flex justify-between items-center">
-        <SectionTitle title={"Certifications List"} />
-        <CertificationModal mode="add" instructorId={instructorId} />
-      </div>
-
+    <section className="flex flex-col gap-[12.5px] lg:gap-[25px]">
       {isLoading ? (
         <TableSkeleton columns={4} />
       ) : (
         <div className="p-[13px] lg:p-[26px] bg-white dark:bg-black rounded-[14px] flex flex-col gap-[12px] lg:gap-[24px]">
+          <div className="flex justify-between border-b dark:border-gray-700 pb-3">
+            <h2 className="text-base font-semibold text-gray-800 dark:text-white">
+              Certifications List
+            </h2>
+            <CertificationModal mode="add" instructorId={instructorId} />
+          </div>
           <div className="overflow-x-auto">
             <Table>
               <TableHead>
@@ -42,8 +55,8 @@ const CertificationsList = ({ instructorId, CertificationData, isLoading }) => {
               </TableHead>
 
               <tbody>
-                {CertificationData?.length > 0 ? (
-                  CertificationData.map((item, index) => (
+                {CertificationData?.data?.data?.length > 0 ? (
+                  CertificationData?.data?.data?.map((item, index) => (
                     <TableBodyRow key={item?.id ?? index}>
                       <td className="px-3 md:px-6 py-4 whitespace-nowrap">
                         {item?.discipline_name}
@@ -77,10 +90,14 @@ const CertificationsList = ({ instructorId, CertificationData, isLoading }) => {
                 )}
               </tbody>
             </Table>
+            <TableFooter
+              Links={CertificationData?.data?.links}
+              setPage={setPage}
+            />
           </div>
         </div>
       )}
-    </div>
+    </section>
   );
 };
 

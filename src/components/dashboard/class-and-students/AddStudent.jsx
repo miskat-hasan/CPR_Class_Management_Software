@@ -132,7 +132,7 @@ const AddStudentPage = () => {
                 placeholder="Client"
                 isLoading={clientDataLoading}
                 options={clientData?.data?.data}
-                error={errors.client?.message}
+                error={errors.client_id?.message}
                 className={"flex-1"}
               />
             )}

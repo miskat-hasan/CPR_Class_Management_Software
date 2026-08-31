@@ -8,6 +8,8 @@ import FormTextarea from "@/components/shared/form/FormTextarea";
 import CustomSelect from "@/components/shared/form/CustomSelect";
 import RegistrationQuestionField from "./RegistrationQuestionField";
 import SubSectionTitle from "../common/SubSectionTitle";
+import useAuth from "@/hooks/useAuth";
+import { useEffect } from "react";
 
 const SectionTitle = ({ children }) => (
   <h6 className="text-base font-semibold text-gray-800 dark:text-white mb-3 mt-5 first:mt-0">
@@ -35,12 +37,32 @@ const StepStudentInfo = ({
   onBack,
   onNext,
 }) => {
+  const { user, activeRole } = useAuth();
+
   const {
     register,
     control,
-    handleSubmit,
+    reset,
     formState: { errors },
   } = form;
+  useEffect(() => {
+    if (user) {
+      reset({
+        first_name: user?.user_details?.first_name,
+        last_name: user?.user_details?.last_name,
+        email_address: user?.email,
+        confirm_email_address: user?.email,
+        mobile_phone: user?.user_details?.mobile_phone,
+        username: user?.username,
+        address_1: user?.user_details?.address_line_1,
+        address_2: user?.user_details?.address_line_2,
+        city: user?.user_details?.city,
+        state: user?.user_details?.state_province_region,
+        zip_code: user?.user_details?.zip_postal_code,
+        country: user?.user_details?.country_id,
+      });
+    }
+  }, [user, reset]);
 
   const regSettings = siteSettings?.registration_settings;
 
@@ -168,54 +190,59 @@ const StepStudentInfo = ({
       </SectionBox>
 
       {/* Account / Login Credentials */}
-      <SectionTitle>Create Your Account</SectionTitle>
-      <SectionBox>
-        <FormInput
-          name="username"
-          label="Username"
-          placeholder="Choose a username"
-          rules={{ required: "Username is required" }}
-        />
-        <FormInput
-          name="password"
-          label="Password"
-          type="password"
-          placeholder="Choose a password"
-          rules={{
-            required: "Password is required",
-            minLength: { value: 8, message: "Minimum 8 characters" },
-          }}
-        />
-        <div className="md:col-span-2 flex items-start gap-2 text-xs text-gray-500 dark:text-zinc-400 bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-700 rounded-md px-3 py-2.5">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="w-4 h-4 flex-shrink-0 mt-0.5"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth={2}
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"
+      {activeRole?.role_name !== "Student" && (
+        <>
+          <SectionTitle>Create Your Account</SectionTitle>
+          <SectionBox>
+            <FormInput
+              name="username"
+              label="Username"
+              placeholder="Choose a username"
+              rules={{ required: "Username is required" }}
             />
-          </svg>
-          <span>
-            Once you&apos;ve successfully enrolled in this class, you can use
-            this username and password to log in to your student dashboard at{" "}
-            <a
-              href="https://nathanielshell-six.vercel.app"
-              target="_blank"
-              rel="noreferrer"
-              className="font-medium underline text-gray-700 dark:text-zinc-200"
-            >
-              nathanielshell-six.vercel.app
-            </a>{" "}
-            to view your classes, certifications, and documents.
-          </span>
-        </div>
-      </SectionBox>
+            <FormInput
+              name="password"
+              label="Password"
+              type="password"
+              placeholder="Choose a password"
+              rules={{
+                required: "Password is required",
+                minLength: { value: 8, message: "Minimum 8 characters" },
+              }}
+            />
+            <div className="md:col-span-2 flex items-start gap-2 text-xs text-gray-500 dark:text-zinc-400 bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-700 rounded-md px-3 py-2.5">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="w-4 h-4 flex-shrink-0 mt-0.5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"
+                />
+              </svg>
+              <span>
+                Once you&apos;ve successfully enrolled in this class, you can
+                use this username and password to log in to your student
+                dashboard at{" "}
+                <a
+                  href="https://nathanielshell-six.vercel.app"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="font-medium underline text-gray-700 dark:text-zinc-200"
+                >
+                  nathanielshell-six.vercel.app
+                </a>{" "}
+                to view your classes, certifications, and documents.
+              </span>
+            </div>
+          </SectionBox>
+        </>
+      )}
 
       {/* Mailing Address */}
       <SectionTitle>Mailing Address</SectionTitle>
@@ -267,7 +294,7 @@ const StepStudentInfo = ({
             Would you like to receive text message class reminders?
           </p>
           <div className="flex gap-4">
-            <label className="flex items-center gap-2 text-sm cursor-pointer">
+            <label className="flex items-center gap-2 text-sm cursor-pointer dark:text-white">
               <input
                 type="radio"
                 value="yes"
@@ -276,7 +303,7 @@ const StepStudentInfo = ({
               />
               Yes
             </label>
-            <label className="flex items-center gap-2 text-sm cursor-pointer">
+            <label className="flex items-center gap-2 text-sm cursor-pointer dark:text-white">
               <input
                 type="radio"
                 value="no"
@@ -311,7 +338,7 @@ const StepStudentInfo = ({
             <SubSectionTitle subtitle={"Texting Privacy Policy"} />
             <div className="max-h-[300px] overflow-y-auto border rounded-lg p-2 mt-3">
               <div
-                className="prose prose-xs dark:prose-invert max-w-none text-xs leading-relaxed text-gray-500 dark:text-zinc-500 border-t dark:border-zinc-700 pt-3"
+                className="prose prose-xs dark:text-white text-black max-w-none text-xs leading-relaxed text-gray-500 dark:text-zinc-500 border-t dark:border-zinc-700 pt-3"
                 dangerouslySetInnerHTML={{
                   __html: regSettings.texting_privacy_policy
                     ?.replace(
@@ -330,7 +357,7 @@ const StepStudentInfo = ({
             <SubSectionTitle subtitle={"Terms & Conditions"} />
             <div className="max-h-[300px] overflow-y-auto border rounded-lg p-2 mt-3">
               <div
-                className="prose prose-sm dark:prose-invert max-w-none text-sm leading-relaxed mt-5
+                className="prose prose-sm dark:text-white text-black max-w-none text-sm leading-relaxed mt-5
           [&_ol]:list-decimal [&_ol]:pl-5
           [&_li[data-list=bullet]]:list-disc [&_li[data-list=bullet]]:ml-6"
                 dangerouslySetInnerHTML={{

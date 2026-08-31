@@ -1,10 +1,10 @@
-import InstructorRecord from "@/components/dashboard/instructor/InstructorsRecord";
+import ProfilePage from "@/components/dashboard/user/Profile";
 import React from "react";
 
 const Page = () => {
   return (
     <div>
-      <InstructorRecord />
+      <ProfilePage />
     </div>
   );
 };

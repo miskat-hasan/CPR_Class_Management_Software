@@ -24,6 +24,7 @@ import { CiEdit } from "react-icons/ci";
 import { IoClose } from "react-icons/io5";
 import DeleteUserConfirmModal from "@/components/dashboard/settings/users/DeleteUserConfirmModal";
 import { HiOutlineTrash } from "react-icons/hi";
+import useAuth from "@/hooks/useAuth";
 
 const UserPage = ({ dashboard = "super-admin" }) => {
   const form = useForm();
@@ -35,6 +36,8 @@ const UserPage = ({ dashboard = "super-admin" }) => {
   const [enableSearch, setEnableSearch] = useState(false);
   const [searchValue, setSearchValue] = useState("");
   const [selectedUser, setSelectedUser] = useState(null);
+  const { selectedTrainingSiteId } = useAuth();
+  const isPrimarySite = Number(selectedTrainingSiteId) === 1;
 
   const { data: usersData, isLoading } = useGetAllUsers({
     page,
@@ -134,12 +137,20 @@ const UserPage = ({ dashboard = "super-admin" }) => {
                     <th className="px-3 md:px-6 py-3 whitespace-nowrap">
                       Username
                     </th>
-                    <th className="px-3 md:px-6 py-3 whitespace-nowrap">
-                      Training Site &amp; Role
-                    </th>
-                    <th className="px-3 md:px-6 py-3 whitespace-nowrap">
-                      Admin/Coordinator
-                    </th>
+                    {isPrimarySite ? (
+                      <>
+                        <th className="px-3 md:px-6 py-3 whitespace-nowrap">
+                          Training Site &amp; Role
+                        </th>
+                        <th className="px-3 md:px-6 py-3 whitespace-nowrap">
+                          Admin/Coordinator
+                        </th>
+                      </>
+                    ) : (
+                      <th className="px-3 md:px-6 py-3 whitespace-nowrap">
+                        Role
+                      </th>
+                    )}
                     <th className="px-3 md:px-6 py-3 whitespace-nowrap">
                       Last Activity
                     </th>
@@ -151,7 +162,7 @@ const UserPage = ({ dashboard = "super-admin" }) => {
                 <tbody>
                   {usersData?.data?.data?.length > 0 ? (
                     usersData.data.data.map(user => (
-                      <TableBodyRow key={user?.id}>
+                      <TableBodyRow key={user?.user_id}>
                         {/* Name + Email */}
                         <td className="px-3 md:px-6 py-4 whitespace-nowrap">
                           <p className="font-semibold text-sm dark:text-white">
@@ -167,48 +178,81 @@ const UserPage = ({ dashboard = "super-admin" }) => {
                           {user?.user_name ?? "—"}
                         </td>
 
-                        {/* Training Site & Role */}
-                        <td className="px-3 md:px-6 py-4">
-                          <div className="flex flex-col gap-1">
-                            {user?.user_roles?.length > 0 ? (
-                              user.user_roles.map((ur, i) => (
-                                <span
-                                  key={i}
-                                  className="inline-flex items-center gap-1 text-xs"
-                                >
-                                  <span className="font-medium text-gray-800 dark:text-gray-200">
-                                    {ur?.training_site?.training_center_name}
+                        {isPrimarySite ? (
+                          <>
+                            {/* Training Site & Role */}
+                            <td className="px-3 md:px-6 py-4">
+                              <div className="flex flex-col gap-1">
+                                {user?.user_roles?.length > 0 ? (
+                                  user.user_roles.map((ur, i) => (
+                                    <span
+                                      key={i}
+                                      className="inline-flex items-center gap-1 text-xs"
+                                    >
+                                      <span className="font-medium text-gray-800 dark:text-gray-200 whitespace-nowrap">
+                                        {
+                                          ur?.training_site
+                                            ?.training_center_name
+                                        }
+                                      </span>
+                                      <span className="text-gray-400">·</span>
+                                      <span className="text-brown dark:text-dark-brown font-medium whitespace-nowrap">
+                                        {ur?.role?.name}
+                                      </span>
+                                    </span>
+                                  ))
+                                ) : (
+                                  <span className="text-gray-400 text-sm">
+                                    —
                                   </span>
-                                  <span className="text-gray-400">·</span>
-                                  <span className="text-brown dark:text-dark-brown font-medium">
-                                    {ur?.role?.name}
-                                  </span>
-                                </span>
-                              ))
-                            ) : (
-                              <span className="text-gray-400 text-sm">—</span>
-                            )}
-                          </div>
-                        </td>
+                                )}
+                              </div>
+                            </td>
 
-                        {/* Admin badge */}
-                        <td className="px-3 md:px-6 py-4 whitespace-nowrap">
-                          {user?.user_roles?.some(
-                            ur => ur?.role?.name === "Admin",
-                          ) ? (
-                            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400">
-                              Admin
-                            </span>
-                          ) : user?.user_roles?.some(
-                              ur => ur?.role?.name === "Site Coordinator",
-                            ) ? (
-                            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400">
-                              Coordinator
-                            </span>
-                          ) : (
-                            <span className="text-gray-400">—</span>
-                          )}
-                        </td>
+                            {/* Admin badge */}
+                            <td className="px-3 md:px-6 py-4 whitespace-nowrap">
+                              {user?.user_roles?.some(
+                                ur => ur?.role?.name === "Admin",
+                              ) ? (
+                                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400">
+                                  Admin
+                                </span>
+                              ) : user?.user_roles?.some(
+                                  ur => ur?.role?.name === "Site Coordinator",
+                                ) ? (
+                                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400">
+                                  Coordinator
+                                </span>
+                              ) : (
+                                <span className="text-gray-400">—</span>
+                              )}
+                            </td>
+                          </>
+                        ) : (
+                          /* Role — only for non-primary sites, filtered to current site */
+                          <td className="px-3 md:px-6 py-4">
+                            <div className="flex flex-col gap-1">
+                              {user?.user_roles?.filter(
+                                ur => String(ur?.training_site?.id) === String(selectedTrainingSiteId),
+                              ).length > 0 ? (
+                                user.user_roles
+                                  .filter(
+                                    ur => String(ur?.training_site?.id) === String(selectedTrainingSiteId),
+                                  )
+                                  .map((ur, i) => (
+                                    <span
+                                      key={i}
+                                      className="inline-flex items-center text-xs text-brown dark:text-dark-brown font-medium whitespace-nowrap"
+                                    >
+                                      {ur?.role?.name}
+                                    </span>
+                                  ))
+                              ) : (
+                                <span className="text-gray-400 text-sm">—</span>
+                              )}
+                            </div>
+                          </td>
+                        )}
 
                         {/* Last Activity */}
                         <td className="px-3 md:px-6 py-4 text-sm whitespace-nowrap">
@@ -221,7 +265,7 @@ const UserPage = ({ dashboard = "super-admin" }) => {
                         <td className="px-3 md:px-6 py-4 text-center">
                           <div className="flex items-center justify-center gap-2">
                             <TableButton
-                              href={`/dashboard/${dashboard}/settings/users/${user?.id}/edit`}
+                              href={`/dashboard/${dashboard}/settings/users/${user?.user_id}/edit`}
                             >
                               <CiEdit className="text-gray-600 dark:text-gray text-[16px]" />
                             </TableButton>
@@ -239,7 +283,7 @@ const UserPage = ({ dashboard = "super-admin" }) => {
                   ) : (
                     <tr>
                       <td
-                        colSpan="7"
+                        colSpan="8"
                         className="text-center py-6 text-gray-500 dark:text-gray-400 italic"
                       >
                         No results found

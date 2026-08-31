@@ -21,7 +21,7 @@ const AddTsProductPage = () => {
       is_taxable: 0,
     },
   });
-  const { control, register, reset } = form;
+  const { control, register, reset, formState: { errors } } = form;
 
   const { mutate, isPending } = useStoreTCProduct();
 
@@ -79,6 +79,7 @@ const AddTsProductPage = () => {
                     id: String(i + 1),
                     name: String(i + 1),
                   }))}
+                  error={errors.price_label?.message}
                 />
               )}
             />

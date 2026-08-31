@@ -1,4 +1,4 @@
-import InstructorRecord from "@/components/dashboard/instructors/InstructorsRecord";
+import InstructorRecord from "@/components/dashboard/instructor/InstructorsRecord";
 import React from "react";
 
 const Page = () => {

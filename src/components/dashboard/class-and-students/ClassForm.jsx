@@ -17,9 +17,12 @@ import {
   getAllInstructor,
   getAllLocation,
   getAllCertifyingBody,
+  getAllAssistant,
 } from "@/hooks/api/dashboardApi";
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import useAuth from "@/hooks/useAuth";
+import { FormLabel } from "@/components/ui/form";
 
 const RATIO_OPTIONS = [
   { id: "1:1", name: "1:1" },
@@ -57,9 +60,9 @@ const timeToMinutes = t => {
   return (h || 0) * 60 + (m || 0);
 };
 
-// Sum hours across all class time rows
-const computeTotalHours = classTimes => {
-  if (!Array.isArray(classTimes) || classTimes.length === 0) return "";
+// Sum hours across all class time rows — returns total minutes as a number
+const computeTotalMinutes = classTimes => {
+  if (!Array.isArray(classTimes) || classTimes.length === 0) return 0;
   let totalMinutes = 0;
   for (const row of classTimes) {
     const from = timeToMinutes(to24Hour(row.timeFrom ?? row.from ?? ""));
@@ -67,10 +70,31 @@ const computeTotalHours = classTimes => {
     const diff = to - from;
     if (diff > 0) totalMinutes += diff;
   }
+  return totalMinutes;
+};
+
+// Convert total minutes to decimal hours string for backend submission
+const minutesToDecimalHours = totalMinutes => {
   if (totalMinutes === 0) return "";
-  // Return as decimal hours, e.g. 90 min → "1.5"
   const hours = totalMinutes / 60;
   return Number.isInteger(hours) ? String(hours) : hours.toFixed(2);
+};
+
+// Format minutes into a human-readable string like "1 hour 32 minutes"
+const formatHoursDisplay = totalMinutes => {
+  if (totalMinutes === 0) return "";
+  const h = Math.floor(totalMinutes / 60);
+  const m = totalMinutes % 60;
+  const parts = [];
+  if (h > 0) parts.push(`${h} hour${h !== 1 ? "s" : ""}`);
+  if (m > 0) parts.push(`${m} minute${m !== 1 ? "s" : ""}`);
+  return parts.join(" ");
+};
+
+// Validate that at least one class time row is fully filled
+const validateClassTimes = classTimes => {
+  if (!Array.isArray(classTimes) || classTimes.length === 0) return false;
+  return classTimes.some(row => row.date && row.timeFrom && row.timeTo);
 };
 
 // Last date among all class time rows (YYYY-MM-DD)
@@ -100,6 +124,9 @@ export default function ClassForm({
   isPastClass = false,
 }) {
   const { id } = useParams();
+
+  const { activeRole, user } = useAuth();
+
   const [documents, setDocuments] = useState([]);
   const [existingDocs, setExistingDocs] = useState([]);
   const [removedDocs, setRemovedDocs] = useState([]);
@@ -137,23 +164,29 @@ export default function ClassForm({
     watch,
     setValue,
     reset,
+    handleSubmit,
     formState: { errors },
   } = form;
+
   const { fields, append, remove } = useFieldArray({
     control,
     name: "classTimes",
   });
 
+  const [classTimesError, setClassTimesError] = useState("");
+
   const selectedCertifyingBody = watch("certifyingBody");
   const classTimes = watch("classTimes");
+  const selectedCourseId = watch("course");
 
   // ── Auto-compute totalHours, certificateIssued, certificateExpire ──────────
   useEffect(() => {
-    const totalHours = computeTotalHours(classTimes);
+    const totalMinutes = computeTotalMinutes(classTimes);
+    const decimalHours = minutesToDecimalHours(totalMinutes);
     const lastDate = computeLastDate(classTimes);
     const expireDate = addTwoYears(lastDate);
 
-    setValue("totalHours", totalHours, { shouldDirty: false });
+    setValue("totalHours", decimalHours, { shouldDirty: false });
     setValue("certificateIssued", lastDate, { shouldDirty: false });
     setValue("certificateExpire", expireDate, { shouldDirty: false });
   }, [JSON.stringify(classTimes), setValue]);
@@ -183,16 +216,36 @@ export default function ClassForm({
   const { data: instructorData, isLoading: instructorLoading } =
     getAllInstructor({ type: "all" });
 
+  const { data: assistantData, isLoading: assistantLoading } = getAllAssistant({
+    type: "all",
+  });
+
   const allCourses = coursesData?.data ?? [];
 
   const filteredCourses = selectedCertifyingBody
     ? allCourses.filter(c => c.certifying_body?.id == selectedCertifyingBody)
     : allCourses;
 
+  // ── Auto-fill price when course changes ─────────────────────────────────────
+  useEffect(() => {
+    if (selectedCourseId) {
+      const course = filteredCourses.find(c => c.id == selectedCourseId);
+      if (course?.price != null) {
+        setValue("price", String(course.price), { shouldDirty: true });
+      }
+    }
+  }, [selectedCourseId, filteredCourses, setValue]);
+
   const instructorOptions = (instructorData?.data ?? []).map(u => ({
     id: u.id,
     name: formatName(u),
   }));
+
+  const assistantOptions = (assistantData?.data ?? []).map(u => ({
+    id: u.id,
+    name: formatName(u),
+  }));
+
   const clientOptions = (clientData?.data ?? []).map(u => ({
     id: u.id,
     name: formatName(u),
@@ -231,11 +284,25 @@ export default function ClassForm({
   };
 
   const handleFormSubmit = data => {
+    // Validate class times
+    if (!validateClassTimes(data.classTimes)) {
+      setClassTimesError(
+        "Please fill in at least one class time (date, from, and to)",
+      );
+      return;
+    }
+    setClassTimesError("");
+
     const formData = new FormData();
     formData.append("course_id", data.course);
     formData.append("client_id", data.client ?? "");
     formData.append("location_id", data.location);
-    formData.append("instructor_id", data.instructor);
+    formData.append(
+      "instructor_id",
+      activeRole?.role_name === "Instructor"
+        ? user?.instructor_id
+        : data.instructor,
+    );
     formData.append("price", data.price);
     formData.append("total_hours", data.totalHours);
     formData.append("max_student", data.maxStudents);
@@ -393,21 +460,38 @@ export default function ClassForm({
           )}
         />
         {/* Instructor */}
-        <Controller
-          name="instructor"
-          control={control}
-          rules={{ required: "Instructor is required" }}
-          render={({ field, fieldState }) => (
-            <CustomSelect
-              {...field}
-              label="Instructor"
-              placeholder="Select instructor"
-              isLoading={instructorLoading}
-              options={instructorOptions}
-              error={fieldState.error?.message}
-            />
-          )}
-        />
+        {activeRole?.role_name === "Instructor" && (
+          <div>
+            <FormLabel className="leading-[1.45] font-medium text-sm sm:text-base text-gray-700 dark:text-gray">
+              Instructor
+            </FormLabel>
+            <div className="gap-3 mt-2">
+              <h3 className="text-sm text-black dark:text-white">
+                {user?.name}
+              </h3>
+              <p className="text-xs text-gray-500 dark:text-gray-400">
+                {user?.email}
+              </p>
+            </div>
+          </div>
+        )}
+        {activeRole?.role_name !== "Instructor" && (
+          <Controller
+            name="instructor"
+            control={control}
+            rules={{ required: "Instructor is required" }}
+            render={({ field, fieldState }) => (
+              <CustomSelect
+                {...field}
+                label="Instructor"
+                placeholder="Select instructor"
+                isLoading={instructorLoading}
+                options={instructorOptions}
+                error={fieldState.error?.message}
+              />
+            )}
+          />
+        )}
         {/* Assistants */}
         <div className="md:col-span-2 z-10">
           <Controller
@@ -418,8 +502,8 @@ export default function ClassForm({
                 {...field}
                 label="Assistants"
                 placeholder="Search and select assistants..."
-                isLoading={instructorLoading}
-                options={instructorOptions}
+                isLoading={assistantLoading}
+                options={assistantOptions}
               />
             )}
           />
@@ -429,6 +513,9 @@ export default function ClassForm({
           <h6 className="text-base font-semibold mb-2 dark:text-gray">
             Set Class Times
           </h6>
+          {classTimesError && (
+            <p className="text-sm text-red-500 mb-2">{classTimesError}</p>
+          )}
           {fields.map((field, index) => (
             <div
               key={field.id}
@@ -478,13 +565,17 @@ export default function ClassForm({
           name="price"
           type="number"
           label="Price"
+          min={0}
           placeholder="e.g. 100"
+          rules={{ required: "Price is required" }}
         />
         <FormInput
           name="maxStudents"
           type="number"
           label="Max Students"
           placeholder="e.g. 25"
+          min={0}
+          rules={{ required: "Max Students is required" }}
         />
         <Controller
           name="studentManikinRatio"
@@ -498,8 +589,8 @@ export default function ClassForm({
             />
           )}
         />
-        {/* Total Hours —2a1to-computed, read-only */}
-        <div className="f3e1 flex-col gap-2.5">
+        {/* Total Hours — auto-computed, read-only */}
+        <div className="flex flex-col gap-2.5">
           <label className="text-sm sm:text-base font-medium text-gray-700 dark:text-gray">
             Total Hours
             <span className="ml-1.5 text-xs font-normal text-gray-400 dark:text-gray-500">
@@ -509,7 +600,7 @@ export default function ClassForm({
           <input
             readOnly
             tabIndex={-1}
-            value={watch("totalHours") || "—"}
+            value={formatHoursDisplay(computeTotalMinutes(classTimes)) || "—"}
             className={readOnlyCls}
           />
         </div>
@@ -523,6 +614,7 @@ export default function ClassForm({
               type="number"
               {...register("closeRegistrationDays")}
               placeholder="0"
+              min={0}
               className="w-20 border border-gray-300 dark:border-gray-600 dark:bg-black dark:text-gray rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-300"
             />
             <span className="text-sm dark:text-gray">days and</span>
@@ -530,6 +622,8 @@ export default function ClassForm({
               type="number"
               {...register("closeRegistrationHours")}
               placeholder="0"
+              min={0}
+              max={23}
               className="w-20 border border-gray-300 dark:border-gray-600 dark:bg-black dark:text-gray rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-300"
             />
             <span className="text-sm dark:text-gray">

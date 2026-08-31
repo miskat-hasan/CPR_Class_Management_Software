@@ -1,3 +1,4 @@
+// src/app/(enrollment)/schedule/page.js
 "use client";
 
 import { Suspense } from "react";

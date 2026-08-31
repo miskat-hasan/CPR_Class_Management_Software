@@ -5,15 +5,25 @@ import FormContainer from "@/components/shared/form/FormContainer";
 import FormInput from "@/components/shared/form/FormInput";
 import { Button } from "@/components/ui/button";
 import { Controller, useForm } from "react-hook-form";
-import React from "react";
+import React, { useEffect } from "react";
 import CustomSelect from "@/components/shared/form/CustomSelect";
 import FormTextarea from "@/components/shared/form/FormTextarea";
-import { getAllCountry, storeLocation } from "@/hooks/api/dashboardApi";
+import {
+  getAllCountry,
+  getSingleLocation,
+  storeLocation,
+  updateLocation,
+} from "@/hooks/api/dashboardApi";
 import useAuth from "@/hooks/useAuth";
 import BackButton from "@/components/common/BackButton";
 import { useDefaultCountry } from "@/hooks/useDefaultCountry";
+import { useParams } from "next/navigation";
+import { toast } from "sonner";
 
-const AddLocationPage = () => {
+const LocationForm = ({ mode = "add" }) => {
+  const isEdit = mode === "edit";
+  const { id } = isEdit ? useParams() : { id: null };
+
   const form = useForm({
     defaultValues: {
       name: "",
@@ -40,7 +50,6 @@ const AddLocationPage = () => {
   } = form;
 
   const { user, selectedTrainingSiteId } = useAuth();
-
   const { data: countryData, isLoading: countryDataLoading } = getAllCountry();
 
   useDefaultCountry({
@@ -50,13 +59,39 @@ const AddLocationPage = () => {
     fieldName: "country",
   });
 
-  const { mutateAsync: storeLocationMutation, isPending } = storeLocation();
+  const { data: locationData, isLoading: locationDataLoading } = isEdit
+    ? getSingleLocation(id)
+    : { data: null };
+  const { mutateAsync: storeLocationMutation, isPending: isStorePending } =
+    storeLocation();
+  const { mutateAsync: updateLocationMutation, isPending: isUpdatePending } =
+    updateLocation(id);
+
+  const isPending = isStorePending || isUpdatePending;
+
+  useEffect(() => {
+    if (isEdit && locationData?.data) {
+      reset({
+        name: locationData.data.name ?? "",
+        Abbreviation: locationData.data.abbreviation ?? "",
+        ContactName: locationData.data.contact_name ?? "",
+        ContactEmail: locationData.data.contact_email ?? "",
+        ContactPhone: locationData.data.contact_phone ?? "",
+        Directions: locationData.data.directions ?? "",
+        InternalNotes: locationData.data.internal_notes ?? "",
+        PrintOnCards: Boolean(locationData.data.print_card_line_1),
+        address1: locationData.data.address_1 ?? "",
+        address2: locationData.data.address_2 ?? "",
+        city: locationData.data.city ?? "",
+        stateProvince: locationData.data.state ?? "",
+        zipPostalCode: locationData.data.zip ?? "",
+        country: locationData.data.country ?? "",
+      });
+    }
+  }, [locationData, reset, isEdit]);
 
   const onSubmit = async data => {
     const formData = new FormData();
-
-    formData.append("created_by", user?.id);
-    formData.append("training_site_id", selectedTrainingSiteId);
 
     formData.append("name", data.name);
     formData.append("abbreviation", data.Abbreviation);
@@ -65,7 +100,6 @@ const AddLocationPage = () => {
     formData.append("contact_phone", data.ContactPhone);
     formData.append("directions", data.Directions);
     formData.append("internal_notes", data.InternalNotes);
-    formData.append("print_card_line_2", data.PrintOnCards);
     formData.append("address_1", data.address1);
     formData.append("address_2", data.address2 || "");
     formData.append("city", data.city);
@@ -73,24 +107,53 @@ const AddLocationPage = () => {
     formData.append("zip", data.zipPostalCode);
     formData.append("country", data.country);
 
-    await storeLocationMutation(formData, {
-      onSuccess: () => {
-        reset();
-      },
-    });
+    if (isEdit) {
+      formData.append("print_card_line_1", data.PrintOnCards ? data.name : "");
+      formData.append("print_card_line_2", data.PrintOnCards ? data.name : "");
+
+      await updateLocationMutation(formData, {
+        onSuccess: res => {
+          toast.success(res?.message || "Location updated successfully");
+        },
+        onError: err => {
+          toast.error(err?.response?.data?.message || "Something went wrong!");
+        },
+      });
+    } else {
+      formData.append("created_by", user?.id);
+      formData.append("training_site_id", selectedTrainingSiteId);
+      formData.append("print_card_line_2", data.PrintOnCards);
+
+      await storeLocationMutation(formData, {
+        onSuccess: () => {
+          reset();
+        },
+      });
+    }
   };
+
+  if (locationDataLoading) {
+    return (
+      <section className="flex flex-col gap-4">
+        <SectionTitle title={isEdit ? "Edit Location" : "Add Location"} />
+        <div className="p-[26px] bg-white dark:bg-black rounded-[14px] flex items-center justify-center min-h-[200px]">
+          <div className="flex flex-col items-center gap-3 text-gray-400">
+            <div className="w-8 h-8 border-4 border-gray-300 border-t-brown rounded-full animate-spin" />
+            <span className="text-sm">Loading location data…</span>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="flex flex-col gap-2 lg:gap-4">
-      {/* Title */}
-      <SectionTitle title="Add Location" />
+      <SectionTitle title={isEdit ? "Edit Location" : "Add Location"} />
 
-      {/* White Form Card */}
       <div className="bg-white dark:bg-black rounded-[14px] p-4 lg:p-8 shadow-sm">
         <SectionTitle title="Basic Information" className={"mb-1.5 lg:mb-3"} />
         <FormContainer form={form} onSubmit={onSubmit}>
           <div className="flex flex-col gap-3.5 mb-5">
-            {/* Grid Layout */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-6 ">
               <FormInput name="name" label="Name" placeholder="name here" />
               <FormInput
@@ -105,13 +168,19 @@ const AddLocationPage = () => {
               label={"Directions"}
               placeholder={"Directions here"}
             />
-            {/* <div className="flex flex-col gap-1.5 md:gap-2.5">
-              <p className="font-semibold text-[15px] text-gray-700">Options</p>
-              <label className="flex items-center gap-2 text-[12px] sm:text-sm">
-                <input type="checkbox" className="accent-brown" />
-                Make this location my default selection when creating classes
-              </label>
-            </div> */}
+
+            {isEdit && (
+              <div className="flex flex-col gap-1.5 md:gap-2.5">
+                <p className="font-semibold text-[15px] text-gray-700 dark:text-gray-300">
+                  Options
+                </p>
+                <label className="flex items-center gap-2 text-[12px] sm:text-sm dark:text-gray-300">
+                  <input type="checkbox" className="accent-brown" />
+                  Make this location my default selection when creating classes
+                </label>
+              </div>
+            )}
+
             <FormInput
               name="PrintOnCards"
               label="Print on Cards"
@@ -165,13 +234,15 @@ const AddLocationPage = () => {
             </div>
           </div>
 
-          {/* <div className="flex flex-col gap-2 my-2 lg:my-4">
-            <p className="font-semibold text-[15px] text-gray-700">Options</p>
-            <label className="flex items-center gap-2 text-[12px] sm:text-sm">
-              <input type="checkbox" className="accent-brown" />
-              Include address in class communications
-            </label>
-          </div> */}
+          {isEdit && (
+            <div className="flex flex-col gap-2 my-2 lg:my-4">
+              <p className="font-semibold text-[15px] text-gray-700 dark:text-gray-300">Options</p>
+              <label className="flex items-center gap-2 text-[12px] sm:text-sm dark:text-gray-300">
+                <input type="checkbox" className="accent-brown" />
+                Include address in class communications
+              </label>
+            </div>
+          )}
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-6 ">
             <FormInput
@@ -196,7 +267,6 @@ const AddLocationPage = () => {
             />
           </div>
 
-          {/* Footer Buttons */}
           <div className="flex justify-end gap-4 mt-5 lg:mt-10">
             <BackButton />
             <Button
@@ -213,4 +283,4 @@ const AddLocationPage = () => {
   );
 };
 
-export default AddLocationPage;
+export default LocationForm;

@@ -73,7 +73,7 @@ const EnrollSidebar = ({ siteSettings }) => {
       {reg?.custom_sidebar_html && (
         <div className="border border-gray-200 dark:border-zinc-700 rounded-lg overflow-hidden shadow-sm px-4 py-3">
           <div
-            className="prose prose-sm dark:prose-invert max-w-none text-xs leading-relaxed
+            className="prose prose-sm dark:text-white text-black max-w-none text-xs leading-relaxed
               [&_ol]:list-decimal [&_ol]:pl-5
               [&_li[data-list=bullet]]:list-disc [&_li[data-list=bullet]]:ml-6"
             dangerouslySetInnerHTML={{

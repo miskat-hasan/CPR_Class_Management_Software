@@ -12,7 +12,7 @@ import SubSectionTitle from "@/components/common/SubSectionTitle";
 import StudentRoster from "@/components/dashboard/student-roster/StudentRoster";
 
 export default function EditUpcomingClassPage() {
-  const { id, ts } = useParams();
+  const { id } = useParams();
   const router = useRouter();
   const { selectedTrainingSiteId } = useAuth();
 

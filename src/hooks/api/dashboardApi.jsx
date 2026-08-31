@@ -2,6 +2,7 @@ import useClientApi from "../useClientApi";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import useAuth from "../useAuth";
+import { getStoredFilters } from "@/components/enrollment/SchedulePageContent";
 
 // ==================== AUTH / TRAINING SITE ====================
 
@@ -198,32 +199,11 @@ export const createInstructor = () => {
     isPrivate: true,
     endpoint: "/api/instructors/store",
     headers: { "X-Site-Id": selectedTrainingSiteId },
-    onSuccess: data =>
-      toast.success(data?.message || "Instructor Created Successfully"),
     onError: error =>
       toast.error(error?.response?.data?.message || "Something went wrong!"),
   });
 };
 
-export const updateInstructor = id => {
-  return useClientApi({
-    method: "post",
-    isPrivate: true,
-    endpoint: `/api/instructors/${id}/update`,
-  });
-};
-
-export const getSingleInstructor = id => {
-  const { selectedTrainingSiteId } = useAuth();
-  return useClientApi({
-    method: "get",
-    key: ["get-single-instructor", id, selectedTrainingSiteId],
-    isPrivate: true,
-    enabled: !!id,
-    headers: { "X-Site-Id": selectedTrainingSiteId },
-    endpoint: `/api/single-instructors?id=${id}`,
-  });
-};
 export const getAllInstructor = ({
   type,
   page = 1,
@@ -246,6 +226,44 @@ export const getAllInstructor = ({
     ? ["get-all-instructor", "all", selectedTrainingSiteId]
     : [
         "get-all-instructor",
+        "paginated",
+        page,
+        perPage,
+        search ?? null,
+        selectedTrainingSiteId,
+      ];
+
+  return useClientApi({
+    method: "get",
+    key,
+    isPrivate: true,
+    headers: { "X-Site-Id": selectedTrainingSiteId },
+    endpoint,
+  });
+};
+
+export const getAllAssistant = ({
+  type,
+  page = 1,
+  perPage = 10,
+  search,
+} = {}) => {
+  const { selectedTrainingSiteId } = useAuth();
+  const isAll = type === "all";
+
+  let endpoint;
+  if (isAll) {
+    endpoint = "/api/site-users?type=all&role_id[]=4";
+  } else if (search) {
+    endpoint = `/api/site-users?role_id[]=4&page=${page}&per_page=${perPage}&search=${search}`;
+  } else {
+    endpoint = `/api/site-users?role_id[]=4&page=${page}&per_page=${perPage}`;
+  }
+
+  const key = isAll
+    ? ["get-all-assistant", "all", selectedTrainingSiteId]
+    : [
+        "get-all-assistant",
         "paginated",
         page,
         perPage,
@@ -419,6 +437,21 @@ export const getSingleCertification = id => {
     endpoint: `/api/certifications/show?id=${id}`,
   });
 };
+
+export const getAllCertifications = ({
+  instructorId,
+  page = 1,
+  perPage = 10,
+} = {}) => {
+  return useClientApi({
+    method: "get",
+    key: ["get-all-certifications", instructorId, page, perPage],
+    isPrivate: true,
+    enabled: !!instructorId,
+    endpoint: `/api/certifications/index?instructor_id=${instructorId}&page=${page}&per_page=${perPage}`,
+  });
+};
+
 export const storeDocument = () => {
   return useClientApi({
     method: "post",
@@ -505,10 +538,12 @@ export const getAllProductAddOns = ({ type, page = 1, perPage = 10 } = {}) => {
 // ==================== PROMO CODES ====================
 
 export const storePromoCode = () => {
+  const { selectedTrainingSiteId } = useAuth();
   return useClientApi({
     method: "post",
     isPrivate: true,
     endpoint: "/api/promo-codes/store",
+    headers: { "X-Site-Id": selectedTrainingSiteId },
   });
 };
 export const getSinglePromoCode = id => {
@@ -834,6 +869,44 @@ export const getAllCourses = ({ type, page = 1, perPage = 10 } = {}) => {
   });
 };
 
+// Without Authentication
+export const getAllPublicCourses = () => {
+  const { ts_id, instructor_id } = getStoredFilters();
+  const endpoint = ts_id
+    ? `/api/courses-public?site_id=${ts_id}&type=all`
+    : `/api/courses-public?instructor_id=${instructor_id}&type=all`;
+  return useClientApi({
+    method: "get",
+    key: ["get-all-public-course", ts_id, instructor_id],
+    endpoint,
+  });
+};
+
+// Without Authentication
+export const getAllPublicInstructors = () => {
+  const { ts_id } = getStoredFilters();
+
+  return useClientApi({
+    method: "get",
+    key: ["get-all-public-instructors", ts_id],
+    enabled: !!ts_id,
+    endpoint: `/api/instructors-public?site_id=${ts_id}&type=all`,
+  });
+};
+
+// Without Authentication
+export const getAllPublicLocations = () => {
+  const { ts_id, instructor_id } = getStoredFilters();
+  const endpoint = ts_id
+    ? `/api/locations-public?site_id=${ts_id}&type=all`
+    : `/api/locations-public?instructor_id=${instructor_id}&type=all`;
+  return useClientApi({
+    method: "get",
+    key: ["get-all-public-locations", ts_id, instructor_id],
+    endpoint,
+  });
+};
+
 export const getCourseOptions = () => {
   return useClientApi({
     method: "get",
@@ -1027,8 +1100,10 @@ export const searchStudent = (
   last_name,
   email,
   class_details_id,
+  phone_number,
   is_enabled,
 ) => {
+  const { selectedTrainingSiteId } = useAuth();
   return useClientApi({
     method: "get",
     isPrivate: true,
@@ -1040,11 +1115,14 @@ export const searchStudent = (
       last_name,
       email,
       class_details_id,
+      phone_number,
+      selectedTrainingSiteId,
     ],
     endpoint: `/api/student/search?page=${page}&per_page=${perPage}`,
-    params: { first_name, last_name, email, class_details_id },
+    params: { first_name, last_name, email, class_details_id, phone_number },
     enabled: is_enabled,
     queryOptions: { retry: false },
+    headers: { "X-Site-Id": selectedTrainingSiteId },
   });
 };
 
@@ -1220,10 +1298,12 @@ export const getTextCampaignSettings = () => {
   });
 };
 export const updateTextCampaignSettings = () => {
+  const { selectedTrainingSiteId } = useAuth();
   return useClientApi({
     method: "put",
     isPrivate: true,
     endpoint: "/api/text-campaigns/settings",
+    headers: { "X-Site-Id": selectedTrainingSiteId },
   });
 };
 export const getAllTextMessages = () => {
@@ -1246,10 +1326,12 @@ export const getSingleTextMessage = id => {
   });
 };
 export const storeTextMessage = () => {
+  const { selectedTrainingSiteId } = useAuth();
   return useClientApi({
     method: "post",
     isPrivate: true,
     endpoint: "/api/text-campaigns/messages",
+    headers: { "X-Site-Id": selectedTrainingSiteId },
   });
 };
 export const updateTextMessage = id => {
@@ -1277,43 +1359,53 @@ export const sendTestTextMessage = () => {
 // ==================== REPORTS ====================
 
 export const getClassReport = (page = 1, perPage = 10) => {
+  const { selectedTrainingSiteId } = useAuth();
   return useClientApi({
     method: "get",
     isPrivate: true,
-    key: ["get-class-report", page, perPage],
+    key: ["get-class-report", selectedTrainingSiteId, page, perPage],
     endpoint: `/api/reports/class-report?page=${page}&per_page=${perPage}`,
+    headers: { "X-Site-Id": selectedTrainingSiteId },
   });
 };
 export const getEventLog = (page = 1, perPage = 10) => {
+  const { selectedTrainingSiteId } = useAuth();
   return useClientApi({
     method: "get",
     isPrivate: true,
-    key: ["get-event-log", page, perPage],
+    key: ["get-event-log", selectedTrainingSiteId, page, perPage],
     endpoint: `/api/reports/event-log?page=${page}&per_page=${perPage}`,
+    headers: { "X-Site-Id": selectedTrainingSiteId },
   });
 };
 export const getProductAddOnsReport = (page = 1, perPage = 10) => {
+  const { selectedTrainingSiteId } = useAuth();
   return useClientApi({
     method: "get",
     isPrivate: true,
-    key: ["get-product-add-ons-report", page, perPage],
+    key: ["get-product-add-ons-report", selectedTrainingSiteId, page, perPage],
     endpoint: `/api/reports/addon-report?page=${page}&per_page=${perPage}`,
+    headers: { "X-Site-Id": selectedTrainingSiteId },
   });
 };
-export const getRegistrationReport = () => {
+export const getRegistrationReport = (page = 1, perPage = 10) => {
+  const { selectedTrainingSiteId } = useAuth();
   return useClientApi({
     method: "get",
     isPrivate: true,
-    key: ["get-registration-report"],
-    endpoint: "/api/reports/registration",
+    key: ["get-registration-report", selectedTrainingSiteId, page, perPage],
+    endpoint: `/api/reports/registration?page=${page}&per_page=${perPage}`,
+    headers: { "X-Site-Id": selectedTrainingSiteId },
   });
 };
-export const getPromoCodeReport = () => {
+export const getPromoCodeReport = (page = 1, perPage = 10) => {
+  const { selectedTrainingSiteId } = useAuth();
   return useClientApi({
     method: "get",
     isPrivate: true,
-    key: ["get-promo-code-report"],
-    endpoint: "/api/reports/promo-code",
+    key: ["get-promo-code-report", selectedTrainingSiteId, page, perPage],
+    endpoint: `/api/reports/promo-code?page=${page}&per_page=${perPage}`,
+    headers: { "X-Site-Id": selectedTrainingSiteId },
   });
 };
 export const useExportInstructorByDisciplinePDF = () => {
@@ -1346,44 +1438,64 @@ export const useExportStudentDiscipline = () => {
       toast.error(err?.response?.data?.message || "Something went wrong!"),
   });
 };
-export const useGetInstructorByDiscipline = () => {
+export const useGetInstructorByDiscipline = (page = 1, perPage = 10) => {
+  const { selectedTrainingSiteId } = useAuth();
   return useClientApi({
     method: "get",
     isPrivate: true,
-    key: ["get-instructor-by-discipline"],
-    endpoint: "/api/reports/instructors-and-discipline",
+    key: [
+      "get-instructor-by-discipline",
+      selectedTrainingSiteId,
+      page,
+      perPage,
+    ],
+    endpoint: `/api/reports/instructors-and-discipline?page=${page}&per_page=${perPage}`,
+    headers: { "X-Site-Id": selectedTrainingSiteId },
   });
 };
-export const useGetClassAndStudentReport = () => {
+export const useGetClassAndStudentReport = (page = 1, perPage = 10) => {
+  const { selectedTrainingSiteId } = useAuth();
   return useClientApi({
     method: "get",
     isPrivate: true,
-    key: ["get-class-and-student"],
-    endpoint: "/api/reports/classes-and-students",
+    key: ["get-class-and-student", selectedTrainingSiteId, page, perPage],
+    endpoint: `/api/reports/classes-and-students?page=${page}&per_page=${perPage}`,
+    headers: { "X-Site-Id": selectedTrainingSiteId },
   });
 };
-export const useGetClassAndStudentByDiscipline = () => {
+export const useGetClassAndStudentByDiscipline = (page = 1, perPage = 10) => {
+  const { selectedTrainingSiteId } = useAuth();
   return useClientApi({
     method: "get",
     isPrivate: true,
-    key: ["get-class-and-student-by-discipline"],
-    endpoint: "/api/reports/classes-students-discipline",
+    key: [
+      "get-class-and-student-by-discipline",
+      selectedTrainingSiteId,
+      page,
+      perPage,
+    ],
+    endpoint: `/api/reports/classes-students-discipline?page=${page}&per_page=${perPage}`,
+    headers: { "X-Site-Id": selectedTrainingSiteId },
   });
 };
 export const useGetPaymentReport = () => {
+  const { selectedTrainingSiteId } = useAuth();
   return useClientApi({
     method: "get",
     isPrivate: true,
-    key: ["get-payment-report"],
+    key: ["get-payment-report", selectedTrainingSiteId],
     endpoint: "/api/report/payment-report",
+    headers: { "X-Site-Id": selectedTrainingSiteId },
   });
 };
 export const useGetDailyVolumeReport = () => {
+  const { selectedTrainingSiteId } = useAuth();
   return useClientApi({
     method: "get",
     isPrivate: true,
-    key: ["get-daily-volume-report"],
+    key: ["get-daily-volume-report", selectedTrainingSiteId],
     endpoint: "/api/report/daily-volume-report",
+    headers: { "X-Site-Id": selectedTrainingSiteId },
   });
 };
 
@@ -1718,9 +1830,10 @@ export const useDeleteRegistrationQuestion = id => {
 };
 
 // course schedule data (public api)
-export const useGetCourseSchedule = (siteId = 1, filters = {}) => {
+export const useGetCourseSchedule = (siteId, instructorId, filters = {}) => {
   const params = {
-    training_site_id: siteId,
+    ...(siteId ? { training_site_id: siteId } : {}),
+    ...(instructorId ? { instructor_id: instructorId } : {}),
     ...(filters.search ? { search: filters.search } : {}),
     ...(filters.course_id ? { course_id: filters.course_id } : {}),
     ...(filters.location_id ? { location_id: filters.location_id } : {}),
@@ -1796,5 +1909,31 @@ export const useSavePaymentCredentials = () => {
     method: "post",
     isPrivate: true,
     endpoint: "/api/payment-onboarding/save-credentials",
+  });
+};
+
+// ============= user documents ============
+export const useGetUserDocuments = ({ userId, perPage = 10 }) => {
+  return useClientApi({
+    method: "get",
+    isPrivate: true,
+    enabled: !!userId,
+    key: ["user-documents", userId, perPage],
+    endpoint: `/api/user-documents?user_id=${userId}&per_page=${perPage}`,
+  });
+};
+
+export const useStoreUserDocument = () => {
+  return useClientApi({
+    method: "post",
+    isPrivate: true,
+    endpoint: "/api/user-documents/store",
+  });
+};
+
+export const useDeleteUserDocument = () => {
+  return useClientApi({
+    method: "delete",
+    isPrivate: true,
   });
 };

@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useParams } from "next/navigation";
 import { toast } from "sonner";
 import ConfirmModal from "@/components/common/ConfirmModal";
 import TableSkeleton from "@/components/skeleton/TableSkeleton";
@@ -229,7 +228,7 @@ export default function ClassTable({
                     <td className="px-3 sm:px-6 py-3 text-center">
                       <div className="flex items-center gap-2 justify-center">
                         <TableButton
-                          href={`/dashboard/super-admin/class-and-students/${basePath}/${item.id}`}
+                          href={`${basePath}/${item.id}`}
                         >
                           <CiEdit className="text-gray-600 dark:text-gray text-[16px]" />
                         </TableButton>

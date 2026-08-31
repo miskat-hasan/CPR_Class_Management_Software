@@ -1,5 +1,5 @@
 // src/app/dashboard/super-admin/instructors/instructor-records/[id]/page.jsx
-import InstructorEditPage from "@/components/dashboard/instructors/InstructorEditPage";
+import InstructorEditPage from "@/components/dashboard/instructor/InstructorEditPage";
 import React from "react";
 
 const Page = ({ params }) => {
