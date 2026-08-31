@@ -57,7 +57,7 @@ export default function SchedulePageContent() {
     location_id: stored.location_id || "",
   };
 
-  const tsId = stored.ts_id || "1";
+  const tsId = stored.ts_id;
   const instructorId = stored.instructor_id;
 
   const [filters, setFilters] = useState({

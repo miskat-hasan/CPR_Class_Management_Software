@@ -877,6 +877,7 @@ export const getAllPublicCourses = () => {
     : `/api/courses-public?instructor_id=${instructor_id}&type=all`;
   return useClientApi({
     method: "get",
+    enabled: !!ts_id ?? !!instructor_id,
     key: ["get-all-public-course", ts_id, instructor_id],
     endpoint,
   });
@@ -902,6 +903,7 @@ export const getAllPublicLocations = () => {
     : `/api/locations-public?instructor_id=${instructor_id}&type=all`;
   return useClientApi({
     method: "get",
+    enabled: !!ts_id ?? !!instructor_id,
     key: ["get-all-public-locations", ts_id, instructor_id],
     endpoint,
   });
